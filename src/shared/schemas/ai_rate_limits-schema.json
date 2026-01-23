@@ -1,0 +1,52 @@
+
+
+{
+  "$schema": "https://json-schema.org/draft-07/schema#",
+  "$id": "urn:table:ai_rate_limits",
+  "type": "object",
+  "title": "AI Rate Limits",
+  "description": "Controle de abuso e limites de taxa para proteção do chatbot",
+  "required": ["visitor_identifier"],
+  "properties": {
+    "id": {
+      "type": "integer",
+      "title": "ID",
+      "readOnly": true,
+      "primaryKey": true
+    },
+    "visitor_identifier": {
+      "type": "string",
+      "title": "Identificador do Visitante",
+      "description": "Hash de email ou IP",
+      "unique": true,
+      "index": true
+    },
+    "request_count": {
+      "type": "integer",
+      "title": "Contagem de Requisições",
+      "default": 0
+    },
+    "last_request_at": {
+      "type": "string",
+      "format": "date-time",
+      "title": "Última Requisição"
+    },
+    "blocked_until": {
+      "type": "string",
+      "format": "date-time",
+      "title": "Bloqueado Até",
+      "description": "Data/hora de fim do bloqueio (null = ativo)"
+    },
+    "reason": {
+      "type": "string",
+      "title": "Motivo do Bloqueio",
+      "enum": ["rate_limit", "spam_detection", "abuse", "manual"]
+    },
+    "created_at": {
+      "type": "string",
+      "format": "date-time",
+      "readOnly": true
+    }
+  }
+}
+  

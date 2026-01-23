@@ -1,0 +1,59 @@
+
+
+{
+  "$schema": "https://json-schema.org/draft-07/schema#",
+  "$id": "urn:table:ai_consent_logs",
+  "type": "object",
+  "title": "AI Consent Logs",
+  "description": "Registro de consentimento e aceitação de termos para conformidade LGPD",
+  "required": ["session_id", "consent_type"],
+  "properties": {
+    "id": {
+      "type": "integer",
+      "title": "ID",
+      "readOnly": true,
+      "primaryKey": true
+    },
+    "session_id": {
+      "type": "string",
+      "title": "ID da Sessão",
+      "index": true,
+      "description": "Referência para ai_interactions.session_id"
+    },
+    "visitor_email": {
+      "type": "string",
+      "format": "email",
+      "title": "E-mail do Visitante",
+      "index": true
+    },
+    "consent_type": {
+      "type": "string",
+      "title": "Tipo de Consentimento",
+      "enum": ["data_storage", "analytics", "contact", "nda"],
+      "description": "Tipo de consentimento registrado"
+    },
+    "consent_given": {
+      "type": "integer",
+      "title": "Consentimento Dado",
+      "enum": [0, 1],
+      "description": "1 = sim (aceito), 0 = não (recusado)"
+    },
+    "ip_address": {
+      "type": "string",
+      "title": "Endereço IP",
+      "description": "IP de origem para auditoria"
+    },
+    "user_agent": {
+      "type": "string",
+      "title": "User Agent",
+      "description": "Browser/device para auditoria"
+    },
+    "created_at": {
+      "type": "string",
+      "format": "date-time",
+      "title": "Registrado em",
+      "readOnly": true
+    }
+  }
+}
+  

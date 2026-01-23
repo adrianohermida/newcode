@@ -1,0 +1,57 @@
+
+
+{
+  "$schema": "https://json-schema.org/draft-07/schema#",
+  "$id": "urn:table:process_documents",
+  "type": "object",
+  "title": "Documentos do Processo",
+  "description": "Armazena documentos gerados ou anexados a um processo.",
+  "required": ["processo_id", "titulo", "arquivo_url"],
+  "properties": {
+    "id": {
+      "type": "integer",
+      "title": "ID",
+      "readOnly": true,
+      "primaryKey": true
+    },
+    "processo_id": {
+      "type": "integer",
+      "title": "ID do Processo",
+      "index": true
+    },
+    "titulo": {
+      "type": "string",
+      "title": "Título do Documento"
+    },
+    "tipo": {
+      "type": "string",
+      "title": "Tipo",
+      "enum": ["Petição", "Contrato", "Procuração", "Sentença", "Outros"]
+    },
+    "arquivo_url": {
+      "type": "string",
+      "title": "URL do Arquivo"
+    },
+    "conteudo_texto": {
+      "type": "string",
+      "title": "Conteúdo (Texto/HTML)",
+      "multiline": true
+    },
+    "gerado_por_ia": {
+      "type": "integer",
+      "title": "Gerado por IA?",
+      "default": 0
+    },
+    "created_at": {
+      "type": "string",
+      "format": "date-time",
+      "readOnly": true
+    },
+    "updated_at": {
+      "type": "string",
+      "format": "date-time",
+      "readOnly": true
+    }
+  }
+}
+  

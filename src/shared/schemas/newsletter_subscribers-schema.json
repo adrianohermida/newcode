@@ -1,0 +1,64 @@
+
+
+
+{
+  "$schema": "https://json-schema.org/draft-07/schema#",
+  "$id": "urn:table:newsletter_subscribers",
+  "type": "object",
+  "title": "Assinantes da Newsletter",
+  "description": "Armazena e-mails de interessados em receber novidades (Conforme LGPD).",
+  "required": ["email", "consent_given", "project_id"],
+  "properties": {
+    "id": {
+      "type": "integer",
+      "title": "ID",
+      "readOnly": true,
+      "primaryKey": true
+    },
+    "project_id": {
+      "type": "string",
+      "title": "ID do Projeto",
+      "index": true
+    },
+    "email": {
+      "type": "string",
+      "format": "email",
+      "title": "E-mail",
+      "unique": true,
+      "index": true
+    },
+    "nome": {
+      "type": "string",
+      "title": "Nome (Opcional)"
+    },
+    "consent_given": {
+      "type": "integer",
+      "title": "Consentimento LGPD",
+      "description": "1 para sim, 0 para não.",
+      "default": 1
+    },
+    "consent_timestamp": {
+      "type": "string",
+      "format": "date-time",
+      "title": "Data do Consentimento"
+    },
+    "source": {
+      "type": "string",
+      "title": "Origem",
+      "description": "Ex: blog_footer, popup_home."
+    },
+    "status": {
+      "type": "string",
+      "title": "Status",
+      "enum": ["ativo", "cancelado"],
+      "default": "ativo"
+    },
+    "created_at": {
+      "type": "string",
+      "format": "date-time",
+      "readOnly": true
+    }
+  }
+}
+  
+

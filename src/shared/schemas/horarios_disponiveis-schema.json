@@ -1,0 +1,55 @@
+
+
+{
+  "$schema": "https://json-schema.org/draft-07/schema#",
+  "$id": "urn:table:horarios_disponiveis",
+  "type": "object",
+  "title": "Horários Disponíveis",
+  "description": "Gerencia a grade de horários de cada profissional.",
+  "required": ["profissional_id", "data", "hora_inicio"],
+  "properties": {
+    "id": {
+      "type": "integer",
+      "title": "ID",
+      "readOnly": true,
+      "primaryKey": true
+    },
+    "profissional_id": {
+      "type": "integer",
+      "title": "ID do Profissional",
+      "index": true
+    },
+    "data": {
+      "type": "string",
+      "format": "date",
+      "title": "Data",
+      "index": true
+    },
+    "hora_inicio": {
+      "type": "string",
+      "title": "Hora de Início (HH:MM)",
+      "index": true
+    },
+    "hora_fim": {
+      "type": "string",
+      "title": "Hora de Término (HH:MM)"
+    },
+    "status": {
+      "type": "string",
+      "title": "Status",
+      "enum": ["disponivel", "reservado", "ocupado"],
+      "default": "disponivel"
+    },
+    "created_at": {
+      "type": "string",
+      "format": "date-time",
+      "readOnly": true
+    },
+    "updated_at": {
+      "type": "string",
+      "format": "date-time",
+      "readOnly": true
+    }
+  }
+}
+

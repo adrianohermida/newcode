@@ -1,0 +1,44 @@
+
+
+{
+  "$schema": "https://json-schema.org/draft-07/schema#",
+  "$id": "urn:table:audit_logs",
+  "type": "object",
+  "title": "Logs de Auditoria",
+  "description": "Registro imutável de ações administrativas para conformidade LGPD.",
+  "required": ["resource", "action", "actor_id"],
+  "properties": {
+    "id": {
+      "type": "integer",
+      "title": "ID",
+      "readOnly": true,
+      "primaryKey": true
+    },
+    "resource": {
+      "type": "string",
+      "title": "Recurso",
+      "description": "Ex: conversation, lead, channel"
+    },
+    "action": {
+      "type": "string",
+      "title": "Ação",
+      "description": "Ex: view, update, delete, export"
+    },
+    "actor_id": {
+      "type": "string",
+      "title": "ID do Ator",
+      "description": "E-mail do usuário que realizou a ação."
+    },
+    "payload_hash": {
+      "type": "string",
+      "title": "Hash do Payload",
+      "description": "Integridade dos dados visualizados/alterados."
+    },
+    "created_at": {
+      "type": "string",
+      "format": "date-time",
+      "readOnly": true
+    }
+  }
+}
+  

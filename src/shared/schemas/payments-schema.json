@@ -1,0 +1,61 @@
+
+{
+  "$schema": "https://json-schema.org/draft-07/schema#",
+  "$id": "urn:table:payments",
+  "type": "object",
+  "title": "Payments",
+  "description": "Registra pagamentos vinculados a agendamentos.",
+  "required": ["appointment_id", "user_email"],
+  "properties": {
+    "id": {
+      "type": "integer",
+      "title": "ID",
+      "readOnly": true,
+      "primaryKey": true
+    },
+    "appointment_id": {
+      "type": "integer",
+      "title": "ID do Agendamento",
+      "index": true
+    },
+    "user_email": {
+      "type": "string",
+      "format": "email",
+      "title": "E-mail do Usuário",
+      "index": true
+    },
+    "amount": {
+      "type": "number",
+      "title": "Valor"
+    },
+    "currency": {
+      "type": "string",
+      "title": "Moeda",
+      "default": "BRL"
+    },
+    "status": {
+      "type": "string",
+      "title": "Status",
+      "enum": ["pendente", "aprovado", "recusado"],
+      "default": "pendente"
+    },
+    "stripe_session_id": {
+      "type": "string",
+      "title": "Stripe Session ID"
+    },
+    "email_details": {
+      "type": "string",
+      "description": "JSON com detalhes do envio de e-mail de cobrança."
+    },
+    "created_at": {
+      "type": "string",
+      "format": "date-time",
+      "readOnly": true
+    },
+    "updated_at": {
+      "type": "string",
+      "format": "date-time",
+      "readOnly": true
+    }
+  }
+}

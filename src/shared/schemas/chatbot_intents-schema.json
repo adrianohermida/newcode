@@ -1,0 +1,49 @@
+
+
+{
+  "$schema": "https://json-schema.org/draft-07/schema#",
+  "$id": "urn:table:chatbot_intents",
+  "type": "object",
+  "title": "Chatbot Intents",
+  "description": "Armazena as intenções configuradas para o chatbot jurídico.",
+  "required": ["nome"],
+  "properties": {
+    "id": {
+      "type": "integer",
+      "title": "ID",
+      "readOnly": true,
+      "primaryKey": true
+    },
+    "nome": {
+      "type": "string",
+      "title": "Nome da Intenção",
+      "description": "Ex: status_processo, agendar_consulta, segunda_via_fatura"
+    },
+    "descricao": {
+      "type": "string",
+      "title": "Descrição",
+      "multiline": true
+    },
+    "respostas_base": {
+      "type": "string",
+      "title": "Respostas Base (JSON)",
+      "description": "Lista de respostas sugeridas para esta intenção."
+    },
+    "ativo": {
+      "type": "integer",
+      "title": "Ativo",
+      "default": 1
+    },
+    "created_at": {
+      "type": "string",
+      "format": "date-time",
+      "readOnly": true
+    },
+    "updated_at": {
+      "type": "string",
+      "format": "date-time",
+      "readOnly": true
+    }
+  }
+}
+  

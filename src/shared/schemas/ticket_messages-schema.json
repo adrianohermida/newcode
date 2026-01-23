@@ -1,0 +1,49 @@
+
+
+{
+  "$schema": "https://json-schema.org/draft-07/schema#",
+  "$id": "urn:table:ticket_messages",
+  "type": "object",
+  "title": "Ticket Messages",
+  "description": "Armazena o histórico de mensagens e anexos de cada ticket.",
+  "required": ["ticket_id", "sender_email", "message"],
+  "properties": {
+    "id": {
+      "type": "integer",
+      "title": "ID",
+      "readOnly": true,
+      "primaryKey": true
+    },
+    "ticket_id": {
+      "type": "integer",
+      "title": "ID do Ticket",
+      "index": true
+    },
+    "sender_email": {
+      "type": "string",
+      "format": "email",
+      "title": "E-mail do Remetente"
+    },
+    "message": {
+      "type": "string",
+      "title": "Mensagem"
+    },
+    "attachments": {
+      "type": "string",
+      "title": "Anexos",
+      "description": "Lista de URLs de arquivos em formato JSON."
+    },
+    "is_admin": {
+      "type": "integer",
+      "title": "É Admin?",
+      "description": "1 para sim, 0 para não.",
+      "default": 0
+    },
+    "created_at": {
+      "type": "string",
+      "format": "date-time",
+      "readOnly": true
+    }
+  }
+}
+

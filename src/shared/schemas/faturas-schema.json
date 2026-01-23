@@ -1,0 +1,222 @@
+
+
+
+
+
+{
+  "$schema": "https://json-schema.org/draft-07/schema#",
+  "$id": "urn:table:faturas",
+  "type": "object",
+  "title": "Faturas",
+  "description": "Armazena informações financeiras detalhadas de faturamento e cobrança.",
+  "required": ["fatura", "cliente_email", "valor_original", "status"],
+  "properties": {
+    "id": {
+      "type": "integer",
+      "title": "ID",
+      "readOnly": true,
+      "primaryKey": true
+    },
+    "conta_financeira": {
+      "type": "string",
+      "title": "Conta Financeira",
+      "description": "Conta bancária ou caixa de origem/destino."
+    },
+    "centro_custo": {
+      "type": "string",
+      "title": "Centro de Custo",
+      "description": "Classificação para análise de custos."
+    },
+    "responsavel": {
+      "type": "string",
+      "title": "Responsável",
+      "description": "Usuário responsável pela fatura."
+    },
+    "categoria": {
+      "type": "string",
+      "title": "Categoria",
+      "description": "Ex: Honorários, Custas, Administrativo."
+    },
+    "pago_recebido": {
+      "type": "string",
+      "title": "Pago para / Recebido de",
+      "description": "Nome da entidade externa."
+    },
+    "cliente_email": {
+      "type": "string",
+      "format": "email",
+      "title": "E-mail",
+      "description": "E-mail para associação com cliente.",
+      "index": true
+    },
+    "processo_id": {
+      "type": "integer",
+      "title": "ID do Processo",
+      "description": "Vínculo direto com um processo jurídico.",
+      "index": true
+    },
+    "fatura": {
+      "type": "string",
+      "title": "Fatura",
+      "description": "Número ou referência da fatura.",
+      "unique": true,
+      "index": true
+    },
+    "data_fatura": {
+      "type": "string",
+      "format": "date",
+      "title": "Data da Fatura"
+    },
+    "data_vencimento": {
+      "type": "string",
+      "format": "date",
+      "title": "Data de Vencimento"
+    },
+    "negocio": {
+      "type": "string",
+      "title": "Negócio",
+      "description": "Vínculo com processo ou contrato."
+    },
+    "comentario": {
+      "type": "string",
+      "title": "Comentário",
+      "multiline": true
+    },
+    "valor_original": {
+      "type": "number",
+      "title": "Valor Original"
+    },
+    "pagamento": {
+      "type": "number",
+      "title": "Pagamento (-)",
+      "description": "Valor já pago."
+    },
+    "valor_principal": {
+      "type": "number",
+      "title": "Valor Principal",
+      "description": "Valor base para cálculos."
+    },
+    "indice_correcao": {
+      "type": "string",
+      "title": "Índice de Correção",
+      "description": "Ex: IGPM, IPCA, SELIC."
+    },
+    "fator_correcao": {
+      "type": "number",
+      "title": "Fator de Correção"
+    },
+    "percentual_correcao": {
+      "type": "number",
+      "title": "Percentual de Correção"
+    },
+    "acrescimo_correcao": {
+      "type": "number",
+      "title": "Acréscimo de Correção"
+    },
+    "valor_corrigido": {
+      "type": "number",
+      "title": "Valor Corrigido"
+    },
+    "multa": {
+      "type": "number",
+      "title": "Multa"
+    },
+    "multa_atraso": {
+      "type": "number",
+      "title": "Multa de Atraso (10%)"
+    },
+    "data_inicio_juros": {
+      "type": "string",
+      "format": "date",
+      "title": "Data Início Juros"
+    },
+    "dias_atraso": {
+      "type": "integer",
+      "title": "Dias de Atraso"
+    },
+    "juros_moratorio_percent": {
+      "type": "number",
+      "title": "Juros Moratório (1% a.m)"
+    },
+    "juros_mora_valor": {
+      "type": "number",
+      "title": "Juros de Mora (R$)"
+    },
+    "juros_compensatorios_percent": {
+      "type": "number",
+      "title": "Juros Compensatórios (1% a.m)"
+    },
+    "juros_compensatorios_valor": {
+      "type": "number", "title": "Juros Compensatórios (R$)"
+    },
+    "saldo_pagar": {
+      "type": "number",
+      "title": "Saldo a Pagar"
+    },
+    "tipo": {
+      "type": "string",
+      "title": "Tipo",
+      "enum": ["Receita", "Despesa"]
+    },
+    "status": {
+      "type": "string",
+      "title": "Status",
+      "enum": ["Pendente", "Pago", "Atrasado", "Cancelado"],
+      "default": "Pendente"
+    },
+    "data_pagamento": {
+      "type": "string",
+      "format": "date-time",
+      "title": "Data do Pagamento",
+      "description": "Data e hora em que o pagamento foi confirmado."
+    },
+    "metodo_pagamento": {
+      "type": "string",
+      "title": "Método de Pagamento",
+      "description": "Ex: Cartão de Crédito, Pix, Boleto, Transferência."
+    },
+    "comprovante_url": {
+      "type": "string",
+      "title": "URL do Comprovante",
+      "description": "Link para o arquivo de comprovante ou recibo."
+    },
+    "stripe_checkout_session_id": {
+      "type": "string",
+      "title": "Stripe Session ID",
+      "readOnly": true
+    },
+    "stripe_payment_link": {
+      "type": "string",
+      "title": "Link de Pagamento",
+      "readOnly": true
+    },
+    "billing_type": {
+      "type": "string",
+      "title": "Tipo de Cobrança",
+      "enum": ["one_time", "recurring"],
+      "default": "one_time"
+    },
+    "billing_period": {
+      "type": "string",
+      "title": "Período (Recorrência)",
+      "enum": ["day", "week", "month", "year"],
+      "default": "month"
+    },
+    "created_at": {
+      "type": "string",
+      "format": "date-time",
+      "title": "Criado em",
+      "readOnly": true
+    },
+    "updated_at": {
+      "type": "string",
+      "format": "date-time",
+      "title": "Atualizado em",
+      "readOnly": true
+    }
+  }
+}
+
+
+
+

@@ -1,0 +1,71 @@
+
+
+{
+  "$schema": "https://json-schema.org/draft-07/schema#",
+  "$id": "urn:table:escritorio",
+  "type": "object",
+  "title": "Escritório",
+  "description": "Armazena as configurações e informações gerais do escritório de advocacia.",
+  "required": ["nome", "cnpj"],
+  "properties": {
+    "id": {
+      "type": "integer",
+      "title": "ID",
+      "readOnly": true,
+      "primaryKey": true
+    },
+    "nome": {
+      "type": "string",
+      "title": "Nome do Escritório",
+      "description": "Nome fantasia ou razão social."
+    },
+    "cnpj": {
+      "type": "string",
+      "title": "CNPJ",
+      "description": "Cadastro Nacional da Pessoa Jurídica."
+    },
+    "endereco": {
+      "type": "string",
+      "title": "Endereço",
+      "multiline": true
+    },
+    "telefone": {
+      "type": "string",
+      "title": "Telefone de Contato"
+    },
+    "email_contato": {
+      "type": "string",
+      "format": "email",
+      "title": "E-mail de Contato"
+    },
+    "logo_url": {
+      "type": "string",
+      "title": "URL do Logo"
+    },
+    "redes_sociais": {
+      "type": "string",
+      "title": "Redes Sociais (JSON)",
+      "description": "Links para Instagram, Facebook, etc."
+    },
+    "site_url": {
+      "type": "string",
+      "title": "URL do Site"
+    },
+    "configuracoes_gerais": {
+      "type": "string",
+      "title": "Configurações Gerais (JSON)",
+      "description": "Objeto JSON para configurações específicas do escritório."
+    },
+    "created_at": {
+      "type": "string",
+      "format": "date-time",
+      "readOnly": true
+    },
+    "updated_at": {
+      "type": "string",
+      "format": "date-time",
+      "readOnly": true
+    }
+  }
+}
+

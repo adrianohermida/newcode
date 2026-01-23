@@ -1,0 +1,46 @@
+
+
+{
+  "$schema": "https://json-schema.org/draft-07/schema#",
+  "$id": "urn:table:configuracoes",
+  "type": "object",
+  "title": "Configurações",
+  "description": "Armazena configurações de agenda, e-mail, sistema e notificações.",
+  "required": ["tipo", "owner_id"],
+  "properties": {
+    "id": {
+      "type": "integer",
+      "title": "ID",
+      "readOnly": true,
+      "primaryKey": true
+    },
+    "tipo": {
+      "type": "string",
+      "title": "Tipo de Configuração",
+      "enum": ["agenda", "email", "sistema", "notificacao"],
+      "index": true
+    },
+    "owner_id": {
+      "type": "string",
+      "title": "ID do Proprietário",
+      "description": "Pode ser o ID do escritório ou do usuário.",
+      "index": true
+    },
+    "data": {
+      "type": "string",
+      "title": "Dados da Configuração (JSON)",
+      "description": "Objeto JSON contendo as configurações específicas."
+    },
+    "created_at": {
+      "type": "string",
+      "format": "date-time",
+      "readOnly": true
+    },
+    "updated_at": {
+      "type": "string",
+      "format": "date-time",
+      "readOnly": true
+    }
+  }
+}
+

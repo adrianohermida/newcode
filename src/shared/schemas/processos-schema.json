@@ -1,0 +1,100 @@
+
+
+{
+  "$schema": "https://json-schema.org/draft-07/schema#",
+  "$id": "urn:table:processos",
+  "type": "object",
+  "title": "Processos",
+  "description": "Armazena informações detalhadas sobre os processos jurídicos dos clientes.",
+  "required": ["numero_cnj", "titulo", "status"],
+  "properties": {
+    "id": {
+      "type": "integer",
+      "title": "ID",
+      "readOnly": true,
+      "primaryKey": true
+    },
+    "numero_cnj": {
+      "type": "string",
+      "title": "Número CNJ",
+      "description": "Número único do processo no padrão CNJ.",
+      "unique": true,
+      "index": true
+    },
+    "titulo": {
+      "type": "string",
+      "title": "Título do Processo"
+    },
+    "cliente_email": {
+      "type": "string",
+      "format": "email",
+      "title": "E-mail do Cliente",
+      "index": true
+    },
+    "tribunal": {
+      "type": "string",
+      "title": "Tribunal"
+    },
+    "polo_ativo": {
+      "type": "string",
+      "title": "Polo Ativo"
+    },
+    "polo_passivo": {
+      "type": "string",
+      "title": "Polo Passivo"
+    },
+    "classe": {
+      "type": "string",
+      "title": "Classe Processual"
+    },
+    "assunto": {
+      "type": "string",
+      "title": "Assunto"
+    },
+    "area": {
+      "type": "string",
+      "title": "Área do Direito",
+      "enum": ["Cível", "Trabalhista", "Consumidor", "Bancário", "Família", "Previdenciário", "Outros"]
+    },
+    "instancia": {
+      "type": "string",
+      "title": "Instância",
+      "enum": ["1ª Instância", "2ª Instância", "Tribunais Superiores"]
+    },
+    "orgao_julgador": {
+      "type": "string",
+      "title": "Órgão Julgador"
+    },
+    "data_distribuicao": {
+      "type": "string",
+      "format": "date",
+      "title": "Data de Distribuição"
+    },
+    "valor_causa": {
+      "type": "number",
+      "title": "Valor da Causa (R$)"
+    },
+    "status": {
+      "type": "string",
+      "title": "Status",
+      "enum": ["Em andamento", "Concluído", "Suspenso", "Arquivado"],
+      "default": "Em andamento"
+    },
+    "descricao": {
+      "type": "string",
+      "title": "Observações Internas",
+      "multiline": true
+    },
+    "created_at": {
+      "type": "string",
+      "format": "date-time",
+      "readOnly": true
+    },
+    "updated_at": {
+      "type": "string",
+      "format": "date-time",
+      "readOnly": true
+    }
+  }
+}
+  

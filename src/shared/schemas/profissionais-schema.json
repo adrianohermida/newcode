@@ -1,0 +1,59 @@
+
+
+{
+  "$schema": "https://json-schema.org/draft-07/schema#",
+  "$id": "urn:table:profissionais",
+  "type": "object",
+  "title": "Profissionais",
+  "description": "Armazena os advogados e especialistas disponíveis para agendamento.",
+  "required": ["nome", "email"],
+  "properties": {
+    "id": {
+      "type": "integer",
+      "title": "ID",
+      "readOnly": true,
+      "primaryKey": true
+    },
+    "nome": {
+      "type": "string",
+      "title": "Nome Completo"
+    },
+    "email": {
+      "type": "string",
+      "format": "email",
+      "title": "E-mail Profissional",
+      "unique": true,
+      "index": true
+    },
+    "especialidade": {
+      "type": "string",
+      "title": "Especialidade",
+      "description": "Ex: Superendividamento, Cível, Bancário"
+    },
+    "bio": {
+      "type": "string",
+      "title": "Biografia",
+      "multiline": true
+    },
+    "avatar_url": {
+      "type": "string",
+      "title": "URL do Avatar"
+    },
+    "ativo": {
+      "type": "integer",
+      "title": "Ativo",
+      "default": 1
+    },
+    "created_at": {
+      "type": "string",
+      "format": "date-time",
+      "readOnly": true
+    },
+    "updated_at": {
+      "type": "string",
+      "format": "date-time",
+      "readOnly": true
+    }
+  }
+}
+

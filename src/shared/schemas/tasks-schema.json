@@ -1,0 +1,65 @@
+
+
+{
+  "$schema": "https://json-schema.org/draft-07/schema#",
+  "$id": "urn:table:tasks",
+  "type": "object",
+  "title": "Tarefas",
+  "description": "Gerencia tarefas internas associadas a processos.",
+  "required": ["processo_id", "titulo", "status"],
+  "properties": {
+    "id": {
+      "type": "integer",
+      "title": "ID",
+      "readOnly": true,
+      "primaryKey": true
+    },
+    "processo_id": {
+      "type": "integer",
+      "title": "ID do Processo",
+      "index": true
+    },
+    "titulo": {
+      "type": "string",
+      "title": "Título da Tarefa"
+    },
+    "descricao": {
+      "type": "string",
+      "title": "Descrição",
+      "multiline": true
+    },
+    "responsavel_email": {
+      "type": "string",
+      "format": "email",
+      "title": "E-mail do Responsável"
+    },
+    "data_limite": {
+      "type": "string",
+      "format": "date-time",
+      "title": "Data Limite"
+    },
+    "status": {
+      "type": "string",
+      "title": "Status",
+      "enum": ["Pendente", "Em Andamento", "Concluída", "Cancelada"],
+      "default": "Pendente"
+    },
+    "prioridade": {
+      "type": "string",
+      "title": "Prioridade",
+      "enum": ["Baixa", "Média", "Alta", "Crítica"],
+      "default": "Média"
+    },
+    "created_at": {
+      "type": "string",
+      "format": "date-time",
+      "readOnly": true
+    },
+    "updated_at": {
+      "type": "string",
+      "format": "date-time",
+      "readOnly": true
+    }
+  }
+}
+  

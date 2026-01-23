@@ -1,0 +1,90 @@
+
+{
+  "$schema": "https://json-schema.org/draft-07/schema#",
+  "$id": "urn:table:appointments",
+  "type": "object",
+  "title": "Appointments",
+  "description": "Registra solicitações de agendamento de consultas jurídicas usando o padrão JSONB.",
+  "required": [],
+  "properties": {
+    "id": {
+      "type": "integer",
+      "title": "ID",
+      "description": "Identificador único auto-incrementado.",
+      "readOnly": true,
+      "primaryKey": true
+    },
+    "uniqueness_check": {
+      "type": "string",
+      "description": "Campo para evitar duplicidade (email:data:hora).",
+      "unique": true,
+      "index": true
+    },
+    "user_id": {
+      "type": "string",
+      "description": "ID do usuário que realizou o agendamento.",
+      "index": true
+    },
+    "form_data": {
+      "type": "string",
+      "description": "Dados completos do agendamento (nome, email, telefone, data, hora, tipo, descrição) em formato JSON."
+    },
+    "profissional_id": {
+      "type": "integer",
+      "title": "ID do Profissional",
+      "index": true
+    },
+    "status": {
+      "type": "string",
+      "title": "Status",
+      "description": "Estado atual do agendamento.",
+      "enum": ["aguardando_aceite", "confirmado", "cancelado", "recusado", "concluido"],
+      "default": "aguardando_aceite",
+      "index": true
+    },
+    "payment_status": {
+      "type": "string",
+      "title": "Status do Pagamento",
+      "enum": ["nao_aplicavel", "pendente", "pago", "estornado"],
+      "default": "nao_aplicavel"
+    },
+    "admin_notes": {
+      "type": "string",
+      "title": "Notas do Admin",
+      "description": "Observações ou motivo de rejeição.",
+      "multiline": true
+    },
+    "notification_email_sent": {
+      "type": "integer",
+      "title": "Notificação Enviada",
+      "description": "Indica se o e-mail para o admin foi enviado (1 para sim, 0 para não).",
+      "default": 0
+    },
+    "reply_email_sent": {
+      "type": "integer",
+      "title": "Resposta Enviada",
+      "description": "Indica se o e-mail de resposta automática foi enviado (1 para sim, 0 para não).",
+      "default": 0
+    },
+    "email_sent_at": {
+      "type": "string",
+      "format": "date-time",
+      "title": "Data de Envio do E-mail",
+      "description": "Timestamp da última tentativa de envio de e-mail."
+    },
+    "created_at": {
+      "type": "string",
+      "format": "date-time",
+      "title": "Criado em",
+      "description": "Data de criação do registro.",
+      "readOnly": true
+    },
+    "updated_at": {
+      "type": "string",
+      "format": "date-time",
+      "title": "Atualizado em",
+      "description": "Data da última atualização do registro.",
+      "readOnly": true
+    }
+  }
+}

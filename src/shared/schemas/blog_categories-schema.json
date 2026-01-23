@@ -1,0 +1,53 @@
+
+
+
+{
+  "$schema": "https://json-schema.org/draft-07/schema#",
+  "$id": "urn:table:blog_categories",
+  "type": "object",
+  "title": "Categorias do Blog",
+  "description": "Categorias para organização dos artigos do blog.",
+  "required": ["nome", "slug", "project_id"],
+  "properties": {
+    "id": {
+      "type": "integer",
+      "title": "ID",
+      "readOnly": true,
+      "primaryKey": true
+    },
+    "project_id": {
+      "type": "string",
+      "title": "ID do Projeto",
+      "index": true
+    },
+    "nome": {
+      "type": "string",
+      "title": "Nome da Categoria",
+      "description": "Ex: Direito do Consumidor, Superendividamento."
+    },
+    "slug": {
+      "type": "string",
+      "title": "Slug",
+      "description": "URL amigável da categoria.",
+      "unique": true,
+      "index": true
+    },
+    "descricao": {
+      "type": "string",
+      "title": "Descrição",
+      "multiline": true
+    },
+    "created_at": {
+      "type": "string",
+      "format": "date-time",
+      "readOnly": true
+    },
+    "updated_at": {
+      "type": "string",
+      "format": "date-time",
+      "readOnly": true
+    }
+  }
+}
+  
+

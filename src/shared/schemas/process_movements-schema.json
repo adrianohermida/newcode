@@ -1,0 +1,44 @@
+
+
+{
+  "$schema": "https://json-schema.org/draft-07/schema#",
+  "$id": "urn:table:process_movements",
+  "type": "object",
+  "title": "Movimentações Processuais",
+  "description": "Registra o histórico de andamentos de um processo judicial.",
+  "required": ["processo_id", "data_movimento", "descricao"],
+  "properties": {
+    "id": {
+      "type": "integer",
+      "title": "ID",
+      "readOnly": true,
+      "primaryKey": true
+    },
+    "processo_id": {
+      "type": "integer",
+      "title": "ID do Processo",
+      "index": true
+    },
+    "data_movimento": {
+      "type": "string",
+      "format": "date-time",
+      "title": "Data do Movimento"
+    },
+    "descricao": {
+      "type": "string",
+      "title": "Descrição do Andamento",
+      "multiline": true
+    },
+    "created_at": {
+      "type": "string",
+      "format": "date-time",
+      "readOnly": true
+    },
+    "updated_at": {
+      "type": "string",
+      "format": "date-time",
+      "readOnly": true
+    }
+  }
+}
+  

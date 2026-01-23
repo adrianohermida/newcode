@@ -1,0 +1,87 @@
+
+
+{
+  "$schema": "https://json-schema.org/draft-07/schema#",
+  "$id": "urn:table:calendar_integrations",
+  "type": "object",
+  "title": "Calendar Integrations",
+  "description": "Armazena configurações de sincronização com Google Calendar por usuário.",
+  "required": ["user_email"],
+  "properties": {
+    "id": {
+      "type": "integer",
+      "title": "ID",
+      "readOnly": true,
+      "primaryKey": true
+    },
+    "user_email": {
+      "type": "string",
+      "format": "email",
+      "title": "E-mail do Usuário",
+      "description": "E-mail do admin que configurou a integração.",
+      "unique": true,
+      "index": true
+    },
+    "google_calendar_id": {
+      "type": "string",
+      "title": "Google Calendar ID",
+      "description": "ID do calendário no Google (ex: primary)."
+    },
+    "access_token": {
+      "type": "string",
+      "title": "Access Token",
+      "description": "OAuth2 access token (criptografado em produção)."
+    },
+    "refresh_token": {
+      "type": "string",
+      "title": "Refresh Token",
+      "description": "OAuth2 refresh token para renovação automática."
+    },
+    "token_expiry": {
+      "type": "string",
+      "format": "date-time",
+      "title": "Expiração do Token",
+      "description": "Timestamp de expiração do access token."
+    },
+    "sync_enabled": {
+      "type": "integer",
+      "title": "Sync Habilitada",
+      "description": "1 para sim, 0 para não.",
+      "default": 1
+    },
+    "auto_approve": {
+      "type": "integer",
+      "title": "Auto-Aprovação Habilitada",
+      "description": "1 para auto-aprovar agendamentos, 0 para revisar manualmente.",
+      "default": 0
+    },
+    "working_hours_start": {
+      "type": "string",
+      "title": "Horário de Início",
+      "description": "Horário de início do expediente (HH:MM).",
+      "default": "09:00"
+    },
+    "working_hours_end": {
+      "type": "string",
+      "title": "Horário de Término",
+      "description": "Horário de término do expediente (HH:MM).",
+      "default": "18:00"
+    },
+    "appointment_duration_minutes": {
+      "type": "integer",
+      "title": "Duração da Consulta (minutos)",
+      "default": 60
+    },
+    "created_at": {
+      "type": "string",
+      "format": "date-time",
+      "readOnly": true
+    },
+    "updated_at": {
+      "type": "string",
+      "format": "date-time",
+      "readOnly": true
+    }
+  }
+}
+

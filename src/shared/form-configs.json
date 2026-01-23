@@ -1,0 +1,773 @@
+
+
+{
+  "contact_form": {
+    "dbSchemaName": "contact_submissions",
+    "sendNotificationEmail": false,
+    "sendFeedbackEmail": false,
+    "emailSubject": "Obrigado por entrar em contato",
+    "emailTemplate": "<!DOCTYPE html><html><body style=\"font-family: Arial;\"><h1>Olá {{name}}</h1><p>Recebemos sua mensagem e entraremos em contato em breve.</p><p>Assunto: {{subject}}</p><p>Sua mensagem: {{message}}</p></body></html>",
+    "replyToEmail": "",
+    "jsonSchema": {
+      "$schema": "https://json-schema.org/draft-07/schema#",
+      "$id": "contact_form_fields",
+      "type": "object",
+      "title": "Formulário de Contato",
+      "description": "Entre em contato conosco para tirar suas dúvidas.",
+      "required": ["name", "email", "message"],
+      "properties": {
+        "name": {
+          "type": "string",
+          "title": "Nome Completo",
+          "placeholder": "Digite seu nome completo",
+          "minLength": 3,
+          "maxLength": 100
+        },
+        "email": {
+          "type": "string",
+          "format": "email",
+          "title": "E-mail",
+          "placeholder": "seu@email.com"
+        },
+        "phone": {
+          "type": "string",
+          "title": "Telefone / WhatsApp",
+          "placeholder": "(00) 00000-0000"
+        },
+        "subject": {
+          "type": "string",
+          "title": "Assunto",
+          "enum": ["Dúvidas Gerais", "Superendividamento", "Juros Abusivos", "Golpes Bancários", "Revisão de Contratos", "Outros"],
+          "default": "Dúvidas Gerais"
+        },
+        "message": {
+          "type": "string",
+          "title": "Mensagem",
+          "multiline": true,
+          "placeholder": "Descreva sua situação ou dúvida...",
+          "minLength": 10,
+          "maxLength": 1000
+        }
+      }
+    }
+  },
+  "appointment_form": {
+    "dbSchemaName": "appointments",
+    "sendNotificationEmail": false,
+    "sendFeedbackEmail": false,
+    "emailSubject": "Confirmação de Solicitação de Agendamento",
+    "emailTemplate": "<!DOCTYPE html><html><body style=\"font-family: Arial;\"><h1>Olá {{name}}</h1><p>Recebemos sua solicitação de agendamento para o dia {{appointment_date}} às {{appointment_time}}.</p><p>Nossa equipe analisará a disponibilidade e entrará em contato em breve.</p></body></html>",
+    "jsonSchema": {
+      "$schema": "https://json-schema.org/draft-07/schema#",
+      "$id": "appointment_form_fields",
+      "type": "object",
+      "title": "Dados do Agendamento",
+      "required": ["name", "email", "phone"],
+      "properties": {
+        "name": {
+          "type": "string",
+          "title": "Nome Completo",
+          "placeholder": "Seu nome"
+        },
+        "email": {
+          "type": "string",
+          "format": "email",
+          "title": "E-mail",
+          "placeholder": "seu@email.com"
+        },
+        "phone": {
+          "type": "string",
+          "title": "Telefone / WhatsApp",
+          "placeholder": "(00) 00000-0000"
+        },
+        "reason": {
+          "type": "string",
+          "title": "Motivo do Agendamento",
+          "enum": ["Consulta Inicial", "Acompanhamento de Processo", "Dúvida sobre Fatura", "Suporte Técnico", "Outros"],
+          "default": "Consulta Inicial"
+        },
+        "description": {
+          "type": "string",
+          "title": "Observações Adicionais",
+          "multiline": true,
+          "placeholder": "Conte-nos um pouco mais..."
+        }
+      }
+    }
+  },
+  "blog_post_form": {
+    "dbSchemaName": "blog_posts",
+    "sendNotificationEmail": false,
+    "sendFeedbackEmail": false,
+    "jsonSchema": {
+      "$schema": "https://json-schema.org/draft-07/schema#",
+      "$id": "blog_post_fields",
+      "type": "object",
+      "title": "Editor de Artigo",
+      "required": ["titulo", "slug", "conteudo", "status"],
+      "properties": {
+        "titulo": {
+          "type": "string",
+          "title": "Título do Artigo",
+          "placeholder": "Ex: Como funciona a Lei do Superendividamento"
+        },
+        "slug": {
+          "type": "string",
+          "title": "URL Amigável (Slug)",
+          "placeholder": "ex-como-funciona-a-lei"
+        },
+        "resumo": {
+          "type": "string",
+          "title": "Resumo / Chamada",
+          "multiline": true,
+          "placeholder": "Breve descrição para atrair o leitor..."
+        },
+        "conteudo": {
+          "type": "string",
+          "title": "Conteúdo Completo (HTML/Markdown)",
+          "multiline": true,
+          "placeholder": "Escreva seu artigo aqui..."
+        },
+        "imagem_capa_url": {
+          "type": "string",
+          "title": "URL da Imagem de Capa",
+          "placeholder": "https://..."
+        },
+        "categoria_id": {
+          "type": "integer",
+          "title": "Categoria",
+          "enum": [1, 2, 3],
+          "enumNames": ["Direito do Consumidor", "Superendividamento", "Institucional"]
+        },
+        "tags": {
+          "type": "string",
+          "title": "Tags (separadas por vírgula)",
+          "placeholder": "lei14181, dividas, bancos"
+        },
+        "status": {
+          "type": "string",
+          "title": "Status",
+          "enum": ["rascunho", "publicado", "agendado"],
+          "default": "rascunho"
+        },
+        "data_publicacao": {
+          "type": "string",
+          "format": "date-time",
+          "title": "Data de Publicação"
+        },
+        "meta_titulo": {
+          "type": "string",
+          "title": "Meta Título (SEO)",
+          "placeholder": "Título para o Google"
+        },
+        "meta_descricao": {
+          "type": "string",
+          "title": "Meta Descrição (SEO)",
+          "multiline": true,
+          "placeholder": "Descrição para o Google"
+        }
+      }
+    }
+  },
+  "blog_category_form": {
+    "dbSchemaName": "blog_categories",
+    "sendNotificationEmail": false,
+    "sendFeedbackEmail": false,
+    "jsonSchema": {
+      "$schema": "https://json-schema.org/draft-07/schema#",
+      "$id": "blog_category_fields",
+      "type": "object",
+      "title": "Categoria do Blog",
+      "required": ["nome", "slug"],
+      "properties": {
+        "nome": {
+          "type": "string",
+          "title": "Nome da Categoria",
+          "placeholder": "Ex: Notícias"
+        },
+        "slug": {
+          "type": "string",
+          "title": "Slug",
+          "placeholder": "noticias"
+        },
+        "descricao": {
+          "type": "string",
+          "title": "Descrição",
+          "multiline": true
+        }
+      }
+    }
+  },
+  "newsletter_form": {
+    "dbSchemaName": "newsletter_subscribers",
+    "sendNotificationEmail": false,
+    "sendFeedbackEmail": true,
+    "emailSubject": "Bem-vindo à nossa Newsletter Jurídica",
+    "emailTemplate": "<!DOCTYPE html><html><body><h1>Olá {{nome}}!</h1><p>Obrigado por assinar nossa newsletter. Você receberá atualizações semanais sobre seus direitos.</p></body></html>",
+    "jsonSchema": {
+      "$schema": "https://json-schema.org/draft-07/schema#",
+      "$id": "newsletter_fields",
+      "type": "object",
+      "title": "Assinar Newsletter",
+      "required": ["email", "consent_given"],
+      "properties": {
+        "nome": {
+          "type": "string",
+          "title": "Seu Nome",
+          "placeholder": "Opcional"
+        },
+        "email": {
+          "type": "string",
+          "format": "email",
+          "title": "Seu E-mail",
+          "placeholder": "seu@email.com"
+        },
+        "consent_given": {
+          "type": "boolean",
+          "title": "Aceito receber e-mails informativos (LGPD)",
+          "default": true
+        }
+      }
+    }
+  },
+  "processo_form": {
+    "dbSchemaName": "processos",
+    "sendNotificationEmail": false,
+    "sendFeedbackEmail": false,
+    "jsonSchema": {
+      "$schema": "https://json-schema.org/draft-07/schema#",
+      "$id": "processo_fields",
+      "type": "object",
+      "title": "Dados do Processo",
+      "required": ["numero_cnj", "titulo", "cliente_email", "status"],
+      "properties": {
+        "numero_cnj": {
+          "type": "string",
+          "title": "Número CNJ",
+          "placeholder": "0000000-00.0000.0.00.0000"
+        },
+        "titulo": {
+          "type": "string",
+          "title": "Título do Processo",
+          "placeholder": "Ex: Ação de Repactuação - Maria Silva"
+        },
+        "cliente_email": {
+          "type": "string",
+          "format": "email",
+          "title": "E-mail do Cliente",
+          "placeholder": "cliente@email.com"
+        },
+        "area": {
+          "type": "string",
+          "title": "Área do Direito",
+          "enum": ["Cível", "Trabalhista", "Consumidor", "Bancário", "Família", "Previdenciário", "Outros"]
+        },
+        "tribunal": {
+          "type": "string",
+          "title": "Tribunal",
+          "placeholder": "Ex: TJRS, TRF4"
+        },
+        "status": {
+          "type": "string",
+          "title": "Status",
+          "enum": ["Em andamento", "Concluído", "Suspenso", "Arquivado"],
+          "default": "Em andamento"
+        },
+        "descricao": {
+          "type": "string",
+          "title": "Observações",
+          "multiline": true
+        }
+      }
+    }
+  },
+  "publicacao_form": {
+    "dbSchemaName": "publicacoes",
+    "sendNotificationEmail": false,
+    "sendFeedbackEmail": false,
+    "jsonSchema": {
+      "$schema": "https://json-schema.org/draft-07/schema#",
+      "$id": "publicacao_fields",
+      "type": "object",
+      "title": "Dados da Publicação",
+      "required": ["processo_cnj", "conteudo", "data_publicacao"],
+      "properties": {
+        "processo_cnj": {
+          "type": "string",
+          "title": "Número CNJ",
+          "placeholder": "0000000-00.0000.0.00.0000"
+        },
+        "diario": {
+          "type": "string",
+          "title": "Diário Oficial",
+          "placeholder": "Ex: DJRS"
+        },
+        "data_publicacao": {
+          "type": "string",
+          "format": "date",
+          "title": "Data da Publicação"
+        },
+        "comarca": {
+          "type": "string",
+          "title": "Comarca"
+        },
+        "vara": {
+          "type": "string",
+          "title": "Vara"
+        },
+        "prioridade": {
+          "type": "string",
+          "title": "Prioridade",
+          "enum": ["Baixa", "Média", "Alta", "Urgente"],
+          "default": "Média"
+        },
+        "conteudo": {
+          "type": "string",
+          "title": "Conteúdo Completo",
+          "multiline": true,
+          "placeholder": "Cole aqui o texto da publicação..."
+        }
+      }
+    }
+  },
+  "faturaFormTheme": {
+    "dbSchemaName": "faturas",
+    "sendNotificationEmail": false,
+    "sendFeedbackEmail": false,
+    "emailSubject": "Fatura Registrada",
+    "emailTemplate": "<!DOCTYPE html><html><body style=\"font-family: Arial;\"><h1>Olá {{cliente_nome}}</h1><p>Sua fatura {{fatura}} foi registrada.</p></body></html>",
+    "replyToEmail": "",
+    "jsonSchema": {
+      "$schema": "https://json-schema.org/draft-07/schema#",
+      "$id": "fatura_form_fields",
+      "type": "object",
+      "title": "Dados da Fatura",
+      "required": ["fatura", "cliente_email", "valor_original"],
+      "properties": {
+        "fatura": {
+          "type": "string",
+          "title": "Número da Fatura",
+          "placeholder": "FAT-2024-001"
+        },
+        "cliente_email": {
+          "type": "string",
+          "format": "email",
+          "title": "E-mail do Cliente",
+          "placeholder": "cliente@email.com"
+        },
+        "valor_original": {
+          "type": "number",
+          "title": "Valor",
+          "placeholder": "1500.00"
+        },
+        "status": {
+          "type": "string",
+          "title": "Status",
+          "enum": ["Pendente", "Pago", "Atrasado", "Cancelado"],
+          "default": "Pendente"
+        }
+      }
+    }
+  },
+  "documentos_plano_form": {
+    "dbSchemaName": "documentos_plano",
+    "sendNotificationEmail": false,
+    "sendFeedbackEmail": false,
+    "emailSubject": "Documento Enviado",
+    "emailTemplate": "<!DOCTYPE html><html><body style=\"font-family: Arial;\"><h1>Olá</h1><p>Seu documento foi recebido com sucesso.</p></body></html>",
+    "replyToEmail": "",
+    "jsonSchema": {
+      "$schema": "https://json-schema.org/draft-07/schema#",
+      "$id": "documentos_plano_form_fields",
+      "type": "object",
+      "title": "Envio de Documentos",
+      "required": ["tipo_documento"],
+      "properties": {
+        "tipo_documento": {
+          "type": "string",
+          "title": "Tipo de Documento",
+          "enum": ["Contrato", "Recibo", "Comprovante", "Parecer Jurídico", "Outro"],
+          "default": "Outro"
+        },
+        "descricao": {
+          "type": "string",
+          "title": "Descrição",
+          "multiline": true,
+          "placeholder": "Descreva o documento..."
+        },
+        "arquivo_url": {
+          "type": "string",
+          "title": "URL do Arquivo",
+          "placeholder": "https://..."
+        }
+      }
+    }
+  },
+  "ticket_form": {
+    "dbSchemaName": "tickets",
+    "sendNotificationEmail": false,
+    "sendFeedbackEmail": false,
+    "emailSubject": "Novo Ticket de Suporte",
+    "emailTemplate": "<!DOCTYPE html><html><body style=\"font-family: Arial;\"><h1>Novo Chamado Criado</h1><p>Assunto: {{subject}}</p><p>Categoria: {{category}}</p><p>Prioridade: {{priority}}</p><p>Mensagem: {{message}}</p></body></html>",
+    "replyToEmail": "",
+    "jsonSchema": {
+      "$schema": "https://json-schema.org/draft-07/schema#",
+      "$id": "ticket_form_fields",
+      "type": "object",
+      "title": "Abrir Novo Chamado",
+      "required": ["subject", "category", "message"],
+      "properties": {
+        "subject": {
+          "type": "string",
+          "title": "Assunto",
+          "placeholder": "Ex: Dúvida sobre andamento processual"
+        },
+        "category": {
+          "type": "string",
+          "title": "Categoria",
+          "enum": ["Processual", "Financeiro", "Agendamento", "Dúvidas Gerais", "Outros"],
+          "default": "Dúvidas Gerais"
+        },
+        "priority": {
+          "type": "string",
+          "title": "Prioridade",
+          "enum": ["Baixa", "Média", "Alta"],
+          "default": "Média"
+        },
+        "message": {
+          "type": "string",
+          "title": "Descrição Detalhada",
+          "multiline": true,
+          "placeholder": "Descreva sua situação com o máximo de detalhes possível...",
+          "minLength": 10
+        }
+      }
+    }
+  },
+  "ticket_template_form": {
+    "dbSchemaName": "ticket_templates",
+    "sendNotificationEmail": false,
+    "sendFeedbackEmail": false,
+    "jsonSchema": {
+      "$schema": "https://json-schema.org/draft-07/schema#",
+      "$id": "ticket_template_fields",
+      "type": "object",
+      "title": "Modelo de Resposta",
+      "required": ["title", "content", "folder_id"],
+      "properties": {
+        "title": {
+          "type": "string",
+          "title": "Título do Modelo",
+          "placeholder": "Ex: Confirmação de Audiência"
+        },
+        "folder_id": {
+          "type": "integer",
+          "title": "Pasta",
+          "enum": [1, 2, 3, 4, 5, 6, 7, 8],
+          "enumNames": ["Pessoal", "Geral", "ACP", "Agendamento", "Audiência", "Avaliação de Caso", "Balcão Virtual", "Cenários"]
+        },
+        "content": {
+          "type": "string",
+          "title": "Conteúdo da Resposta",
+          "multiline": true,
+          "placeholder": "Olá {{nome}}, confirmamos sua audiência para o dia..."
+        },
+        "availability": {
+          "type": "string",
+          "title": "Disponibilidade",
+          "enum": ["individual", "grupo", "todos"],
+          "default": "todos"
+        }
+      }
+    }
+  },
+  "horarios_disponiveis-schema.json": {
+    "dbSchemaName": "horarios_disponiveis",
+    "sendNotificationEmail": false,
+    "sendFeedbackEmail": false,
+    "jsonSchema": {
+      "$schema": "https://json-schema.org/draft-07/schema#",
+      "$id": "horarios_disponiveis_fields",
+      "type": "object",
+      "title": "Horários Disponíveis",
+      "required": [
+        "profissional_id",
+        "data",
+        "hora_inicio"
+      ],
+      "properties": {
+        "profissional_id": {
+          "type": "integer",
+          "title": "ID do Profissional"
+        },
+        "data": {
+          "type": "string",
+          "format": "date",
+          "title": "Data"
+        },
+        "hora_inicio": {
+          "type": "string",
+          "title": "Hora de Início (HH:MM)"
+        },
+        "hora_fim": {
+          "type": "string",
+          "title": "Hora de Término (HH:MM)"
+        },
+        "status": {
+          "type": "string",
+          "title": "Status",
+          "enum": [
+            "disponivel",
+            "reservado",
+            "ocupado"
+          ],
+          "default": "disponivel"
+        }
+      }
+    }
+  },
+  "movement_form": {
+    "dbSchemaName": "process_movements",
+    "sendNotificationEmail": false,
+    "sendFeedbackEmail": false,
+    "jsonSchema": {
+      "$schema": "https://json-schema.org/draft-07/schema#",
+      "$id": "movement_form_fields",
+      "type": "object",
+      "title": "Lançar Novo Andamento",
+      "required": ["descricao"],
+      "properties": {
+        "descricao": {
+          "type": "string",
+          "title": "Descrição do Andamento",
+          "multiline": true,
+          "placeholder": "Descreva o novo andamento do processo",
+          "minLength": 10
+        },
+        "data_movimento": {
+          "type": "string",
+          "format": "date-time",
+          "title": "Data do Movimento (Opcional)"
+        }
+      }
+    }
+  },
+  "process_ticket_form": {
+    "dbSchemaName": "process_tickets-schema",
+    "sendNotificationEmail": false,
+    "sendFeedbackEmail": false,
+    "jsonSchema": {
+      "$schema": "https://json-schema.org/draft-07/schema#",
+      "$id": "process_ticket_form_fields",
+      "type": "object",
+      "title": "Abrir Chamado sobre o Processo",
+      "required": ["subject", "message"],
+      "properties": {
+        "subject": {
+          "type": "string",
+          "title": "Assunto",
+          "placeholder": "Ex: Dúvida sobre andamento processual",
+          "minLength": 5
+        },
+        "message": {
+          "type": "string",
+          "title": "Descrição Detalhada",
+          "multiline": true,
+          "placeholder": "Descreva sua situação com o máximo de detalhes possível",
+          "minLength": 10
+        }
+      }
+    }
+  },
+  "queue_form": {
+    "dbSchemaName": "queues",
+    "sendNotificationEmail": false,
+    "sendFeedbackEmail": false,
+    "jsonSchema": {
+      "$schema": "https://json-schema.org/draft-07/schema#",
+      "$id": "queue_form_fields",
+      "type": "object",
+      "title": "Configuração de Fila",
+      "required": [
+        "name",
+        "routing_rule"
+      ],
+      "properties": {
+        "name": {
+          "type": "string",
+          "title": "Nome da Fila",
+          "placeholder": "Ex: Suporte Técnico"
+        },
+        "routing_rule": {
+          "type": "string",
+          "title": "Regra de Roteamento",
+          "enum": [
+            "ia_first",
+            "round_robin",
+            "manual"
+          ],
+          "enumNames": [
+            "IA-First (Assistente Virtual Primeiro)",
+            "Round-Robin (Distribuição Equitativa)",
+            "Manual (Aguardar Atribuição)"
+          ],
+          "default": "ia_first"
+        },
+        "active": {
+          "type": "boolean",
+          "title": "Ativo",
+          "default": true
+        }
+      }
+    }
+  },
+  "channel_form": {
+    "dbSchemaName": "channels",
+    "sendNotificationEmail": false,
+    "sendFeedbackEmail": false,
+    "jsonSchema": {
+      "$schema": "https://json-schema.org/draft-07/schema#",
+      "$id": "channel_form_fields",
+      "type": "object",
+      "title": "Configuração de Canal",
+      "required": [
+        "type",
+        "name",
+        "credentials",
+        "webhook_url",
+        "active"
+      ],
+      "properties": {
+        "type": {
+          "type": "string",
+          "title": "Tipo de Canal",
+          "enum": [
+            "web",
+            "whatsapp",
+            "facebook",
+            "instagram",
+            "telegram"
+          ]
+        },
+        "name": {
+          "type": "string",
+          "title": "Nome do Canal",
+          "placeholder": "Ex: WhatsApp Principal"
+        },
+        "credentials": {
+          "type": "string",
+          "title": "Credenciais (JSON)",
+          "multiline": true,
+          "placeholder": "{\"api_key\": \"...\", \"token\": \"...\"}"
+        },
+        "webhook_url": {
+          "type": "string",
+          "title": "URL do Webhook",
+          "placeholder": "https://seu-servidor.com/webhook"
+        },
+        "default_queue_id": {
+          "type": "integer",
+          "title": "Fila de Atendimento Padrão",
+          "description": "Selecione para qual fila os novos atendimentos deste canal serão enviados."
+        },
+        "active": {
+          "type": "boolean",
+          "title": "Ativo",
+          "default": true
+        }
+      }
+    }
+  },
+  "queue_form": {
+    "dbSchemaName": "queues",
+    "sendNotificationEmail": false,
+    "sendFeedbackEmail": false,
+    "jsonSchema": {
+      "$schema": "https://json-schema.org/draft-07/schema#",
+      "$id": "queue_form_fields",
+      "type": "object",
+      "title": "Configuração de Fila",
+      "required": [
+        "name",
+        "routing_rule"
+      ],
+      "properties": {
+        "name": {
+          "type": "string",
+          "title": "Nome da Fila",
+          "placeholder": "Ex: Suporte Técnico"
+        },
+        "routing_rule": {
+          "type": "string",
+          "title": "Regra de Roteamento",
+          "enum": [
+            "ia_first",
+            "round_robin",
+            "manual"
+          ],
+          "enumNames": [
+            "IA-First (Assistente Virtual Primeiro)",
+            "Round-Robin (Distribuição Equitativa)",
+            "Manual (Aguardar Atribuição)"
+          ],
+          "default": "ia_first"
+        },
+        "active": {
+          "type": "boolean",
+          "title": "Ativo",
+          "default": true
+        }
+      }
+    }
+  },
+  "profile_form": {
+    "dbSchemaName": "user_profiles",
+    "sendNotificationEmail": false,
+    "sendFeedbackEmail": false,
+    "jsonSchema": {
+      "$schema": "https://json-schema.org/draft-07/schema#",
+      "$id": "profile_form_fields",
+      "type": "object",
+      "title": "Perfil do Usuário",
+      "required": [
+        "user_email"
+      ],
+      "properties": {
+        "user_email": {
+          "type": "string",
+          "format": "email",
+          "title": "E-mail Profissional",
+          "placeholder": "seu@email.com"
+        },
+        "oab_numero": {
+          "type": "string",
+          "title": "Número da OAB",
+          "placeholder": "123.456"
+        },
+        "cpf": {
+          "type": "string",
+          "title": "CPF",
+          "placeholder": "000.000.000-00"
+        },
+        "telefone": {
+          "type": "string",
+          "title": "Telefone",
+          "placeholder": "(00) 0000-0000"
+        },
+        "area_atuacao": {
+          "type": "string",
+          "title": "Área de Atuação",
+          "enum": [
+            "Cível",
+            "Trabalhista",
+            "Consumidor",
+            "Bancário",
+            "Família",
+            "Outros"
+          ]
+        }
+      }
+    }
+  }
+}
+

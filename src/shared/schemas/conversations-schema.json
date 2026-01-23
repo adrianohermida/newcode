@@ -1,0 +1,73 @@
+
+
+{
+  "$schema": "https://json-schema.org/draft-07/schema#",
+  "$id": "urn:table:conversations",
+  "type": "object",
+  "title": "Conversas Omnichannel",
+  "description": "Threads de atendimento unificadas por cliente.",
+  "required": ["channel_id", "lead_id"],
+  "properties": {
+    "id": {
+      "type": "integer",
+      "title": "ID",
+      "readOnly": true,
+      "primaryKey": true
+    },
+    "channel_id": {
+      "type": "integer",
+      "title": "ID do Canal"
+    },
+    "lead_id": {
+      "type": "integer",
+      "title": "ID do Lead/Cliente"
+    },
+    "status": {
+      "type": "string",
+      "title": "Status",
+      "enum": ["novo", "ativo", "em_atendimento", "pendente", "resolvido"],
+      "default": "novo"
+    },
+    "priority": {
+      "type": "string",
+      "title": "Prioridade",
+      "enum": ["baixa", "media", "alta", "urgente"],
+      "default": "media"
+    },
+    "queue_id": {
+      "type": "integer",
+      "title": "ID da Fila"
+    },
+    "assigned_agent_email": {
+      "type": "string",
+      "title": "Agente Atribuído",
+      "description": "E-mail do advogado ou 'ia'"
+    },
+    "sla_deadline": {
+      "type": "string",
+      "format": "date-time",
+      "title": "Prazo SLA"
+    },
+    "last_message_at": {
+      "type": "string",
+      "format": "date-time",
+      "title": "Última Mensagem"
+    },
+    "routing_rule_applied": {
+      "type": "string",
+      "title": "Regra Aplicada",
+      "description": "Nome da regra de roteamento utilizada na criação da conversa."
+    },
+    "created_at": {
+      "type": "string",
+      "format": "date-time",
+      "readOnly": true
+    },
+    "updated_at": {
+      "type": "string",
+      "format": "date-time",
+      "readOnly": true
+    }
+  }
+}
+  

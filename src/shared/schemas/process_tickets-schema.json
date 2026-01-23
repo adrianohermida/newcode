@@ -1,0 +1,63 @@
+
+
+{
+  "$schema": "https://json-schema.org/draft-07/schema#",
+  "$id": "urn:table:process_tickets",
+  "type": "object",
+  "title": "Process Tickets",
+  "description": "Armazena chamados de suporte vinculados a processos jurídicos específicos.",
+  "required": ["processo_id", "subject"],
+  "properties": {
+    "id": {
+      "type": "integer",
+      "title": "ID",
+      "description": "Identificador único auto-incrementado.",
+      "readOnly": true,
+      "primaryKey": true
+    },
+    "processo_id": {
+      "type": "integer",
+      "title": "ID do Processo",
+      "description": "Vínculo com a tabela processos.",
+      "index": true
+    },
+    "subject": {
+      "type": "string",
+      "title": "Assunto",
+      "description": "Assunto do chamado."
+    },
+    "message": {
+      "type": "string",
+      "title": "Mensagem Inicial",
+      "description": "Descrição inicial do chamado.",
+      "multiline": true
+    },
+    "status": {
+      "type": "string",
+      "title": "Status",
+      "enum": ["Aberto", "Em Atendimento", "Fechado"],
+      "default": "Aberto"
+    },
+    "priority": {
+      "type": "string",
+      "title": "Prioridade",
+      "enum": ["Baixa", "Média", "Alta"],
+      "default": "Média"
+    },
+    "created_at": {
+      "type": "string",
+      "format": "date-time",
+      "title": "Criado em",
+      "description": "Data de criação do registro.",
+      "readOnly": true
+    },
+    "updated_at": {
+      "type": "string",
+      "format": "date-time",
+      "title": "Atualizado em",
+      "description": "Data da última atualização do registro.",
+      "readOnly": true
+    }
+  }
+}
+

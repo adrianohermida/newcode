@@ -1,0 +1,53 @@
+
+
+{
+  "$schema": "https://json-schema.org/draft-07/schema#",
+  "$id": "urn:table:atribuicoes",
+  "type": "object",
+  "title": "Atribuições",
+  "description": "Registra a atribuição de conversas a agentes humanos ou IA.",
+  "required": ["conversa_id", "agente_id"],
+  "properties": {
+    "id": {
+      "type": "integer",
+      "title": "ID",
+      "readOnly": true,
+      "primaryKey": true
+    },
+    "conversa_id": {
+      "type": "integer",
+      "title": "ID da Conversa",
+      "index": true
+    },
+    "agente_id": {
+      "type": "string",
+      "title": "ID do Agente",
+      "description": "E-mail do advogado ou 'ia'",
+      "index": true
+    },
+    "tipo": {
+      "type": "string",
+      "title": "Tipo de Agente",
+      "enum": ["humano", "ia"],
+      "default": "humano"
+    },
+    "status": {
+      "type": "string",
+      "title": "Status",
+      "enum": ["ativo", "concluido"],
+      "default": "ativo"
+    },
+    "iniciado_at": {
+      "type": "string",
+      "format": "date-time",
+      "title": "Iniciado em",
+      "readOnly": true
+    },
+    "encerrado_at": {
+      "type": "string",
+      "format": "date-time",
+      "title": "Encerrado em"
+    }
+  }
+}
+  

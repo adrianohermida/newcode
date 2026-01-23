@@ -1,0 +1,101 @@
+
+
+{
+  "$schema": "https://json-schema.org/draft-07/schema#",
+  "$id": "urn:table:publicacoes",
+  "type": "object",
+  "title": "Publicações",
+  "description": "Armazena as publicações de diários oficiais associadas aos processos.",
+  "required": ["processo_cnj", "conteudo", "data_publicacao"],
+  "properties": {
+    "id": {
+      "type": "integer",
+      "title": "ID",
+      "readOnly": true,
+      "primaryKey": true
+    },
+    "diario": {
+      "type": "string",
+      "title": "Diário",
+      "description": "Nome do diário oficial (ex: DJRS, DJSP)."
+    },
+    "processo_cnj": {
+      "type": "string",
+      "title": "Processo (CNJ)",
+      "description": "Número do processo no formato CNJ.",
+      "index": true
+    },
+    "data_publicacao": {
+      "type": "string",
+      "format": "date",
+      "title": "Data da Publicação"
+    },
+    "comarca": {
+      "type": "string",
+      "title": "Comarca"
+    },
+    "vara": {
+      "type": "string",
+      "title": "Vara"
+    },
+    "data_disponibilizacao": {
+      "type": "string",
+      "format": "date",
+      "title": "Data de Disponibilização"
+    },
+    "palavra_chave": {
+      "type": "string",
+      "title": "Palavra Chave",
+      "description": "Termo que disparou a captura."
+    },
+    "caderno": {
+      "type": "string",
+      "title": "Caderno"
+    },
+    "edicao": {
+      "type": "string",
+      "title": "Edição"
+    },
+    "pagina_inicial": {
+      "type": "string",
+      "title": "Página Inicial"
+    },
+    "pagina_final": {
+      "type": "string",
+      "title": "Página Final"
+    },
+    "despacho": {
+      "type": "string",
+      "title": "Resumo do Despacho",
+      "multiline": true
+    },
+    "conteudo": {
+      "type": "string",
+      "title": "Conteúdo da Publicação",
+      "multiline": true
+    },
+    "status_leitura": {
+      "type": "integer",
+      "title": "Lido?",
+      "description": "1 para lido, 0 para pendente.",
+      "default": 0
+    },
+    "prioridade": {
+      "type": "string",
+      "title": "Prioridade",
+      "enum": ["Baixa", "Média", "Alta", "Urgente"],
+      "default": "Média"
+    },
+    "created_at": {
+      "type": "string",
+      "format": "date-time",
+      "readOnly": true
+    },
+    "updated_at": {
+      "type": "string",
+      "format": "date-time",
+      "readOnly": true
+    }
+  }
+}
+  

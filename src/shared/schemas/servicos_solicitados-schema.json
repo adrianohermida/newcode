@@ -1,0 +1,51 @@
+
+
+{
+  "$schema": "https://json-schema.org/draft-07/schema#",
+  "$id": "urn:table:servicos_solicitados",
+  "type": "object",
+  "title": "Serviços Solicitados",
+  "description": "Armazena solicitações de serviços por demanda ou assinatura.",
+  "required": [],
+  "properties": {
+    "id": {
+      "type": "integer",
+      "title": "ID",
+      "readOnly": true,
+      "primaryKey": true
+    },
+    "client_email": {
+      "type": "string",
+      "format": "email",
+      "title": "E-mail do Cliente",
+      "index": true
+    },
+    "uniqueness_check": {
+      "type": "string",
+      "description": "Deduplicação (email + tipo de serviço + data).",
+      "unique": true,
+      "index": true
+    },
+    "form_data": {
+      "type": "string",
+      "description": "Dados da solicitação em JSON."
+    },
+    "status": {
+      "type": "string",
+      "title": "Status",
+      "enum": ["Pendente", "Em Processamento", "Concluído", "Cancelado"],
+      "default": "Pendente"
+    },
+    "created_at": {
+      "type": "string",
+      "format": "date-time",
+      "readOnly": true
+    },
+    "updated_at": {
+      "type": "string",
+      "format": "date-time",
+      "readOnly": true
+    }
+  }
+}
+

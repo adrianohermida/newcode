@@ -1,0 +1,45 @@
+
+
+{
+  "$schema": "https://json-schema.org/draft-07/schema#",
+  "$id": "urn:table:documentos_plano",
+  "type": "object",
+  "title": "Documentos do Plano",
+  "description": "Armazena metadados de documentos financeiros enviados pelos clientes.",
+  "required": [],
+  "properties": {
+    "id": {
+      "type": "integer",
+      "title": "ID",
+      "readOnly": true,
+      "primaryKey": true
+    },
+    "client_email": {
+      "type": "string",
+      "format": "email",
+      "title": "E-mail do Cliente",
+      "index": true
+    },
+    "uniqueness_check": {
+      "type": "string",
+      "description": "Deduplicação (URL do arquivo).",
+      "unique": true,
+      "index": true
+    },
+    "form_data": {
+      "type": "string",
+      "description": "Dados do documento (URL, tipo, descrição) em JSON."
+    },
+    "created_at": {
+      "type": "string",
+      "format": "date-time",
+      "readOnly": true
+    },
+    "updated_at": {
+      "type": "string",
+      "format": "date-time",
+      "readOnly": true
+    }
+  }
+}
+

@@ -1,0 +1,49 @@
+
+
+{
+  "$schema": "https://json-schema.org/draft-07/schema#",
+  "$id": "urn:table:deadlines",
+  "type": "object",
+  "title": "Prazos",
+  "description": "Gerencia prazos processuais críticos.",
+  "required": ["processo_id", "titulo", "data_vencimento"],
+  "properties": {
+    "id": {
+      "type": "integer",
+      "title": "ID",
+      "readOnly": true,
+      "primaryKey": true
+    },
+    "processo_id": {
+      "type": "integer",
+      "title": "ID do Processo",
+      "index": true
+    },
+    "titulo": {
+      "type": "string",
+      "title": "Título do Prazo"
+    },
+    "data_vencimento": {
+      "type": "string",
+      "format": "date-time",
+      "title": "Data de Vencimento"
+    },
+    "status": {
+      "type": "string",
+      "title": "Status",
+      "enum": ["Ativo", "Cumprido", "Vencido", "Suspenso"],
+      "default": "Ativo"
+    },
+    "created_at": {
+      "type": "string",
+      "format": "date-time",
+      "readOnly": true
+    },
+    "updated_at": {
+      "type": "string",
+      "format": "date-time",
+      "readOnly": true
+    }
+  }
+}
+  

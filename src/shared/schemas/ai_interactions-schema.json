@@ -1,0 +1,93 @@
+
+
+{
+  "$schema": "https://json-schema.org/draft-07/schema#",
+  "$id": "urn:table:ai_interactions",
+  "type": "object",
+  "title": "AI Interactions",
+  "description": "Registra todas as interações entre visitantes e o agente IA, permitindo monitoramento e intervenção por admin.",
+  "required": [],
+  "properties": {
+    "id": {
+      "type": "integer",
+      "title": "ID",
+      "description": "Identificador único auto-incrementado.",
+      "readOnly": true,
+      "primaryKey": true
+    },
+    "session_id": {
+      "type": "string",
+      "title": "Session ID",
+      "description": "Identificador único da sessão do visitante.",
+      "unique": true,
+      "index": true
+    },
+    "visitor_email": {
+      "type": "string",
+      "format": "email",
+      "title": "E-mail do Visitante",
+      "description": "E-mail capturado na conversa (se disponível).",
+      "index": true
+    },
+    "visitor_phone": {
+      "type": "string",
+      "title": "Telefone do Visitante",
+      "description": "Telefone capturado na conversa (se disponível)."
+    },
+    "message_count": {
+      "type": "integer",
+      "title": "Contagem de Mensagens",
+      "description": "Total de mensagens trocadas na sessão.",
+      "default": 0
+    },
+    "conversation_data": {
+      "type": "string",
+      "title": "Dados da Conversa (JSON)",
+      "description": "Array de mensagens [{ role, content, timestamp }, ...]"
+    },
+    "interaction_type": {
+      "type": "string",
+      "title": "Tipo de Interação",
+      "enum": ["faq", "status_check", "appointment_request", "general"],
+      "default": "general"
+    },
+    "conversion_status": {
+      "type": "string",
+      "title": "Status de Conversão",
+      "enum": ["pending", "converted_to_appointment", "converted_to_contact", "abandoned"],
+      "default": "pending",
+      "index": true
+    },
+    "admin_notes": {
+      "type": "string",
+      "title": "Notas do Admin",
+      "description": "Observações ou intervenções do admin.",
+      "multiline": true
+    },
+    "admin_intervention_at": {
+      "type": "string",
+      "format": "date-time",
+      "title": "Data de Intervenção Admin",
+      "description": "Timestamp de quando o admin interveio na sessão."
+    },
+    "status": {
+      "type": "string",
+      "title": "Status",
+      "enum": ["active", "resolved", "flagged"],
+      "default": "active"
+    },
+    "created_at": {
+      "type": "string",
+      "format": "date-time",
+      "title": "Criado em",
+      "readOnly": true
+    },
+    "updated_at": {
+      "type": "string",
+      "format": "date-time",
+      "title": "Atualizado em",
+      "readOnly": true
+    }
+  }
+}
+

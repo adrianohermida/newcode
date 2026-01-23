@@ -1,0 +1,52 @@
+
+
+{
+  "$schema": "https://json-schema.org/draft-07/schema#",
+  "$id": "urn:table:messages",
+  "type": "object",
+  "title": "Mensagens",
+  "description": "Registro individual de mensagens enviadas e recebidas.",
+  "required": ["conversation_id", "content", "author_type"],
+  "properties": {
+    "id": {
+      "type": "integer",
+      "title": "ID",
+      "readOnly": true,
+      "primaryKey": true
+    },
+    "conversation_id": {
+      "type": "integer",
+      "title": "ID da Conversa"
+    },
+    "author_type": {
+      "type": "string",
+      "title": "Tipo de Autor",
+      "enum": ["visitor", "agent", "ia"]
+    },
+    "author_id": {
+      "type": "string",
+      "title": "ID do Autor",
+      "description": "E-mail do agente ou ID do visitante"
+    },
+    "content": {
+      "type": "string",
+      "title": "Conteúdo"
+    },
+    "attachments": {
+      "type": "string",
+      "title": "Anexos (JSON)",
+      "description": "Lista de URLs de arquivos."
+    },
+    "meta": {
+      "type": "string",
+      "title": "Metadados (JSON)",
+      "description": "Dados específicos do canal (ex: message_id do WhatsApp)."
+    },
+    "created_at": {
+      "type": "string",
+      "format": "date-time",
+      "readOnly": true
+    }
+  }
+}
+  

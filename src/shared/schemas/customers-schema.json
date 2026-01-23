@@ -1,0 +1,84 @@
+
+
+{
+  "$schema": "https://json-schema.org/draft-07/schema#",
+  "$id": "urn:table:customers",
+  "type": "object",
+  "title": "Clientes (Customers)",
+  "description": "Armazena informações de clientes e leads do escritório.",
+  "required": [],
+  "properties": {
+    "id": {
+      "type": "integer",
+      "title": "ID",
+      "description": "Identificador único auto-incrementado.",
+      "readOnly": true,
+      "primaryKey": true
+    },
+    "first_name": {
+      "type": "string",
+      "title": "Primeiro Nome",
+      "description": "Primeiro nome do cliente."
+    },
+    "last_name": {
+      "type": "string",
+      "title": "Sobrenome",
+      "description": "Sobrenome do cliente."
+    },
+    "email": {
+      "type": "string",
+      "format": "email",
+      "title": "E-mail",
+      "description": "E-mail do cliente.",
+      "index": true
+    },
+    "email_verified": {
+      "type": "boolean",
+      "title": "E-mail Verificado",
+      "description": "Indica se o e-mail foi verificado.",
+      "default": false
+    },
+    "email_consent": {
+      "type": "boolean",
+      "title": "Consentimento de E-mail",
+      "description": "Indica se o cliente consentiu receber e-mails.",
+      "default": true
+    },
+    "phone": {
+      "type": "string",
+      "title": "Telefone",
+      "description": "Número de telefone do cliente."
+    },
+    "address": {
+      "type": "string",
+      "title": "Endereço",
+      "description": "Endereço completo do cliente."
+    },
+    "source": {
+      "type": "string",
+      "title": "Origem",
+      "description": "Origem do lead (form:contact_form, stripe, manual, google-oauth, otp, etc.).",
+      "index": true
+    },
+    "metadata": {
+      "type": "string",
+      "title": "Metadados",
+      "description": "Dados adicionais em formato JSON."
+    },
+    "created_at": {
+      "type": "string",
+      "format": "date-time",
+      "title": "Criado em",
+      "description": "Data de criação do registro.",
+      "readOnly": true
+    },
+    "updated_at": {
+      "type": "string",
+      "format": "date-time",
+      "title": "Atualizado em",
+      "description": "Data da última atualização do registro.",
+      "readOnly": true
+    }
+  }
+}
+

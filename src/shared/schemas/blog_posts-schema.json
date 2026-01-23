@@ -1,0 +1,122 @@
+
+
+{
+  "$schema": "https://json-schema.org/draft-07/schema#",
+  "$id": "urn:table:blog_posts",
+  "type": "object",
+  "title": "Blog Posts",
+  "description": "Armazena os artigos e notícias do blog do escritório com suporte avançado a SEO e agendamento.",
+  "required": ["titulo", "slug", "conteudo"],
+  "properties": {
+    "id": {
+      "type": "integer",
+      "title": "ID",
+      "description": "Identificador único auto-incrementado.",
+      "readOnly": true,
+      "primaryKey": true
+    },
+    "project_id": {
+      "type": "string",
+      "title": "ID do Projeto",
+      "description": "Vínculo com o escritório/projeto atual.",
+      "index": true
+    },
+    "titulo": {
+      "type": "string",
+      "title": "Título",
+      "description": "Título do artigo."
+    },
+    "slug": {
+      "type": "string",
+      "title": "Slug",
+      "description": "URL amigável do post.",
+      "unique": true,
+      "index": true
+    },
+    "conteudo": {
+      "type": "string",
+      "title": "Conteúdo",
+      "description": "Conteúdo completo do post em HTML ou Markdown.",
+      "multiline": true
+    },
+    "resumo": {
+      "type": "string",
+      "title": "Resumo",
+      "description": "Breve descrição para a listagem.",
+      "multiline": true
+    },
+    "autor_id": {
+      "type": "string",
+      "title": "ID do Autor",
+      "description": "E-mail ou ID do autor (User)."
+    },
+    "autor_nome": {
+      "type": "string",
+      "title": "Nome do Autor",
+      "default": "Dr. Adriano Hermida Maia"
+    },
+    "imagem_capa_url": {
+      "type": "string",
+      "title": "URL da Imagem de Capa",
+      "description": "Link para a imagem principal do post."
+    },
+    "categoria_id": {
+      "type": "integer",
+      "title": "ID da Categoria",
+      "index": true
+    },
+    "tags": {
+      "type": "string",
+      "title": "Tags",
+      "description": "Lista de tags separadas por vírgula."
+    },
+    "status": {
+      "type": "string",
+      "title": "Status",
+      "description": "Status do post (rascunho, publicado, agendado).",
+      "enum": ["rascunho", "publicado", "agendado"],
+      "default": "publicado"
+    },
+    "data_publicacao": {
+      "type": "string",
+      "format": "date-time",
+      "title": "Data de Publicação",
+      "description": "Data em que o post deve ficar visível."
+    },
+    "meta_titulo": {
+      "type": "string",
+      "title": "Meta Título",
+      "description": "Título otimizado para SEO."
+    },
+    "meta_descricao": {
+      "type": "string",
+      "title": "Meta Descrição",
+      "description": "Descrição otimizada para SEO.",
+      "multiline": true
+    },
+    "canonical_url": {
+      "type": "string",
+      "title": "URL Canonical",
+      "description": "URL original para evitar conteúdo duplicado."
+    },
+    "view_count": {
+      "type": "integer",
+      "title": "Visualizações",
+      "default": 0,
+      "readOnly": true
+    },
+    "created_at": {
+      "type": "string",
+      "format": "date-time",
+      "title": "Criado em",
+      "readOnly": true
+    },
+    "updated_at": {
+      "type": "string",
+      "format": "date-time",
+      "title": "Atualizado em",
+      "readOnly": true
+    }
+  }
+}
+

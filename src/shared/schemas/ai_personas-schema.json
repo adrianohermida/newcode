@@ -1,0 +1,76 @@
+
+
+{
+  "$schema": "https://json-schema.org/draft-07/schema#",
+  "$id": "urn:table:ai_personas",
+  "type": "object",
+  "title": "AI Personas",
+  "description": "Configurações de comportamento e persona do chatbot IA",
+  "required": ["name", "system_prompt"],
+  "properties": {
+    "id": {
+      "type": "integer",
+      "title": "ID",
+      "readOnly": true,
+      "primaryKey": true
+    },
+    "project_id": {
+      "type": "string",
+      "title": "ID do Projeto",
+      "index": true
+    },
+    "name": {
+      "type": "string",
+      "title": "Nome da Persona",
+      "description": "Ex: Padrão Amigável, Formal Jurídico",
+      "unique": true
+    },
+    "description": {
+      "type": "string",
+      "title": "Descrição",
+      "description": "Breve explicação do estilo e comportamento"
+    },
+    "system_prompt": {
+      "type": "string",
+      "title": "Prompt do Sistema",
+      "description": "Instruções para o modelo de IA",
+      "maxLength": 2000
+    },
+    "tone": {
+      "type": "string",
+      "title": "Tom de Voz",
+      "enum": ["profissional", "empático", "formal", "acessível"],
+      "default": "profissional"
+    },
+    "max_conversation_length": {
+      "type": "integer",
+      "title": "Máx. de Mensagens",
+      "default": 50,
+      "description": "Limite de mensagens antes de escalar para humano"
+    },
+    "auto_escalate_keywords": {
+      "type": "string",
+      "title": "Palavras-chave para Escalação",
+      "description": "JSON array de palavras que triggerem escalação automática"
+    },
+    "enabled": {
+      "type": "integer",
+      "title": "Ativado",
+      "default": 1,
+      "description": "1 = sim, 0 = não"
+    },
+    "created_at": {
+      "type": "string",
+      "format": "date-time",
+      "title": "Criado em",
+      "readOnly": true
+    },
+    "updated_at": {
+      "type": "string",
+      "format": "date-time",
+      "title": "Atualizado em",
+      "readOnly": true
+    }
+  }
+}
+  

@@ -1,0 +1,40 @@
+
+
+{
+  "$schema": "https://json-schema.org/draft-07/schema#",
+  "$id": "urn:table:chatbot_entities",
+  "type": "object",
+  "title": "Chatbot Entities",
+  "description": "Armazena entidades (parâmetros) que o chatbot deve extrair das conversas.",
+  "required": ["nome", "tipo"],
+  "properties": {
+    "id": {
+      "type": "integer",
+      "title": "ID",
+      "readOnly": true,
+      "primaryKey": true
+    },
+    "nome": {
+      "type": "string",
+      "title": "Nome da Entidade",
+      "description": "Ex: numero_processo, data_agendamento, email_cliente"
+    },
+    "tipo": {
+      "type": "string",
+      "title": "Tipo",
+      "enum": ["regex", "list", "system"],
+      "default": "regex"
+    },
+    "exemplos": {
+      "type": "string",
+      "title": "Exemplos / Padrões",
+      "description": "Exemplos de valores ou expressões regulares para extração."
+    },
+    "created_at": {
+      "type": "string",
+      "format": "date-time",
+      "readOnly": true
+    }
+  }
+}
+  

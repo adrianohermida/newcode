@@ -1,0 +1,62 @@
+
+
+{
+  "$schema": "https://json-schema.org/draft-07/schema#",
+  "$id": "urn:table:contact_submissions",
+  "type": "object",
+  "title": "Contact Submissions",
+  "description": "Armazena as submissões do formulário de contato.",
+  "required": [],
+  "properties": {
+    "id": {
+      "type": "integer",
+      "title": "ID",
+      "description": "Identificador único auto-incrementado.",
+      "readOnly": true,
+      "primaryKey": true
+    },
+    "uniqueness_check": {
+      "type": "string",
+      "description": "Campo para evitar duplicidade (geralmente o e-mail).",
+      "unique": true,
+      "index": true
+    },
+    "form_data": {
+      "type": "string",
+      "description": "Dados completos do formulário em formato JSON."
+    },
+    "notification_email_sent": {
+      "type": "integer",
+      "title": "Notificação Enviada",
+      "description": "Indica se o e-mail para o admin foi enviado (1 para sim, 0 para não).",
+      "default": 0
+    },
+    "reply_email_sent": {
+      "type": "integer",
+      "title": "Resposta Enviada",
+      "description": "Indica se o e-mail de resposta automática foi enviado (1 para sim, 0 para não).",
+      "default": 0
+    },
+    "email_sent_at": {
+      "type": "string",
+      "format": "date-time",
+      "title": "Data de Envio do E-mail",
+      "description": "Timestamp da última tentativa de envio de e-mail."
+    },
+    "created_at": {
+      "type": "string",
+      "format": "date-time",
+      "title": "Criado em",
+      "description": "Data de criação do registro.",
+      "readOnly": true
+    },
+    "updated_at": {
+      "type": "string",
+      "format": "date-time",
+      "title": "Atualizado em",
+      "description": "Data da última atualização do registro.",
+      "readOnly": true
+    }
+  }
+}
+  

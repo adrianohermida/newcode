@@ -1,0 +1,50 @@
+
+
+{
+  "$schema": "https://json-schema.org/draft-07/schema#",
+  "$id": "urn:table:ticket_templates",
+  "type": "object",
+  "title": "Respostas Predefinidas",
+  "description": "Modelos de resposta com suporte a placeholders dinâmicos.",
+  "required": ["title", "content", "folder_id"],
+  "properties": {
+    "id": {
+      "type": "integer",
+      "title": "ID",
+      "readOnly": true,
+      "primaryKey": true
+    },
+    "folder_id": {
+      "type": "integer",
+      "title": "ID da Pasta",
+      "index": true
+    },
+    "title": {
+      "type": "string",
+      "title": "Título do Modelo"
+    },
+    "content": {
+      "type": "string",
+      "title": "Conteúdo",
+      "multiline": true,
+      "description": "Suporta {{nome}}, {{ticket_id}}, etc."
+    },
+    "availability": {
+      "type": "string",
+      "title": "Disponibilidade",
+      "enum": ["individual", "grupo", "todos"],
+      "default": "todos"
+    },
+    "created_at": {
+      "type": "string",
+      "format": "date-time",
+      "readOnly": true
+    },
+    "updated_at": {
+      "type": "string",
+      "format": "date-time",
+      "readOnly": true
+    }
+  }
+}
+  

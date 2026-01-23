@@ -1,0 +1,38 @@
+
+
+{
+  "$schema": "https://json-schema.org/draft-07/schema#",
+  "$id": "urn:table:ticket_folders",
+  "type": "object",
+  "title": "Pastas de Tickets",
+  "description": "Organiza respostas predefinidas em categorias temáticas.",
+  "required": ["name"],
+  "properties": {
+    "id": {
+      "type": "integer",
+      "title": "ID",
+      "readOnly": true,
+      "primaryKey": true
+    },
+    "name": {
+      "type": "string",
+      "title": "Nome da Pasta",
+      "description": "Ex: ACP, Agendamento, Audiência."
+    },
+    "description": {
+      "type": "string",
+      "title": "Descrição"
+    },
+    "owner_id": {
+      "type": "string",
+      "title": "Proprietário",
+      "description": "E-mail do usuário ou 'system' para pastas globais."
+    },
+    "created_at": {
+      "type": "string",
+      "format": "date-time",
+      "readOnly": true
+    }
+  }
+}
+  

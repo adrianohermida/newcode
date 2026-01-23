@@ -1,0 +1,44 @@
+
+
+{
+  "$schema": "https://json-schema.org/draft-07/schema#",
+  "$id": "urn:table:ticket_tasks",
+  "type": "object",
+  "title": "Tarefas de Ticket",
+  "description": "Tarefas internas vinculadas a um chamado de suporte.",
+  "required": ["ticket_id", "title"],
+  "properties": {
+    "id": {
+      "type": "integer",
+      "title": "ID",
+      "readOnly": true,
+      "primaryKey": true
+    },
+    "ticket_id": {
+      "type": "integer",
+      "title": "ID do Ticket",
+      "index": true
+    },
+    "title": {
+      "type": "string",
+      "title": "Título da Tarefa"
+    },
+    "due_date": {
+      "type": "string",
+      "format": "date-time",
+      "title": "Prazo"
+    },
+    "status": {
+      "type": "string",
+      "title": "Status",
+      "enum": ["pendente", "concluida"],
+      "default": "pendente"
+    },
+    "created_at": {
+      "type": "string",
+      "format": "date-time",
+      "readOnly": true
+    }
+  }
+}
+  

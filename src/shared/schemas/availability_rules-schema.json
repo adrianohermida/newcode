@@ -1,0 +1,83 @@
+
+{
+  "$schema": "https://json-schema.org/draft-07/schema#",
+  "$id": "urn:table:availability_rules",
+  "type": "object",
+  "title": "Availability Rules",
+  "description": "Define as regras de disponibilidade para cada profissional.",
+  "required": ["profissional_id"],
+  "properties": {
+    "id": {
+      "type": "integer",
+      "title": "ID",
+      "readOnly": true,
+      "primaryKey": true
+    },
+    "profissional_id": {
+      "type": "integer",
+      "title": "ID do Profissional",
+      "unique": true,
+      "index": true
+    },
+    "dias_semana": {
+      "type": "string",
+      "description": "Array JSON de dias da semana (0-6, onde 0 é domingo).",
+      "default": "[1,2,3,4,5]"
+    },
+    "hora_inicio": {
+      "type": "string",
+      "title": "Hora de Início",
+      "default": "09:00"
+    },
+    "hora_fim": {
+      "type": "string",
+      "title": "Hora de Término",
+      "default": "19:00"
+    },
+    "intervalo_bloqueado_inicio": {
+      "type": "string",
+      "title": "Início do Intervalo",
+      "default": "13:00"
+    },
+    "intervalo_bloqueado_fim": {
+      "type": "string",
+      "title": "Fim do Intervalo",
+      "default": "14:00"
+    },
+    "duracao_minima": {
+      "type": "integer",
+      "title": "Duração Mínima (min)",
+      "default": 15
+    },
+    "duracao_maxima": {
+      "type": "integer",
+      "title": "Duração Máxima (min)",
+      "default": 60
+    },
+    "espaco_minimo": {
+      "type": "integer",
+      "title": "Espaço entre Agendamentos (min)",
+      "default": 30
+    },
+    "antecedencia_avaliacao": {
+      "type": "integer",
+      "title": "Antecedência Avaliação (horas)",
+      "default": 48
+    },
+    "antecedencia_tecnica": {
+      "type": "integer",
+      "title": "Antecedência Técnica (horas)",
+      "default": 72
+    },
+    "created_at": {
+      "type": "string",
+      "format": "date-time",
+      "readOnly": true
+    },
+    "updated_at": {
+      "type": "string",
+      "format": "date-time",
+      "readOnly": true
+    }
+  }
+}

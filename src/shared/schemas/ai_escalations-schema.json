@@ -1,0 +1,59 @@
+
+
+{
+  "$schema": "https://json-schema.org/draft-07/schema#",
+  "$id": "urn:table:ai_escalations",
+  "type": "object",
+  "title": "AI Escalations",
+  "description": "Registra casos onde a IA não conseguiu resolver e escalou para um humano.",
+  "required": ["session_id"],
+  "properties": {
+    "id": {
+      "type": "integer",
+      "title": "ID",
+      "readOnly": true,
+      "primaryKey": true
+    },
+    "session_id": {
+      "type": "string",
+      "title": "ID da Sessão",
+      "index": true
+    },
+    "trigger_keyword": {
+      "type": "string",
+      "title": "Palavra-chave Gatilho"
+    },
+    "escalated_to": {
+      "type": "string",
+      "title": "Escalado Para",
+      "description": "Tipo de destino (ex: humano, departamento)."
+    },
+    "human_agent_email": {
+      "type": "string",
+      "format": "email",
+      "title": "E-mail do Agente"
+    },
+    "resolved": {
+      "type": "integer",
+      "title": "Resolvido?",
+      "default": 0
+    },
+    "resolution_notes": {
+      "type": "string",
+      "title": "Notas de Resolução",
+      "multiline": true
+    },
+    "created_at": {
+      "type": "string",
+      "format": "date-time",
+      "title": "Criado em",
+      "readOnly": true
+    },
+    "resolved_at": {
+      "type": "string",
+      "format": "date-time",
+      "title": "Resolvido em"
+    }
+  }
+}
+  

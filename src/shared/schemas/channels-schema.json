@@ -1,0 +1,59 @@
+
+
+{
+  "$schema": "https://json-schema.org/draft-07/schema#",
+  "$id": "urn:table:channels",
+  "type": "object",
+  "title": "Canais de Atendimento",
+  "description": "Configurações de canais omnichannel (WhatsApp, Web, etc).",
+  "required": ["type", "name"],
+  "properties": {
+    "id": {
+      "type": "integer",
+      "title": "ID",
+      "readOnly": true,
+      "primaryKey": true
+    },
+    "type": {
+      "type": "string",
+      "title": "Tipo de Canal",
+      "enum": ["web", "whatsapp", "facebook", "instagram", "telegram"]
+    },
+    "name": {
+      "type": "string",
+      "title": "Nome do Canal",
+      "description": "Ex: WhatsApp Principal, Chat do Site"
+    },
+    "credentials": {
+      "type": "string",
+      "title": "Credenciais (JSON)",
+      "description": "Tokens e chaves de API criptografados."
+    },
+    "webhook_url": {
+      "type": "string",
+      "title": "URL do Webhook"
+    },
+    "active": {
+      "type": "integer",
+      "title": "Ativo",
+      "default": 1
+    },
+    "default_queue_id": {
+      "type": "integer",
+      "title": "Fila Padrão",
+      "description": "ID da fila para onde os atendimentos deste canal serão direcionados.",
+      "index": true
+    },
+    "created_at": {
+      "type": "string",
+      "format": "date-time",
+      "readOnly": true
+    },
+    "updated_at": {
+      "type": "string",
+      "format": "date-time",
+      "readOnly": true
+    }
+  }
+}
+  
