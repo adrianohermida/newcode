@@ -1,11 +1,13 @@
 /**
- * @description Painel Administrativo completo para Hermida Maia Advocacia.
- * Gerencia Leads, Processos, Faturas, Tickets, Publicações, IA e Configurações.
+ * Dashboard Administrativo – Hermida Maia Advocacia
+ * Template original restaurado + integração real de módulos existentes
  */
 
 import React, { useEffect, useMemo, useState } from 'react';
 import { useAuth } from '@hey-boss/users-service/react';
-import { useNavigate, useSearchParams } from 'react-router-dom';
+import { useNavigate } from 'react-router-dom';
+import { Header } from '../components/Header';
+
 import {
   Users,
   Scale,
@@ -15,204 +17,312 @@ import {
   Settings,
   LayoutDashboard,
   Search,
-  Download,
-  Plus,
-  MoreVertical,
-  ChevronRight,
   Loader2,
-  AlertCircle,
-  CheckCircle2,
-  Clock,
-  TrendingUp,
   Bot,
-  Zap,
   Calendar,
-  Chrome,
+  TrendingUp,
+  Zap,
+  ChevronRight,
+  ArrowLeft,
+  Layers,
+  MoreVertical,
+  Download,
+  Clock,
+  Folder,
 } from 'lucide-react';
 
-import { Header } from '../components/Header';
-import { AIMonitoringModule } from '../components/AIMonitoring/AIMonitoringModule';
-import { BalcaoVirtualModule } from '../components/BalcaoVirtual/BalcaoVirtualModule';
-import { ChatbotConfigModule } from '../components/ChatbotConfigModule';
-import { BlogManagementModule } from '../components/BlogManagement/BlogManagementModule';
+/* ===== MÓDULOS EXISTENTES ===== */
+import { OverviewModule } from '../modules/OverviewModule';
+import { CRMModule } from '../modules/CRMModule';
+import { DocumentsModule } from '../modules/DocumentsModule';
+import { PlanoPagamentoModule } from '../modules/PlanoPagamentoModule';
+import { FaturasModule } from '../modules/FaturasModule';
+import { TicketsModule } from '../modules/TicketsModule';
+import { AdminAgendaModule } from '../modules/AdminAgendaModule';
+import { ProcessosModule } from '../modules/ProcessosModule';
+import { ProcessoDetailInline } from '../modules/ProcessoDetailInline';
+import { ConfigModule } from '../modules/ConfigModule';
+
 import { PublicacoesModule } from '../components/Publicacoes/PublicacoesModule';
+import { BlogManagementModule } from '../components/BlogManagement/BlogManagementModule';
+import { AIMonitoringModule } from '../components/AIMonitoring/AIMonitoringModule';
+import { ChatbotConfigModule } from '../components/ChatbotConfigModule';
 
-/* -------------------------------------------------------------------------- */
-/* Utils                                                                      */
-/* -------------------------------------------------------------------------- */
+/* ===== UTILS ===== */
+const clsx = (...classes: (string | false | undefined)[]) =>
+  classes.filter(Boolean).join(' ');
 
-const clsx = (...classes: any[]) => classes.filter(Boolean).join(' ');
-
+/* ===== TYPES ===== */
 type DashboardTab =
   | 'overview'
   | 'crm'
   | 'processos'
+  | 'documentos'
+  | 'planos_pagamento'
   | 'faturas'
   | 'tickets'
   | 'publicacoes'
+  | 'gestaoblog'
+  | 'agenda'
   | 'ia'
   | 'chatbot'
-  | 'balcao'
-  | 'agenda'
   | 'config';
 
-
-/* -------------------------------------------------------------------------- */
-/* Dashboard                                                                  */
-/* -------------------------------------------------------------------------- */
-
+/* =========================================================
+ * DASHBOARD
+ * ========================================================= */
 export const Dashboard = () => {
   const { user, isPending } = useAuth();
   const navigate = useNavigate();
-  const [searchParams] = useSearchParams();
 
   const [activeTab, setActiveTab] = useState<DashboardTab>('overview');
   const [loading, setLoading] = useState(false);
-  const [data, setData] = useState<any[]>([]);
   const [searchTerm, setSearchTerm] = useState('');
-  const [integrationsStatus, setIntegrationsStatus] = useState<any>(null);
+  const [data, setData] = useState<any[]>([]);
+  const [selectedProcesso, setSelectedProcesso] = useState<any | null>(null);
+  const [selectedTicket, setSelectedTicket] = useState<any | null>(null);
 
-  /* ------------------------------------------------------------------------ */
-  /* Segurança: acesso apenas admin                                           */
-  /* ------------------------------------------------------------------------ */
+  /* ===== ADMIN GUARD ===== */
   useEffect(() => {
-    if (!isPending && user && (user as any).isAdmin !== true) {
+    if (!isPending && user && !(user as any).isAdmin) {
       navigate('/portal', { replace: true });
     }
   }, [user, isPending, navigate]);
 
-  /* ------------------------------------------------------------------------ */
-  /* Callback OAuth Google                                                     */
-  /* ------------------------------------------------------------------------ */
-  useEffect(() => {
-    if (searchParams.get('google') === 'success') {
-      console.info('Google Calendar conectado com sucesso');
+  /* ===== FETCH SIMPLES (LEGADOS) ===== */
+  /* =========================================================
+ * FETCH POR ABA + RESET DE ESTADOS DEPENDENTES
+ * ========================================================= */
+useEffect(() => {
+  let aborted = false;
+
+  // ===============================
+  // RESET DE ESTADOS INLINE
+  // ===============================
+  if (activeTab !== 'processos') {
+    setSelectedProcesso(null);
+  }
+
+  if (activeTab !== 'tickets') {
+    setSelectedTicket(null);
+  }
+
+  // reset de busca ao trocar de aba
+  setSearchTerm('');
+
+  // ===============================
+  // ABAS SEM FETCH
+  // ===============================
+  const tabsWithoutFetch: DashboardTab[] = [
+    'overview',
+    'publicacoes',
+    'gestaoblog',
+    'ia',
+    'chatbot',
+    'config',
+  ];
+
+  if (tabsWithoutFetch.includes(activeTab)) {
+    setData([]);
+    return;
+  }
+
+  // ===============================
+  // ENDPOINTS
+  // ===============================
+  const endpoints: Partial<Record<DashboardTab, string>> = {
+    crm: '/api/admin/leads',
+    processos: '/api/admin/processos',
+    documentos: '/api/admin/documents',
+    planos_pagamento: '/api/admin/planos-pagamento',
+    faturas: '/api/admin/faturas',
+    tickets: '/api/tickets',
+    agenda: '/api/admin/appointments',
+  };
+
+  const endpoint = endpoints[activeTab];
+  if (!endpoint) return;
+
+  // ===============================
+  // FETCH CONTROLADO
+  // ===============================
+  const fetchData = async () => {
+    setLoading(true);
+    try {
+      const res = await fetch(endpoint);
+      const json = await res.json();
+
+      const normalized =
+        activeTab === 'tickets'
+          ? Array.isArray(json)
+            ? json
+            : Array.isArray(json?.data)
+            ? json.data
+            : []
+          : Array.isArray(json)
+          ? json
+          : [];
+
+      if (!aborted) setData(normalized);
+    } catch (err) {
+      console.error(err);
+      if (!aborted) setData([]);
+    } finally {
+      if (!aborted) setLoading(false);
     }
-  }, [searchParams]);
+  };
 
-  /* ------------------------------------------------------------------------ */
-  /* Fetch de dados por aba                                                    */
-  /* ------------------------------------------------------------------------ */
-  useEffect(() => {
-    if (activeTab === 'overview') return;
+  fetchData();
 
-    const fetchData = async () => {
-      setLoading(true);
-      try {
-        let endpoint = '';
+  return () => {
+    aborted = true;
+  };
+}, [activeTab]);
 
-        if (activeTab === 'crm') endpoint = '/api/admin/leads';
-        if (activeTab === 'processos') endpoint = '/api/admin/processos';
-        if (activeTab === 'faturas') endpoint = '/api/admin/faturas';
-        if (activeTab === 'tickets') endpoint = '/api/tickets';
-        if (activeTab === 'publicacoes') endpoint = '/api/admin/publicacoes';
-        if (activeTab === 'ia') endpoint = '/api/admin/ai-interactions';
-        if (activeTab === 'config') endpoint = '/api/admin/integrations/status';
 
-        if (!endpoint) return;
+  // ===============================
+  // FILTRO GLOBAL
+  // ===============================
 
-        const res = await fetch(endpoint);
-        const result = await res.json();
+const filteredData = useMemo(() => {
+  if (!searchTerm) return data;
 
-        if (activeTab === 'config') setIntegrationsStatus(result);
-        else setData(Array.isArray(result) ? result : []);
-      } catch (err) {
-        console.error('Erro ao carregar dados:', err);
-      } finally {
-        setLoading(false);
-      }
-    };
+  return data.filter(item =>
+    Object.values(item).some(v =>
+      String(v ?? '')
+        .toLowerCase()
+        .includes(searchTerm.toLowerCase())
+    )
+  );
+}, [data, searchTerm]);
 
-    fetchData();
-  }, [activeTab]);
-
-  /* ------------------------------------------------------------------------ */
-  /* Filtro global                                                            */
-  /* ------------------------------------------------------------------------ */
-  const filteredData = useMemo(() => {
-    if (!searchTerm) return data;
-    return data.filter(item =>
-      Object.values(item).some(v =>
-        String(v).toLowerCase().includes(searchTerm.toLowerCase())
-      )
-    );
-  }, [data, searchTerm]);
-
-  /* ------------------------------------------------------------------------ */
-  /* Render                                                                   */
-  /* ------------------------------------------------------------------------ */
+  /* ===== RENDER ===== */
   return (
     <div className="min-h-screen bg-brand-dark text-white">
       <Header />
 
       <main className="pt-32 pb-20 px-4 max-w-7xl mx-auto">
         <div className="flex gap-8">
-          {/* Sidebar */}
-          <aside className="w-64 shrink-0">
+
+          {/* SIDEBAR */}
+          <aside className="w-64 shrink-0 hidden lg:block">
             <nav className="space-y-1">
               {[
-                { id: 'overview', label: 'Visão Geral', icon: LayoutDashboard },
-                { id: 'crm', label: 'CRM / Leads', icon: Users },
-                { id: 'processos', label: 'Processos', icon: Scale },
-                { id: 'faturas', label: 'Financeiro', icon: CreditCard },
-                { id: 'tickets', label: 'Helpdesk', icon: MessageSquare },
-                { id: 'publicacoes', label: 'Publicações', icon: FileText },
-                { id: 'ia', label: 'IA Monitorada', icon: Bot },
-                { id: 'chatbot', label: 'Chatbot IA', icon: Settings },
-                { id: 'balcao', label: 'Balcão Virtual', icon: MessageSquare },
-                { id: 'agenda', label: 'Agenda', icon: Calendar },
-                { id: 'config', label: 'Configurações', icon: Settings },
-              ].map(item => (
+                ['overview', 'Visão Geral', LayoutDashboard],
+                ['crm', 'CRM / Leads', Users],
+                ['processos', 'Processos', Scale],
+                ['documentos', 'Documentos', Folder],
+                ['planos_pagamento', 'Planos de Pagamento', CreditCard],
+                ['faturas', 'Financeiro', CreditCard],
+                ['tickets', 'Helpdesk', MessageSquare],
+                ['publicacoes', 'Publicações', FileText],
+                ['gestaoblog', 'Gestão de Blog', FileText],
+                ['agenda', 'Agenda', Calendar],
+                ['ia', 'IA Monitorada', Bot],
+                ['chatbot', 'Chatbot IA', Bot],
+                ['config', 'Configurações', Settings],
+              ].map(([id, label, Icon]: any) => (
                 <button
-                  key={item.id}
-                  onClick={() => setActiveTab(item.id as DashboardTab)}
+                  key={id}
+                  onClick={() => setActiveTab(id)}
                   className={clsx(
-                    'w-full flex items-center gap-3 px-4 py-3 rounded-xl font-bold transition',
-                    activeTab === item.id
+                    'w-full flex items-center gap-3 px-4 py-3 rounded-xl font-bold',
+                    activeTab === id
                       ? 'bg-brand-primary text-white'
                       : 'text-white/40 hover:text-white hover:bg-white/5'
                   )}
                 >
-                  <item.icon size={18} />
-                  {item.label}
+                  <Icon size={18} />
+                  {label}
                 </button>
               ))}
             </nav>
           </aside>
 
-          {/* Conteúdo */}
+          {/* CONTEÚDO */}
           <section className="flex-1 space-y-6">
-            {activeTab !== 'overview' && activeTab !== 'config' && (
-              <div className="flex gap-4 bg-brand-elevated p-4 rounded-xl">
-                <div className="relative w-96">
-                  <Search className="absolute left-3 top-3 text-white/30" size={16} />
-                  <input
-                    value={searchTerm}
-                    onChange={e => setSearchTerm(e.target.value)}
-                    placeholder="Buscar..."
-                    className="w-full pl-10 pr-4 py-2 bg-brand-dark rounded-xl"
-                  />
+
+            {activeTab !== 'overview' &&
+              activeTab !== 'config' &&
+              activeTab !== 'chatbot' && (
+                <div className="bg-brand-elevated p-4 rounded-xl">
+                  <div className="relative w-96 max-w-full">
+                    <Search className="absolute left-3 top-3 text-white/30" size={16} />
+                    <input
+                      value={searchTerm}
+                      onChange={e => setSearchTerm(e.target.value)}
+                      placeholder="Buscar..."
+                      className="w-full pl-10 pr-4 py-2 bg-brand-dark rounded-xl outline-none"
+                    />
+                  </div>
                 </div>
+              )}
+
+            {loading && (
+              <div className="flex justify-center py-20">
+                <Loader2 className="animate-spin text-brand-primary" size={40} />
               </div>
             )}
 
-            {loading ? (
-              <div className="flex justify-center py-20">
-                <Loader2 className="animate-spin text-brand-primary" size={36} />
-              </div>
-            ) : (
+            {!loading && (
               <>
                 {activeTab === 'overview' && <OverviewModule />}
+
                 {activeTab === 'crm' && <CRMModule data={filteredData} />}
-                {activeTab === 'processos' && <ProcessosModule data={filteredData} />}
+
+                {activeTab === 'processos' && !selectedProcesso && (
+                  <ProcessosModule
+                    data={filteredData}
+                    onSelect={setSelectedProcesso}
+                  />
+                )}
+
+                {activeTab === 'processos' && selectedProcesso && (
+                  <ProcessoDetailInline
+                    processo={selectedProcesso}
+                    onBack={() => setSelectedProcesso(null)}
+                  />
+                )}
+
+                {activeTab === 'documentos' && <DocumentsModule data={filteredData} />}
+
+                {activeTab === 'planos_pagamento' && (
+                  <PlanoPagamentoModule data={filteredData} />
+                )}
+
                 {activeTab === 'faturas' && <FaturasModule data={filteredData} />}
-                {activeTab === 'tickets' && <TicketsModule data={filteredData} />}
+
+                {activeTab === 'tickets' && !selectedTicket && (
+                    <TicketsModule
+                      data={filteredData}
+                      onSelect={setSelectedTicket}
+                    />
+                  )}
+
+                  {activeTab === 'tickets' && selectedTicket && (
+                    <TicketDetailInline
+                      ticket={selectedTicket}
+                      onBack={() => setSelectedTicket(null)}
+                    />
+                  )}
+
                 {activeTab === 'publicacoes' && <PublicacoesModule />}
+
+                {activeTab === 'gestaoblog' && <BlogManagementModule />}
+
+                {activeTab === 'agenda' && (
+                  <AdminAgendaModule
+                    data={filteredData}
+                    loading={false}
+                    onRefresh={() => setActiveTab('agenda')}
+                  />
+                )}
+
                 {activeTab === 'ia' && <AIMonitoringModule />}
+
                 {activeTab === 'chatbot' && <ChatbotConfigModule />}
-                {activeTab === 'balcao' && <BalcaoVirtualModule />}
-                {activeTab === 'agenda' && <AdminAgendaModule />}
-                {activeTab === 'config' && <ConfigModule status={integrationsStatus} />}
+
+                {activeTab === 'config' && <ConfigModule />}
               </>
             )}
           </section>
@@ -225,104 +335,156 @@ export const Dashboard = () => {
 /* =========================================================
  * 📊 OVERVIEW MODULE
  * ========================================================= */
-const OverviewModule = () => (
-  <div className="space-y-8">
-    <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-4 gap-6">
-      {[
-        { label: 'Leads Hoje', value: '12', icon: Users, color: 'text-blue-400' },
-        { label: 'Processos Ativos', value: '145', icon: Scale, color: 'text-brand-primary' },
-        { label: 'Faturamento Mês', value: 'R$ 45k', icon: TrendingUp, color: 'text-green-400' },
-        { label: 'Tickets Abertos', value: '8', icon: MessageSquare, color: 'text-yellow-400' },
-      ].map((stat, i) => (
-        <div key={i} className="bg-brand-elevated p-6 rounded-3xl border border-white/5 shadow-xl">
-          <div className="flex items-center justify-between mb-4">
-            <div className={clsx("p-3 rounded-2xl bg-white/5", stat.color)}>
-              <stat.icon size={24} />
-            </div>
-            <span className="text-[10px] font-bold text-white/20 uppercase tracking-widest">
-              Tempo Real
-            </span>
-          </div>
-          <p className="text-white/40 text-xs font-bold uppercase mb-1">{stat.label}</p>
-          <p className="text-3xl font-extrabold">{stat.value}</p>
-        </div>
-      ))}
-    </div>
 
-    <div className="bg-brand-elevated p-8 rounded-[2.5rem] border border-white/5 shadow-2xl relative overflow-hidden">
-      <div className="absolute top-0 right-0 w-96 h-96 bg-brand-primary/5 rounded-full blur-[100px] -mr-48 -mt-48" />
-      <div className="relative z-10">
-        <h3 className="text-2xl font-extrabold mb-6">Atividade Recente</h3>
-        <div className="space-y-4">
-          {[1, 2, 3].map((_, i) => (
-            <div key={i} className="flex items-center gap-4 p-4 bg-white/5 rounded-2xl border border-white/5">
-              <div className="w-10 h-10 rounded-full bg-brand-primary/20 flex items-center justify-center text-brand-primary">
-                <Zap size={20} />
+
+interface OverviewStat {
+  label: string;
+  value: string;
+  icon: React.ElementType;
+  color: string;
+}
+
+export const OverviewModule = () => {
+  const stats: OverviewStat[] = [
+    {
+      label: 'Leads Hoje',
+      value: '12',
+      icon: Users,
+      color: 'text-blue-400',
+    },
+    {
+      label: 'Processos Ativos',
+      value: '145',
+      icon: Scale,
+      color: 'text-brand-primary',
+    },
+    {
+      label: 'Faturamento do Mês',
+      value: 'R$ 45.000',
+      icon: TrendingUp,
+      color: 'text-green-400',
+    },
+    {
+      label: 'Tickets Abertos',
+      value: '8',
+      icon: MessageSquare,
+      color: 'text-yellow-400',
+    },
+  ];
+
+  return (
+    <div className="space-y-10 animate-fade-in">
+
+      {/* ===============================
+       * KPIs
+       * =============================== */}
+      <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-4 gap-6">
+        {stats.map((stat, i) => (
+          <div
+            key={i}
+            className="bg-brand-elevated p-6 rounded-3xl border border-white/5 shadow-xl hover:border-brand-primary/30 transition-all"
+          >
+            <div className="flex items-center justify-between mb-4">
+              <div className={clsx('p-3 rounded-2xl bg-white/5', stat.color)}>
+                <stat.icon size={24} />
               </div>
-              <div className="flex-1">
-                <p className="text-sm font-bold">Novo lead capturado via Calculadora</p>
-                <p className="text-xs text-white/40">Há 15 minutos • Maria Oliveira</p>
-              </div>
-              <ChevronRight size={18} className="text-white/20" />
+              <span className="text-[10px] font-bold text-white/20 uppercase tracking-widest">
+                Tempo Real
+              </span>
             </div>
-          ))}
+
+            <p className="text-white/40 text-xs font-bold uppercase mb-1">
+              {stat.label}
+            </p>
+            <p className="text-3xl font-extrabold tracking-tight">
+              {stat.value}
+            </p>
+          </div>
+        ))}
+      </div>
+
+      {/* ===============================
+       * ATIVIDADE RECENTE
+       * =============================== */}
+      <div className="bg-brand-elevated p-8 rounded-[2.5rem] border border-white/5 shadow-2xl relative overflow-hidden">
+        <div className="absolute top-0 right-0 w-96 h-96 bg-brand-primary/5 rounded-full blur-[100px] -mr-48 -mt-48" />
+
+        <div className="relative z-10">
+          <h3 className="text-2xl font-extrabold mb-6">
+            Atividade Recente
+          </h3>
+
+          <div className="space-y-4">
+            {[
+              {
+                title: 'Novo lead capturado',
+                subtitle: 'Calculadora de Superendividamento',
+                meta: 'Há 15 minutos • Maria Oliveira',
+              },
+              {
+                title: 'Documento anexado ao processo',
+                subtitle: 'Processo nº 0001234-56',
+                meta: 'Há 40 minutos • Sistema',
+              },
+              {
+                title: 'Pagamento confirmado',
+                subtitle: 'Plano de Pagamento – Parcela 1/6',
+                meta: 'Hoje • Stripe',
+              },
+            ].map((activity, i) => (
+              <div
+                key={i}
+                className="flex items-center gap-4 p-4 bg-white/5 rounded-2xl border border-white/5 hover:border-brand-primary/30 transition-all"
+              >
+                <div className="w-10 h-10 rounded-full bg-brand-primary/20 flex items-center justify-center text-brand-primary">
+                  <Zap size={18} />
+                </div>
+
+                <div className="flex-1">
+                  <p className="text-sm font-bold">{activity.title}</p>
+                  <p className="text-xs text-white/50">{activity.subtitle}</p>
+                  <p className="text-[10px] text-white/30 mt-1">
+                    {activity.meta}
+                  </p>
+                </div>
+
+                <ChevronRight size={18} className="text-white/20" />
+              </div>
+            ))}
+          </div>
         </div>
       </div>
     </div>
-  </div>
-);
+  );
+};
+
 
 /* =========================================================
  * 👥 CRM / LEADS MODULE
  * ========================================================= */
-const CRMModule = ({ data = [] }: { data: any[] }) => (
-  <div className="bg-brand-elevated rounded-3xl border border-white/5 overflow-hidden shadow-2xl">
-    <table className="w-full text-left">
-      <thead>
-        <tr className="bg-white/5 text-[10px] font-bold uppercase tracking-widest text-white/40">
-          <th className="px-6 py-4">Lead</th>
-          <th className="px-6 py-4">Contato</th>
-          <th className="px-6 py-4">Origem</th>
-          <th className="px-6 py-4">Data</th>
-          <th className="px-6 py-4 text-right">Ações</th>
+const CRMModule = ({ data }: { data: any[] }) => (
+  <div className="bg-brand-elevated rounded-3xl border border-white/5 overflow-hidden">
+    <table className="w-full">
+      <thead className="bg-white/5 text-[10px] uppercase text-white/40">
+        <tr>
+          <th className="p-4">Lead</th>
+          <th className="p-4">Contato</th>
+          <th className="p-4">Origem</th>
+          <th className="p-4">Data</th>
+          <th className="p-4 text-right">Ações</th>
         </tr>
       </thead>
-
-      <tbody className="divide-y divide-white/5">
+      <tbody>
         {data.map((lead, i) => (
-          <tr key={i} className="hover:bg-white/5 transition-colors">
-            <td className="px-6 py-4">
-              <div className="flex items-center gap-3">
-                <div className="w-8 h-8 rounded-lg bg-brand-primary/20 flex items-center justify-center text-brand-primary font-bold text-xs">
-                  {(lead.first_name || lead.email || '?')[0].toUpperCase()}
-                </div>
-                <div>
-                  <p className="text-sm font-bold">
-                    {lead.first_name} {lead.last_name}
-                  </p>
-                  <p className="text-[10px] text-white/40">{lead.email}</p>
-                </div>
-              </div>
-            </td>
-
-            <td className="px-6 py-4 text-xs text-white/60">
-              {lead.phone || 'N/A'}
-            </td>
-
-            <td className="px-6 py-4">
-              <span className="text-[10px] font-bold uppercase px-2 py-1 bg-white/5 rounded-md text-white/40">
-                {lead.source || 'Desconhecido'}
-              </span>
-            </td>
-
-            <td className="px-6 py-4 text-xs text-white/40">
+          <tr key={i} className="border-t border-white/5">
+            <td className="p-4 font-bold">{lead.first_name} {lead.last_name}</td>
+            <td className="p-4 text-xs">{lead.email}</td>
+            <td className="p-4 text-xs">{lead.source}</td>
+            <td className="p-4 text-xs">
               {new Date(lead.created_at).toLocaleDateString('pt-BR')}
             </td>
-
-            <td className="px-6 py-4 text-right">
-              <button className="p-2 hover:bg-white/10 rounded-lg text-white/30 hover:text-white">
-                <MoreVertical size={18} />
-              </button>
+            <td className="p-4 text-right">
+              <MoreVertical size={18} />
             </td>
           </tr>
         ))}
@@ -332,63 +494,339 @@ const CRMModule = ({ data = [] }: { data: any[] }) => (
 );
 
 /* =========================================================
+ * 📁 DOCUMENTS MODULE (ADMIN)
+ * ========================================================= */
+
+interface DocumentItem {
+  id: number;
+  title: string;
+  category: string;
+  owner_type: 'cliente' | 'escritorio';
+  owner_name?: string;
+  created_at: string;
+  file_url: string;
+}
+
+export const DocumentsModule = ({ data = [] }: { data: DocumentItem[] }) => {
+  return (
+    <div className="space-y-6">
+
+      <div className="flex items-center justify-between">
+        <h2 className="text-2xl font-extrabold">Documentos</h2>
+
+        <button className="bg-brand-primary px-4 py-2 rounded-xl text-sm font-bold">
+          Enviar Documento
+        </button>
+      </div>
+
+      <div className="bg-brand-elevated rounded-3xl border border-white/5 overflow-hidden">
+        <table className="w-full text-left">
+          <thead className="bg-white/5 text-[10px] uppercase tracking-widest text-white/40">
+            <tr>
+              <th className="p-4">Título</th>
+              <th className="p-4">Categoria</th>
+              <th className="p-4">Origem</th>
+              <th className="p-4">Data</th>
+              <th className="p-4 text-right">Ações</th>
+            </tr>
+          </thead>
+
+          <tbody className="divide-y divide-white/5">
+            {data.map(doc => (
+              <tr key={doc.id} className="hover:bg-white/5">
+                <td className="p-4 font-bold">{doc.title}</td>
+                <td className="p-4 text-xs">{doc.category}</td>
+                <td className="p-4 text-xs uppercase">
+                  {doc.owner_type === 'cliente'
+                    ? `Cliente (${doc.owner_name})`
+                    : 'Escritório'}
+                </td>
+                <td className="p-4 text-xs">
+                  {new Date(doc.created_at).toLocaleDateString('pt-BR')}
+                </td>
+                <td className="p-4 text-right">
+                  <a
+                    href={doc.file_url}
+                    target="_blank"
+                    className="text-brand-primary font-bold"
+                  >
+                    Download
+                  </a>
+                </td>
+              </tr>
+            ))}
+          </tbody>
+        </table>
+
+        {data.length === 0 && (
+          <div className="p-10 text-center text-white/30">
+            Nenhum documento disponível.
+          </div>
+        )}
+      </div>
+    </div>
+  );
+};
+
+/* =========================================================
  * ⚖️ PROCESSOS MODULE
  * ========================================================= */
-const ProcessosModule = ({ data = [] }: { data: any[] }) => {
-  const navigate = useNavigate();
+const ProcessosModule = ({
+  data,
+  onSelect,
+}: {
+  data: any[];
+  onSelect: (p: any) => void;
+}) => (
+  <div className="grid gap-4">
+    {data.map((p, i) => (
+      <div
+        key={i}
+        onClick={() => onSelect(p)}
+        className="bg-brand-elevated p-6 rounded-2xl border border-white/5 cursor-pointer"
+      >
+        <div className="flex justify-between">
+          <div>
+            <p className="text-xs text-white/40">{p.numero_cnj}</p>
+            <h3 className="font-bold">{p.titulo}</h3>
+            <p className="text-xs text-white/50">{p.tribunal}</p>
+          </div>
+          <ChevronRight size={18} className="text-white/30" />
+        </div>
+      </div>
+    ))}
+  </div>
+);
+
+/* =========================================================
+ * ⚖️ PROCESSO DETAIL INLINE
+ * Dashboard-compatible | Desktop | Tablet | Mobile
+ * ========================================================= */
+
+type ProcessoDetailProps = {
+  processo: any;
+  onBack: () => void;
+};
+
+type ProcessoTab =
+  | 'andamentos'
+  | 'publicacoes'
+  | 'financeiro'
+  | 'documentos'
+  | 'tarefas';
+
+export const ProcessoDetailInline = ({
+  processo,
+  onBack,
+}: ProcessoDetailProps) => {
+  const [activeTab, setActiveTab] = useState<ProcessoTab>('andamentos');
 
   return (
-    <div className="grid gap-4">
-      {data.map((proc, i) => (
-        <div
-          key={i}
-          className="bg-brand-elevated p-6 rounded-2xl border border-white/5 hover:border-brand-primary/30 transition-all shadow-xl"
+    <div className="space-y-6 animate-fade-in">
+
+      {/* =========================================================
+       * HEADER
+       * ========================================================= */}
+      <div className="flex flex-col gap-4">
+
+        <button
+          onClick={onBack}
+          className="flex items-center gap-2 text-sm font-bold text-brand-primary hover:opacity-80 w-fit"
         >
-          <div className="flex flex-col md:flex-row justify-between gap-6">
+          <ArrowLeft size={16} />
+          Voltar para Processos
+        </button>
+
+        <div className="bg-brand-elevated p-6 sm:p-8 rounded-3xl border border-white/5 shadow-xl">
+
+          <div className="flex flex-col lg:flex-row lg:items-center lg:justify-between gap-6">
+
+            {/* INFO PRINCIPAL */}
             <div className="space-y-2">
-              <div className="flex items-center gap-3">
-                <span className="bg-brand-primary/10 text-brand-primary text-[10px] font-bold uppercase px-2 py-0.5 rounded-md">
-                  {proc.area || 'Jurídico'}
+              <div className="flex flex-wrap items-center gap-2">
+                <span className="bg-brand-primary/10 text-brand-primary text-[10px] font-bold uppercase px-2 py-1 rounded-md">
+                  {processo.area || 'Jurídico'}
                 </span>
-                <p className="text-white/40 text-xs font-mono">
-                  {proc.numero_cnj}
-                </p>
+
+                <span className="text-[10px] text-white/40 font-mono">
+                  {processo.numero_cnj}
+                </span>
               </div>
 
-              <h3 className="text-xl font-bold hover:text-brand-primary transition-colors">
-                {proc.titulo}
-              </h3>
+              <h1 className="text-2xl sm:text-3xl font-extrabold">
+                {processo.titulo}
+              </h1>
 
               <p className="text-sm text-white/50">
-                {proc.tribunal} • {proc.orgao_julgador}
+                {processo.tribunal} • {processo.orgao_julgador}
               </p>
             </div>
 
-            <div className="flex flex-col items-end justify-between gap-4">
+            {/* STATUS */}
+            <div className="flex items-center gap-3">
               <span
-                className={clsx(
-                  'text-[10px] font-bold uppercase px-4 py-1.5 rounded-full',
-                  proc.status === 'Concluído'
+                className={`text-[10px] font-bold uppercase px-4 py-1.5 rounded-full ${
+                  processo.status === 'Concluído'
                     ? 'bg-green-500/10 text-green-400'
                     : 'bg-brand-primary/10 text-brand-primary'
-                )}
+                }`}
               >
-                {proc.status}
+                {processo.status}
               </span>
-
-              <button
-                onClick={() => navigate(`/processos/${proc.id}`)}
-                className="text-brand-primary text-xs font-bold flex items-center gap-1 hover:gap-2 transition-all"
-              >
-                Ver Detalhes <ChevronRight size={14} />
-              </button>
             </div>
+
+          </div>
+        </div>
+      </div>
+
+      {/* =========================================================
+       * TABS
+       * ========================================================= */}
+      <div className="flex gap-2 overflow-x-auto scrollbar-hide">
+
+        {[
+          ['andamentos', 'Andamentos', Clock],
+          ['publicacoes', 'Publicações', FileText],
+          ['financeiro', 'Financeiro', CreditCard],
+          ['documentos', 'Documentos', Layers],
+          ['tarefas', 'Tarefas', Calendar],
+        ].map(([id, label, Icon]: any) => (
+          <button
+            key={id}
+            onClick={() => setActiveTab(id)}
+            className={`flex items-center gap-2 px-4 py-2 rounded-xl text-xs font-bold whitespace-nowrap transition-all ${
+              activeTab === id
+                ? 'bg-brand-primary text-white'
+                : 'bg-white/5 text-white/40 hover:text-white'
+            }`}
+          >
+            <Icon size={14} />
+            {label}
+          </button>
+        ))}
+      </div>
+
+      {/* =========================================================
+       * CONTEÚDO DAS ABAS
+       * ========================================================= */}
+      <div className="bg-brand-elevated p-6 sm:p-8 rounded-3xl border border-white/5 shadow-xl">
+
+        {/* ===============================
+         * ANDAMENTOS
+         * =============================== */}
+        {activeTab === 'andamentos' && (
+          <div className="space-y-4">
+            {processo.andamentos?.length > 0 ? (
+              processo.andamentos.map((item: any, i: number) => (
+                <div
+                  key={i}
+                  className="p-4 rounded-2xl bg-white/5 border border-white/5"
+                >
+                  <p className="text-sm font-bold mb-1">
+                    {item.titulo || 'Movimentação'}
+                  </p>
+                  <p className="text-xs text-white/50 mb-1">
+                    {item.data
+                      ? new Date(item.data).toLocaleDateString('pt-BR')
+                      : '—'}
+                  </p>
+                  <p className="text-sm text-white/60">
+                    {item.descricao}
+                  </p>
+                </div>
+              ))
+            ) : (
+              <EmptyState label="Nenhuma movimentação registrada." />
+            )}
+          </div>
+        )}
+
+        {/* ===============================
+         * PUBLICAÇÕES
+         * =============================== */}
+        {activeTab === 'publicacoes' && (
+          <EmptyState label="Nenhuma publicação vinculada a este processo." />
+        )}
+
+        {/* ===============================
+         * FINANCEIRO
+         * =============================== */}
+        {activeTab === 'financeiro' && (
+          <EmptyState label="Nenhuma informação financeira vinculada." />
+        )}
+
+        {/* ===============================
+         * DOCUMENTOS
+         * =============================== */}
+        {activeTab === 'documentos' && (
+          <EmptyState label="Nenhum documento anexado ao processo." />
+        )}
+
+        {/* ===============================
+         * TAREFAS
+         * =============================== */}
+        {activeTab === 'tarefas' && (
+          <EmptyState label="Nenhuma tarefa vinculada ao processo." />
+        )}
+      </div>
+    </div>
+  );
+};
+
+/* =========================================================
+ * EMPTY STATE REUTILIZÁVEL
+ * ========================================================= */
+
+const EmptyState = ({ label }: { label: string }) => (
+  <div className="flex flex-col items-center justify-center py-20 text-center text-white/40">
+    <Clock size={32} className="mb-4 opacity-30" />
+    <p className="text-sm">{label}</p>
+  </div>
+);
+
+
+/* =========================================================
+ * 💳 PLANO DE PAGAMENTO – ADMIN
+ * ========================================================= */
+
+export const PlanoPagamentoModule = ({ data = [] }: { data: any[] }) => (
+  <div className="space-y-6">
+    <h2 className="text-2xl font-extrabold">Planos de Pagamento</h2>
+
+    <div className="grid gap-4">
+      {data.map(plan => (
+        <div
+          key={plan.id}
+          className="bg-brand-elevated p-6 rounded-2xl border border-white/5"
+        >
+          <div className="flex justify-between">
+            <div>
+              <p className="font-bold">{plan.nome}</p>
+              <p className="text-xs text-white/40">
+                {plan.parcelas}x • R$ {plan.valor}
+              </p>
+            </div>
+
+            <span className="text-xs uppercase">
+              {plan.status}
+            </span>
           </div>
         </div>
       ))}
     </div>
-  );
-};
+  </div>
+);
+
+/* =========================================================
+ * ✍️ GESTÃO DE BLOG
+ * ========================================================= */
+
+export const GestaoBlogModule = () => (
+  <div className="space-y-6">
+    <h2 className="text-2xl font-extrabold">Gestão de Blog</h2>
+    <BlogManagementModule />
+  </div>
+);
 
 /* =========================================================
  * 💰 FATURAS / FINANCEIRO MODULE
@@ -609,54 +1047,222 @@ const FaturasModule = ({ data = [] }: { data: Fatura[] }) => {
 };
 
 /* =========================================================
- * 🎟️ TICKETS / HELPDESK MODULE
+ * 🎟️ TICKETS / HELPDESK – LISTA
  * ========================================================= */
-const TicketsModule = ({ data = [] }: { data: any[] }) => (
-  <div className="grid gap-4">
-    {data.map((ticket, i) => (
-      <div
-        key={i}
-        className="bg-brand-elevated p-6 rounded-2xl border border-white/5 hover:border-brand-primary/30 transition-all shadow-xl"
-      >
-        <div className="flex items-center justify-between">
-          <div className="flex items-center gap-4">
-            <div className="bg-brand-primary/10 p-3 rounded-xl text-brand-primary">
-              <MessageSquare size={24} />
-            </div>
+export const TicketsModule = ({
+  data,
+  onSelect,
+}: {
+  data: any[];
+  onSelect: (ticket: any) => void;
+}) => {
+  if (!Array.isArray(data) || data.length === 0) {
+    return (
+      <div className="bg-brand-elevated p-10 rounded-3xl border border-white/5 text-center text-white/40">
+        Nenhum ticket encontrado.
+      </div>
+    );
+  }
+
+  return (
+    <div className="grid gap-4">
+      {data.map(ticket => (
+        <div
+          key={ticket.id}
+          onClick={() => onSelect(ticket)}
+          className="bg-brand-elevated p-6 rounded-2xl border border-white/5 cursor-pointer hover:border-brand-primary/30 transition-all"
+        >
+          <div className="flex justify-between items-center">
             <div>
-              <h4 className="font-bold text-lg">{ticket.subject}</h4>
               <p className="text-xs text-white/40">
-                {ticket.client_email} • {new Date(ticket.updated_at).toLocaleString('pt-BR')}
+                Ticket #{ticket.id} • {ticket.client_email}
+              </p>
+
+              <h3 className="font-bold">{ticket.subject}</h3>
+
+              <p className="text-xs text-white/50">
+                Status: {ticket.status} • Prioridade: {ticket.priority}
               </p>
             </div>
-          </div>
 
-          <div className="flex items-center gap-3">
-            <span className={clsx(
-              "text-[10px] font-bold uppercase px-3 py-1 rounded-full",
-              ticket.priority === 'Alta'
-                ? "bg-red-500/10 text-red-400"
-                : "bg-white/5 text-white/40"
-            )}>
-              {ticket.priority}
-            </span>
-
-            <span className={clsx(
-              "text-[10px] font-bold uppercase px-3 py-1 rounded-full",
-              ticket.status === 'Aberto'
-                ? "bg-brand-primary/10 text-brand-primary"
-                : "bg-green-500/10 text-green-400"
-            )}>
+            <span className="text-[10px] uppercase px-3 py-1 rounded-full bg-brand-primary/10 text-brand-primary">
               {ticket.status}
             </span>
-
-            <ChevronRight size={18} className="text-white/20" />
           </div>
         </div>
+      ))}
+    </div>
+  );
+};
+
+
+/* =========================================================
+ * 🎟️ TICKET DETAIL INLINE
+ * ========================================================= */
+
+
+type TicketDetailInlineProps = {
+  ticket: any;
+  onBack: () => void;
+};
+
+export const TicketDetailInline = ({
+  ticket,
+  onBack,
+}: TicketDetailInlineProps) => {
+  const [messages, setMessages] = useState<any[]>([]);
+  const [message, setMessage] = useState('');
+  const [loading, setLoading] = useState(true);
+
+  /* =========================================================
+   * LOAD THREAD / MESSAGES
+   * ========================================================= */
+  useEffect(() => {
+    let aborted = false;
+
+    const loadMessages = async () => {
+      setLoading(true);
+      try {
+        const res = await fetch(`/api/tickets/${ticket.id}/messages`);
+        const json = await res.json();
+
+        if (!aborted) {
+          setMessages(
+            Array.isArray(json)
+              ? json
+              : Array.isArray(json?.data)
+              ? json.data
+              : []
+          );
+        }
+      } catch (err) {
+        console.error(err);
+        if (!aborted) setMessages([]);
+      } finally {
+        if (!aborted) setLoading(false);
+      }
+    };
+
+    loadMessages();
+
+    return () => {
+      aborted = true;
+    };
+  }, [ticket.id]);
+
+  /* =========================================================
+   * SEND REPLY
+   * ========================================================= */
+  const handleReply = async () => {
+    if (!message.trim()) return;
+
+    try {
+      await fetch(`/api/tickets/${ticket.id}/reply`, {
+        method: 'POST',
+        headers: { 'Content-Type': 'application/json' },
+        body: JSON.stringify({ message }),
+      });
+
+      setMessage('');
+
+      // reload messages after reply
+      const res = await fetch(`/api/tickets/${ticket.id}/messages`);
+      const json = await res.json();
+
+      setMessages(
+        Array.isArray(json)
+          ? json
+          : Array.isArray(json?.data)
+          ? json.data
+          : []
+      );
+    } catch (err) {
+      console.error(err);
+      alert('Erro ao enviar resposta.');
+    }
+  };
+
+  /* =========================================================
+   * RENDER
+   * ========================================================= */
+  return (
+    <div className="space-y-6 animate-fade-in">
+
+      {/* VOLTAR */}
+      <button
+        onClick={onBack}
+        className="flex items-center gap-2 text-brand-primary font-bold"
+      >
+        <ArrowLeft size={16} />
+        Voltar para tickets
+      </button>
+
+      {/* CARD */}
+      <div className="bg-brand-elevated p-6 rounded-3xl border border-white/5">
+
+        <h2 className="text-xl font-extrabold mb-2">
+          Ticket #{ticket.id}
+        </h2>
+
+        <p className="text-xs text-white/40 mb-6">
+          {ticket.subject} • {ticket.client_email}
+        </p>
+
+        {/* THREAD */}
+        <div className="space-y-4 max-h-[420px] overflow-y-auto">
+
+          {loading && (
+            <div className="text-white/40 text-sm">
+              Carregando mensagens...
+            </div>
+          )}
+
+          {!loading && messages.length === 0 && (
+            <div className="text-white/40 text-sm">
+              Nenhuma mensagem registrada.
+            </div>
+          )}
+
+          {messages.map(msg => (
+            <div
+              key={msg.id}
+              className={`p-4 rounded-xl border ${
+                msg.is_admin
+                  ? 'bg-brand-primary/10 border-brand-primary/30'
+                  : 'bg-white/5 border-white/5'
+              }`}
+            >
+              <p className="text-xs text-white/40 mb-1">
+                {msg.is_admin ? 'Admin' : msg.sender_email} •{' '}
+                {new Date(msg.created_at).toLocaleString('pt-BR')}
+              </p>
+
+              <p className="text-sm">{msg.message}</p>
+            </div>
+          ))}
+        </div>
+
+        {/* REPLY */}
+        <div className="mt-6 space-y-3">
+          <textarea
+            value={message}
+            onChange={e => setMessage(e.target.value)}
+            placeholder="Responder ao ticket..."
+            className="w-full bg-brand-dark border border-white/10 rounded-xl p-3 text-sm outline-none focus:border-brand-primary"
+          />
+
+          <button
+            onClick={handleReply}
+            className="bg-brand-primary px-4 py-2 rounded-xl font-bold"
+          >
+            Enviar resposta
+          </button>
+        </div>
       </div>
-    ))}
-  </div>
-);
+    </div>
+  );
+};
+
 
 /* =========================================================
  * 🤖 IA MONITORADA MODULE
@@ -707,9 +1313,8 @@ const IAModule = ({ data = [] }: { data: any[] }) => (
     ))}
   </div>
 );
-
 /* =========================================================
- * 📅 ADMIN AGENDA MODULE
+ * 📅 ADMIN AGENDA MODULE (DASHBOARD-COMPATÍVEL)
  * ========================================================= */
 
 type AppointmentStatus = 'confirmado' | 'aguardando_aceite' | 'recusado';
@@ -728,57 +1333,37 @@ interface Appointment {
   };
 }
 
-const AdminAgendaModule = () => {
-  const [appointments, setAppointments] = useState<Appointment[]>([]);
-  const [loading, setLoading] = useState<boolean>(true);
+export const AdminAgendaModule = ({
+  data,
+  loading,
+  onRefresh,
+}: {
+  data: Appointment[];
+  loading: boolean;
+  onRefresh: () => void;
+}) => {
 
-  /* ===============================
-   * 🔄 FETCH APPOINTMENTS
-   * =============================== */
-  const fetchAppointments = useCallback(async () => {
-    setLoading(true);
+  const handleStatusUpdate = async (
+    id: number,
+    status: AppointmentStatus
+  ) => {
+    const notes = prompt('Observações (opcional):');
+    if (notes === null) return;
+
     try {
-      const res = await fetch('/api/admin/appointments');
-      if (!res.ok) throw new Error('Erro ao buscar agendamentos');
-      const data = await res.json();
-      setAppointments(data);
-    } catch (error) {
-      console.error(error);
-      alert('Não foi possível carregar os agendamentos.');
-    } finally {
-      setLoading(false);
+      const res = await fetch(`/api/admin/appointments/${id}/status`, {
+        method: 'POST',
+        headers: { 'Content-Type': 'application/json' },
+        body: JSON.stringify({ status, notes }),
+      });
+
+      if (!res.ok) throw new Error();
+
+      onRefresh();
+    } catch {
+      alert('Erro ao atualizar o status do agendamento.');
     }
-  }, []);
-
-  useEffect(() => {
-    fetchAppointments();
-  }, [fetchAppointments]);
-
-  /* ===============================
-   * ✅ UPDATE STATUS
-   * =============================== */
-  const handleStatusUpdate = useCallback(
-    async (id: number, status: AppointmentStatus) => {
-      const notes = prompt('Observações (opcional):');
-
-      // usuário cancelou o prompt
-      if (notes === null) return;
-
-      try {
-        const res = await fetch(`/api/admin/appointments/${id}/status`, {
-          method: 'POST',
-          headers: { 'Content-Type': 'application/json' },
-          body: JSON.stringify({ status, notes })
-        });
-
-        if (!res.ok) throw new Error('Erro ao atualizar status');
-        fetchAppointments();
-      } catch {
-        alert('Erro ao atualizar o status do agendamento.');
-      }
-    },
-    [fetchAppointments]
-  );
+  };
 
   /* ===============================
    * 🧠 RENDER
@@ -786,105 +1371,82 @@ const AdminAgendaModule = () => {
   return (
     <div className="space-y-6 animate-fade-in">
 
-      {/* HEADER */}
       <div className="flex items-center justify-between">
         <h2 className="text-2xl font-extrabold">Gestão de Agenda</h2>
-        <div className="bg-brand-primary/10 px-4 py-2 rounded-xl border border-brand-primary/20">
-          <p className="text-brand-primary text-[10px] font-bold uppercase">
-            Controle Interno
-          </p>
-        </div>
+        <span className="text-xs uppercase text-brand-primary">
+          Controle Interno
+        </span>
       </div>
 
-      {/* LOADING */}
       {loading && (
         <div className="flex justify-center py-20">
           <Loader2 className="animate-spin text-brand-primary" size={40} />
         </div>
       )}
 
-      {/* LISTAGEM */}
-      {!loading && appointments.length > 0 && (
+      {!loading && data.length === 0 && (
+        <div className="bg-brand-elevated p-16 rounded-3xl border border-white/5 text-center">
+          <Calendar size={40} className="mx-auto text-white/20 mb-4" />
+          <p className="text-white/40">
+            Nenhum agendamento registrado.
+          </p>
+        </div>
+      )}
+
+      {!loading && data.length > 0 && (
         <div className="grid gap-4">
-          {appointments.map(app => (
+          {data.map(app => (
             <div
               key={app.id}
-              className="bg-brand-elevated p-6 rounded-2xl border border-white/5 hover:border-brand-primary/30 transition-all"
+              className="bg-brand-elevated p-6 rounded-2xl border border-white/5"
             >
               <div className="flex flex-col md:flex-row justify-between gap-6">
 
                 {/* DADOS */}
-                <div className="flex gap-4">
-                  <div
-                    className={clsx(
-                      'w-14 h-14 rounded-2xl flex items-center justify-center shadow-inner',
-                      app.status === 'confirmado'
-                        ? 'bg-green-500/10 text-green-400'
-                        : app.status === 'aguardando_aceite'
-                        ? 'bg-yellow-500/10 text-yellow-400'
-                        : 'bg-red-500/10 text-red-400'
-                    )}
-                  >
-                    {app.status === 'confirmado' ? (
-                      <CheckCircle2 size={28} />
-                    ) : (
-                      <Clock size={28} />
-                    )}
-                  </div>
+                <div>
+                  <p className="text-xs uppercase text-brand-primary mb-1">
+                    {app.form_data.appointment_type === 'tecnica'
+                      ? 'Consulta Técnica'
+                      : 'Avaliação'}
+                  </p>
 
-                  <div>
-                    <div className="flex items-center gap-2 mb-1">
-                      <span className="bg-brand-primary/10 text-brand-primary text-[9px] font-bold uppercase px-2 py-0.5 rounded-md">
-                        {app.form_data.appointment_type === 'tecnica'
-                          ? 'Consulta Técnica'
-                          : 'Avaliação'}
-                      </span>
-                      <p className="text-white/40 text-[10px] font-bold uppercase">
-                        {new Date(app.form_data.appointment_date).toLocaleDateString('pt-BR')} às{' '}
-                        {app.form_data.appointment_time}
-                      </p>
-                    </div>
+                  <h3 className="text-lg font-bold">
+                    {app.form_data.name}
+                  </h3>
 
-                    <h3 className="text-lg font-bold">{app.form_data.name}</h3>
-                    <p className="text-sm text-white/50">
-                      {app.form_data.email} • {app.form_data.phone}
-                    </p>
-                    <p className="text-xs text-white/30 mt-2 italic">
-                      “{app.form_data.reason}”
-                    </p>
-                  </div>
+                  <p className="text-sm text-white/50">
+                    {app.form_data.email} • {app.form_data.phone}
+                  </p>
+
+                  <p className="text-xs text-white/30 mt-2 italic">
+                    “{app.form_data.reason}”
+                  </p>
                 </div>
 
                 {/* AÇÕES */}
-                <div className="flex flex-col items-end justify-between gap-4">
-                  <span
-                    className={clsx(
-                      'text-[10px] font-bold uppercase px-4 py-1.5 rounded-full shadow-lg',
-                      app.status === 'confirmado'
-                        ? 'bg-green-500/10 text-green-400'
-                        : app.status === 'aguardando_aceite'
-                        ? 'bg-yellow-500/10 text-yellow-400'
-                        : 'bg-red-500/10 text-red-400'
-                    )}
-                  >
+                <div className="flex flex-col items-end gap-3">
+                  <span className="text-xs uppercase">
                     {app.status.replace('_', ' ')}
                   </span>
 
                   {app.status === 'aguardando_aceite' && (
                     <div className="flex gap-2">
                       <button
-                        onClick={() => handleStatusUpdate(app.id, 'confirmado')}
-                        className="bg-green-500/10 hover:bg-green-500/20 text-green-400 p-2 rounded-lg"
-                        title="Confirmar"
+                        onClick={() =>
+                          handleStatusUpdate(app.id, 'confirmado')
+                        }
+                        className="text-green-400"
                       >
-                        <CheckCircle2 size={18} />
+                        Confirmar
                       </button>
+
                       <button
-                        onClick={() => handleStatusUpdate(app.id, 'recusado')}
-                        className="bg-red-500/10 hover:bg-red-500/20 text-red-400 p-2 rounded-lg"
-                        title="Recusar"
+                        onClick={() =>
+                          handleStatusUpdate(app.id, 'recusado')
+                        }
+                        className="text-red-400"
                       >
-                        <AlertCircle size={18} />
+                        Recusar
                       </button>
                     </div>
                   )}
@@ -895,21 +1457,10 @@ const AdminAgendaModule = () => {
           ))}
         </div>
       )}
-
-      {/* EMPTY STATE */}
-      {!loading && appointments.length === 0 && (
-        <div className="bg-brand-elevated p-16 rounded-[2.5rem] border border-white/5 text-center space-y-6 shadow-2xl">
-          <div className="w-20 h-20 bg-white/5 rounded-full flex items-center justify-center mx-auto text-white/20">
-            <Calendar size={40} />
-          </div>
-          <p className="text-white/40 font-medium">
-            Nenhum agendamento registrado no sistema.
-          </p>
-        </div>
-      )}
     </div>
   );
 };
+
 /* =========================================================
  * ⚙️ CONFIG MODULE
  * ========================================================= */
