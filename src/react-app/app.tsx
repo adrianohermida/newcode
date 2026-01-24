@@ -1,6 +1,6 @@
 
 
-import { BrowserRouter, Route, Routes } from "react-router-dom";
+import { HashRouter, Route, Routes } from "react-router-dom";
 import { HomePage } from "./pages/HomePage";
 import { AboutPage } from "./pages/AboutPage";
 import { ContactPage } from "./pages/ContactPage";
@@ -26,7 +26,7 @@ export const App = () => {
   return (
     <CartProvider>
       <AuthProvider>
-        <BrowserRouter>
+        <HashRouter>
           <Routes>
             {/* Public Routes */}
             <Route path="/" element={<HomePage />} />
@@ -71,7 +71,7 @@ export const App = () => {
             />
           </Routes>
           <ChatWidget />
-        </BrowserRouter>
+        </HashRouter>
       </AuthProvider>
     </CartProvider>
   );
