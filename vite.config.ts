@@ -1,11 +1,17 @@
 import { defineConfig } from 'vite';
 import react from '@vitejs/plugin-react';
 
+import { resolve } from 'path';
+
 export default defineConfig({
-  base: '/newcode/', // Caminho do repositório para GitHub Pages
+  base: '/newcode/',
   plugins: [react()],
+  root: 'src/react-app',
   build: {
-    outDir: 'dist',
+    outDir: resolve(__dirname, 'dist'),
     emptyOutDir: true,
+    rollupOptions: {
+      input: resolve(__dirname, 'src/react-app/index.html'),
+    },
   },
 });
