@@ -26,7 +26,7 @@ import {
   Upload
 } from 'lucide-react';
 import { CustomForm } from '../CustomForm';
-import { contactFormTheme } from '../CustomForm/themes';
+import { contactFormTheme } from '../CustomForm/theme';
 import allConfigs from '../../../shared/form-configs.json';
 import { BlogEditor } from './BlogEditor';
 

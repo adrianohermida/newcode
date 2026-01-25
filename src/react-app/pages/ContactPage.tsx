@@ -18,7 +18,7 @@ import {
 } from 'lucide-react';
 import { Link } from 'react-router-dom';
 import { CustomForm } from '../components/CustomForm';
-import { contactFormTheme } from '../components/CustomForm/themes';
+import { contactFormTheme } from '../components/CustomForm/theme';
 import allConfigs from '../../shared/form-configs.json';
 
 export const ContactPage = () => {

@@ -4,7 +4,7 @@ import { Header } from '../components/Header';
 import { useAuth } from '@hey-boss/users-service/react';
 import { CustomForm } from '../components/CustomForm';
 import allConfigs from '../../shared/form-configs.json';
-import { contactFormTheme } from '../components/CustomForm/themes';
+import { contactFormTheme } from '../components/CustomForm/theme';
 
 const clsx = (...classes: any[]) => classes.filter(Boolean).join(' ');
 

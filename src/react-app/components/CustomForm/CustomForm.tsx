@@ -1,6 +1,6 @@
 import React, { useState, useMemo, useCallback } from "react";
 import type { FormSchema, FormData, FormErrors, FormProps } from "./types";
-import { FormValidator } from "./validation";
+import { FormValidator } from "./validations";
 import { FieldRenderer } from "./FieldRenderer";
 import { mergeTheme } from "./defaultTheme";
 

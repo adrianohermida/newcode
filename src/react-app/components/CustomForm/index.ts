@@ -11,6 +11,6 @@ export type {
   RenderHeaderContext,
   RenderFieldContext,
 } from "./types";
-export { FormValidator } from "./validation";
+export { FormValidator } from "./validations";
 export { defaultFormTheme, mergeTheme } from "./defaultTheme";
 export type { IFormTheme } from "./defaultTheme";

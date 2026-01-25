@@ -9,7 +9,7 @@
 import React, { useState, useEffect, useMemo } from 'react';
 import { Header } from '../components/Header';
 import { CustomForm } from '../components/CustomForm';
-import { contactFormTheme } from '../components/CustomForm/themes';
+import { contactFormTheme } from '../components/CustomForm/theme';
 import allConfigs from '../../shared/form-configs.json';
 import { 
   Calendar as CalendarIcon, 

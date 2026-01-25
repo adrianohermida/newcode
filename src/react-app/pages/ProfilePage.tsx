@@ -9,7 +9,7 @@
 import React, { useState, useEffect } from 'react';
 import { Header } from '../components/Header';
 import { CustomForm } from '../components/CustomForm';
-import { contactFormTheme } from '../components/CustomForm/themes';
+import { contactFormTheme } from '../components/CustomForm/theme';
 import allConfigs from '../../shared/form-configs.json';
 import { User, Shield, Phone, Briefcase, Loader2, CheckCircle2 } from 'lucide-react';
 

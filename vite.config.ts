@@ -6,9 +6,8 @@ import { resolve } from 'path';
 export default defineConfig({
   base: '/newcode/',
   plugins: [react()],
-  root: 'src/react-app',
   build: {
-    outDir: resolve(__dirname, '../dist'),
+    outDir: 'dist',
     emptyOutDir: true,
   },
 });
