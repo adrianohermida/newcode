@@ -12,6 +12,7 @@ cp src/react-app/gh-pages-404.html dist/404.html || true
 
 # 2. Copia o conteúdo de dist/ para a raiz do projeto
 cp -r dist/* .
+cp dist/index.html ./index.html
 cp CNAME dist/CNAME || true
 
 # 3. Adiciona arquivos do build ao git
