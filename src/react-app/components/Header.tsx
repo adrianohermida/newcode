@@ -138,13 +138,15 @@ export function Header() {
                 )}
               </div>
             ) : (
-              <Link 
-                to="/login" 
+              <button
+                onClick={async () => {
+                  await supabase.auth.signInWithOAuth({ provider: 'google' });
+                }}
                 className="bg-white/5 hover:bg-white/10 border border-white/10 text-white px-6 py-2.5 rounded-full text-sm font-bold transition-all flex items-center gap-2"
               >
                 <User size={16} />
                 Login
-              </Link>
+              </button>
             )}
           </nav>
 
