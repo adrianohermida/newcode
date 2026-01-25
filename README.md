@@ -5,35 +5,44 @@ Um template moderno para aplicações full-stack com Cloudflare Workers, React, 
 
 ## Tech Stack
 
-- **Cloudflare Workers** - Backend serverless
-- **React** - Frontend SPA (HashRouter para GitHub Pages)
+
 - **Tailwind CSS** - CSS utilitário
+
 - **Hono** - Framework web para Workers
+
 - **Cloudflare D1** - Banco SQL serverless
 - **Supabase** - Backend as a Service
 
 ## Variáveis de Ambiente (exemplo .env)
 
+
+
 ```
 API_KEY=xxxx
 USER_ID=xxxx
+
 PROJECT_ID=xxxx
+
 USER_EMAIL=xxxx
 AUTH_KEY=xxxx
 ADMIN_EMAILS=xxxx
+
 STRIPE_SECRET_KEY=xxxx
+
 STRIPE_CONNECT_ACCOUNT_ID=xxxx
 SUPABASE_URL=xxxx
 SUPABASE_KEY=xxxx
+
 ```
+
 
 ## Consumo de API (exemplo fetch no frontend)
 
-```js
+
+
 // Exemplo: buscar dados do backend Worker
-fetch('https://<worker-url>/api/endpoint')
-	.then(res => res.json())
-	.then(data => console.log(data));
+
+
 ```
 
 ## Deploy

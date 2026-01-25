@@ -7,6 +7,7 @@
  */
 
 import React from 'react';
+import React, { useEffect, useState } from 'react';
 import { Link } from 'react-router-dom';
 import { 
   MessageCircle, 
@@ -31,6 +32,7 @@ import {
   AlertCircle
 } from 'lucide-react';
 import { Header } from '../components/Header';
+import { supabase } from '../utils/supabaseClient';
 import { CustomForm } from '../components/CustomForm';
 import { newsletterTheme } from '../components/CustomForm/themes';
 import allConfigs from '../../shared/form-configs.json';
@@ -225,11 +227,34 @@ const Calculator = () => {
       }
     }
   };
+      // Exemplo: buscar dados públicos de uma tabela "posts"
+      export function SupabaseDemo() {
+        const [posts, setPosts] = useState<any[]>([]);
+        const [loading, setLoading] = useState(true);
+        useEffect(() => {
+          supabase.from('posts').select('*').then(({ data }) => {
+            setPosts(data || []);
+            setLoading(false);
+          });
+        }, []);
+        if (loading) return <div>Carregando posts do Supabase...</div>;
+        return (
+          <div>
+            <h2>Posts do Supabase</h2>
+            <ul>
+              {posts.map((post) => (
+                <li key={post.id}>{post.title}</li>
+              ))}
+            </ul>
+          </div>
+        );
+      }
 
   return (
     <section id="calculadora" className="py-24 bg-brand-dark relative overflow-hidden">
       <div className="absolute top-1/2 left-1/2 -translate-x-1/2 -translate-y-1/2 w-[800px] h-[800px] bg-brand-primary/5 rounded-full blur-[120px] pointer-events-none" />
       <div className="max-w-4xl mx-auto px-4 relative z-10">
+            <SupabaseDemo />
         <div className="bg-brand-elevated rounded-[2.5rem] p-8 sm:p-12 border border-white/10 shadow-2xl">
           <div className="text-center mb-12">
             <h2 className="text-3xl sm:text-4xl font-extrabold text-white mb-4">Calculadora de Superendividamento: Veja como Eliminar Dívidas</h2>
