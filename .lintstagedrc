@@ -1,0 +1,5 @@
+# ESLint
+eslint --ext .js,.jsx,.ts,.tsx src/
+
+# Prettier
+prettier --check "src/**/*.{js,jsx,ts,tsx,json,css,md}"
