@@ -21,78 +21,9 @@ interface Message {
 }
 
 export const ChatWidget = () => {
-const CHAT_PROVIDER =
-  import.meta.env.VITE_CHAT_PROVIDER ?? 'freshchat';
-
-if (CHAT_PROVIDER === 'freshchat') {
-  return null;
-}
-
-  // ===============================
-  // CÓDIGO ORIGINAL (INALTERADO)
-  // ===============================
-
-  const { user, isAuthenticated } = useAuth();
-  const [isOpen, setIsOpen] = useState(false);
-  const [view, setView] = useState<'chat' | 'history'>('chat');
-  const [messages, setMessages] = useState<Message[]>([
-    {
-      role: 'assistant',
-      content: 'Olá! Sou o assistente virtual do Dr. Adriano Hermida Maia. Como posso ajudar você hoje?',
-      timestamp: new Date()
-    }
-  ]);
-  const [input, setInput] = useState('');
-  const [isLoading, setIsLoading] = useState(false);
-  const [sessionId, setSessionId] = useState<string>(() => {
-    return sessionStorage.getItem('chat_session_id') || '';
-  });
-  const [userConversations, setUserConversations] = useState<any[]>([]);
-  const [hasConsent, setConsent] = useState<boolean>(() => {
-    return localStorage.getItem('chat_consent') === 'true';
-  });
-  const messagesEndRef = useRef<HTMLDivElement>(null);
-
-  const scrollToBottom = () => {
-    messagesEndRef.current?.scrollIntoView({ behavior: 'smooth' });
-  };
-
-  useEffect(() => {
-    scrollToBottom();
-  }, [messages]);
-
-  useEffect(() => {
-    if (isOpen && !sessionId) {
-      const newId = crypto.randomUUID();
-      setSessionId(newId);
-      sessionStorage.setItem('chat_session_id', newId);
-    }
-  }, [isOpen, sessionId]);
-
-  const handleConsent = async () => {
-    try {
-      const sid = sessionId || crypto.randomUUID();
-      const consentData = {
-        session_id: sid,
-        visitor_email: user?.email || null,
-        consent_type: 'data_storage',
-        consent_given: 1,
-        user_agent: navigator.userAgent
-      };
-
-      await fetch('/api/ai/consent', {
-        method: 'POST',
-        headers: { 'Content-Type': 'application/json' },
-        body: JSON.stringify(consentData)
-      });
-
-      localStorage.setItem('chat_consent', 'true');
-      setConsent(true);
-      if (!sessionId) setSessionId(sid);
-    } catch (error) {
-      console.error("Erro ao registrar consentimento:", error);
-    }
-  };
+// Widget desativado temporariamente
+const ChatWidget = () => null;
+export default ChatWidget;
 
   const handleSend = async (overrideInput?: string) => {
     const messageText = overrideInput || input;
