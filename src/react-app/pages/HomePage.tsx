@@ -121,7 +121,7 @@ const Hero = () => (
         {/* Container da imagem – FRENTE */}
         <div className="relative z-10 rounded-3xl overflow-hidden border-4 border-white/10 shadow-2xl transform hover:scale-[1.02] transition-transform duration-500">
           <img
-            src="https://qtrypzzcjebvfcihiynt.supabase.co/storage/v1/object/public/base44-prod/public/69457177ae7e61f63fb38329/3b78c0579__TLM961311.jpg"
+            src="/src/react-app/assets/img/_TLM9613 (1) (1).jpg"
             alt="Dr. Adriano Hermida Maia, advogado especialista em superendividamento e Lei 14.181/2021."
             className="w-full h-auto object-cover relative z-30"
           />
