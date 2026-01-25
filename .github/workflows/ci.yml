@@ -1,0 +1,30 @@
+name: CI
+
+on:
+  push:
+    branches: [main]
+  pull_request:
+    branches: [main]
+
+jobs:
+  build-and-test:
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v4
+      - name: Use Node.js 20.x
+        uses: actions/setup-node@v4
+        with:
+          node-version: 20.x
+      - name: Install dependencies
+        run: npm install
+      - name: Lint
+        run: npm run lint || npx eslint .
+      - name: Prettier check
+        run: npx prettier --check "src/**/*.{js,jsx,ts,tsx,json,css,md}"
+      - name: Build
+        run: npm run build
+      # - name: Run tests
+      #   run: npm test
+      - name: Deploy (manual)
+        if: github.ref == 'refs/heads/main' && github.event_name == 'push'
+        run: echo "Deploy step (manual trigger or via separate workflow)"
