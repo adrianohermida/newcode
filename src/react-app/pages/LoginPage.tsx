@@ -8,35 +8,49 @@
  */
 
 import React, { useState, useEffect } from "react";
-import { useAuth } from "@hey-boss/users-service/react";
+import { supabase } from "../utils/supabaseClient";
 import { useNavigate } from "react-router-dom";
 import { Mail, Lock, ArrowRight, Loader2, Chrome } from "lucide-react";
 
-export const LoginPage = () => {
-  const { popupLogin, sendOTP, verifyOTP, user } = useAuth();
+
   const navigate = useNavigate();
   const [email, setEmail] = useState("");
   const [otp, setOtp] = useState("");
   const [step, setStep] = useState<"email" | "otp">("email");
   const [error, setError] = useState("");
   const [loading, setLoading] = useState(false);
+  const [user, setUser] = useState<any>(null);
 
-  // Redirecionamento automático após login baseado no perfil (Admin -> /admin, Outros -> /portal)
+  // Checa sessão do Supabase
   useEffect(() => {
-    if (user) {
-      if ((user as any).isAdmin) {
-        navigate("/admin", { replace: true });
-      } else {
+    const session = supabase.auth.getSession().then(({ data }) => {
+      if (data.session) {
+        setUser(data.session.user);
         navigate("/portal", { replace: true });
       }
-    }
-  }, [user, navigate]);
+    });
+    const { data: listener } = supabase.auth.onAuthStateChange((_event, session) => {
+      if (session?.user) {
+        setUser(session.user);
+        navigate("/portal", { replace: true });
+      }
+    });
+    return () => {
+      listener?.subscription.unsubscribe();
+    };
+  }, [navigate]);
+
 
   const handleGoogleLogin = async () => {
+    setError("");
+    setLoading(true);
     try {
-      await popupLogin();
+      const { error } = await supabase.auth.signInWithOAuth({ provider: 'google', options: { redirectTo: window.location.origin + '/#/auth/callback' } });
+      if (error) setError("Falha ao entrar com Google. Tente novamente.");
     } catch (err) {
       setError("Falha ao entrar com Google. Tente novamente.");
+    } finally {
+      setLoading(false);
     }
   };
 
@@ -45,11 +59,11 @@ export const LoginPage = () => {
     setLoading(true);
     setError("");
     try {
-      const res = await sendOTP(email);
-      if (res.success) {
+      const { error } = await supabase.auth.signInWithOtp({ email, options: { shouldCreateUser: true } });
+      if (!error) {
         setStep("otp");
       } else {
-        setError(res.error || "Erro ao enviar código.");
+        setError(error.message || "Erro ao enviar código.");
       }
     } catch (err) {
       setError("Erro de conexão.");
@@ -63,12 +77,12 @@ export const LoginPage = () => {
     setLoading(true);
     setError("");
     try {
-      const res = await verifyOTP(email, otp);
-      if (res.success) {
-        // O useEffect cuidará do redirecionamento baseado no status de admin
-        console.log("OTP verificado com sucesso");
+      const { error, data } = await supabase.auth.verifyOtp({ email, token: otp, type: 'email' });
+      if (!error) {
+        setUser(data.user);
+        navigate("/portal", { replace: true });
       } else {
-        setError(res.error || "Código inválido.");
+        setError(error.message || "Código inválido.");
       }
     } catch (err) {
       setError("Erro de verificação.");
