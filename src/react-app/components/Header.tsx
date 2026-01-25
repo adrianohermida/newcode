@@ -11,25 +11,34 @@
 import React, { useState, useRef, useEffect } from 'react';
 import { Link, useNavigate } from 'react-router-dom';
 import { User, LogOut, Briefcase, ChevronDown, LayoutDashboard, Menu, X, Shield, Settings } from 'lucide-react';
-import { useAuth } from '@hey-boss/users-service/react';
+import { supabase } from '../utils/supabaseClient';
 
-export const Header = () => {
-  const { user, logout } = useAuth();
   const navigate = useNavigate();
   const [isMenuOpen, setIsMenuOpen] = useState(false);
   const [isMobileMenuOpen, setIsMobileMenuOpen] = useState(false);
   const menuRef = useRef<HTMLDivElement>(null);
+  const [user, setUser] = useState<any>(null);
 
   // Verifica se o usuário é admin (membro da equipe) - Insensível a maiúsculas
   const adminEmails = ["contato@hermidamaia.adv.br", "adrianohermida@gmail.com", "admin@example.com"];
   const userEmail = (user?.email || "").toLowerCase();
-  const isAdmin = user && (
-    (user as any).isAdmin === true || 
-    adminEmails.some(email => email.toLowerCase() === userEmail)
-  );
+  const isAdmin = user && adminEmails.some(email => email.toLowerCase() === userEmail);
+
+  useEffect(() => {
+    supabase.auth.getUser().then(({ data }) => {
+      setUser(data.user || null);
+    });
+    const { data: listener } = supabase.auth.onAuthStateChange((_event, session) => {
+      setUser(session?.user || null);
+    });
+    return () => {
+      listener?.subscription.unsubscribe();
+    };
+  }, []);
 
   const handleLogout = async () => {
-    await logout();
+    await supabase.auth.signOut();
+    setUser(null);
     navigate('/login');
   };
 
