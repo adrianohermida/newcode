@@ -120,7 +120,7 @@ const Hero = () => (
         {/* Container da imagem – FRENTE */}
         <div className="relative z-10 rounded-3xl overflow-hidden border-4 border-white/10 shadow-2xl transform hover:scale-[1.02] transition-transform duration-500">
           <img
-            src="/src/react-app/assets/img/_TLM9613 (1) (1).jpg"
+            src="https://github.com/adrianohermida/newcode/blob/main/src/react-app/assets/img/perfil-home.jpg"
             alt="Dr. Adriano Hermida Maia, advogado especialista em superendividamento e Lei 14.181/2021."
             className="w-full h-auto object-cover relative z-30"
           />
