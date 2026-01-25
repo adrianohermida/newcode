@@ -61,130 +61,66 @@ import { ChatWidget } from "./components/ChatWidget";
 import { CartProvider } from "./components/Cart";
 import React from "react";
 
-// Widget Freshworks para páginas públicas
-const FreshworksWidget = () => {
-  React.useEffect(() => {
-    if (document.getElementById('fw-widget-public')) return;
-    const script = document.createElement('script');
-    script.id = 'fw-widget-public';
-    script.src = '//eu.fw-cdn.com/10713913/375987.js';
-    script.setAttribute('chat', 'true');
-    script.async = true;
-    document.body.appendChild(script);
-    return () => {
-      script.remove();
-    };
-  }, []);
-  return null;
-};
+// Widget Freshchat para páginas públicas
+import { FreshchatWidget } from "./components/FreshchatWidget";
 
-// Widget Freshworks para ClientPortal
-const FreshworksWidgetPortal = () => {
-  React.useEffect(() => {
-    if (document.getElementById('fw-widget-portal')) return;
-    const script = document.createElement('script');
-    script.id = 'fw-widget-portal';
-    script.src = '//eu.fw-cdn.com/10713913/375987.js';
-    script.setAttribute('chat', 'true');
-    script.setAttribute('widgetId', '2bb07572-34a4-4ea6-9708-4ec2ed23589d');
-    script.async = true;
-    document.body.appendChild(script);
-    return () => {
-      script.remove();
-    };
-  }, []);
-  return null;
-};
+const FreshchatWidgetPublic = () => <FreshchatWidget key="public" />;
+const FreshchatWidgetPortal = () => <FreshchatWidget key="client" widgetId="2bb07572-34a4-4ea6-9708-4ec2ed23589d" />;
 export const App = () => {
   return (
     <CartProvider>
-      {/* <AuthProvider> */}
-        <HashRouter>
-          <Routes>
-            {/* Public Routes */}
-            <Route path="/" element={<><HomePage /><FreshworksWidget /></>} />
-            <Route path="/sobre" element={<><AboutPage /><FreshworksWidget /></>} />
-            <Route path="/contato" element={<><ContactPage /><FreshworksWidget /></>} />
-            <Route path="/agendar" element={<><AppointmentsPage /><FreshworksWidget /></>} />
-            <Route path="/blog" element={<><BlogPage /><FreshworksWidget /></>} />
-            <Route path="/blog/:slug" element={<><BlogPostPage /><FreshworksWidget /></>} />
-            <Route path="/unsubscribe" element={<><UnsubscribePage /><FreshworksWidget /></>} />
-            <Route path="/login" element={<><LoginPage /><FreshworksWidget /></>} />
-            <Route path="/auth/callback" element={<><AuthCallback /><FreshworksWidget /></>} />
-            <Route path="/checkout/success" element={<><CheckoutSuccessPage /><FreshworksWidget /></>} />
-            <Route path="/checkout/error" element={<><CheckoutErrorPage /><FreshworksWidget /></>} />
-            <Route path="/checkout/cancel" element={<><CheckoutCancelPage /><FreshworksWidget /></>} />
-            <Route path="/account" element={<AuthProtect><ClientPortal /><FreshworksWidgetPortal /></AuthProtect>} />
-            <Route path="/processos/:id" element={<AuthProtect><ProcessDetailPage /><FreshworksWidgetPortal /></AuthProtect>} />
+      <HashRouter>
+        <Routes>
+          {/* Public Routes */}
+          <Route path="/" element={<><HomePage /><FreshchatWidgetPublic /></>} />
+          <Route path="/sobre" element={<><AboutPage /><FreshchatWidgetPublic /></>} />
+          <Route path="/contato" element={<><ContactPage /><FreshchatWidgetPublic /></>} />
+          <Route path="/agendar" element={<><AppointmentsPage /><FreshchatWidgetPublic /></>} />
+          <Route path="/blog" element={<><BlogPage /><FreshchatWidgetPublic /></>} />
+          <Route path="/blog/:slug" element={<><BlogPostPage /><FreshchatWidgetPublic /></>} />
+          <Route path="/unsubscribe" element={<><UnsubscribePage /><FreshchatWidgetPublic /></>} />
+          <Route path="/login" element={<><LoginPage /><FreshchatWidgetPublic /></>} />
+          <Route path="/auth/callback" element={<><AuthCallback /><FreshchatWidgetPublic /></>} />
+          <Route path="/checkout/success" element={<><CheckoutSuccessPage /><FreshchatWidgetPublic /></>} />
+          <Route path="/checkout/error" element={<><CheckoutErrorPage /><FreshchatWidgetPublic /></>} />
+          <Route path="/checkout/cancel" element={<><CheckoutCancelPage /><FreshchatWidgetPublic /></>} />
+          <Route path="/account" element={<AuthProtect><ClientPortal /><FreshchatWidgetPortal /></AuthProtect>} />
+          <Route path="/processos/:id" element={<AuthProtect><ProcessDetailPage /><FreshchatWidgetPortal /></AuthProtect>} />
 
-            {/* Protected Routes */}
-            <Route 
-              path="/dashboard" 
-              element={
-                <AuthProtect>
-                  <Dashboard />
-                  <ChatWidget />
-                </AuthProtect>
-              } 
-            />
-            <Route 
-              path="/admin" 
-              element={
-                <AuthProtect>
-                  <Dashboard />
-                </AuthProtect>
-              } 
-            />
-            <Route 
-              path="/perfil" 
-              element={
-                <AuthProtect>
-                  <ProfilePage />
-                </AuthProtect>
-              } 
-            />
-          </Routes>
-          {/* ChatWidget global removido, agora só no Dashboard e página de teste */}
-
-export const ChatWidgetTestPublic = () => (
-  <div className="min-h-screen bg-brand-dark flex flex-col items-center justify-center p-8">
-    <h1 className="text-2xl font-bold text-white mb-6">Teste Público do ChatWidget</h1>
-    <div className="w-full max-w-md">
-      <ChatWidget />
-    </div>
-    <p className="text-white/40 mt-6">Ambiente público (não logado)</p>
-  </div>
-);
-
-export const ChatWidgetTestClient = () => (
-  <AuthProtect>
-    <div className="min-h-screen bg-brand-dark flex flex-col items-center justify-center p-8">
-      <h1 className="text-2xl font-bold text-white mb-6">Teste Cliente do ChatWidget</h1>
-      <div className="w-full max-w-md">
-        <ChatWidget />
-      </div>
-      <p className="text-white/40 mt-6">Ambiente logado (cliente)</p>
-    </div>
-  </AuthProtect>
-);
-
-export const ChatWidgetTestDashboard = () => (
-  <AuthProtect>
-    <div className="min-h-screen bg-brand-dark flex flex-col items-center justify-center p-8">
-      <h1 className="text-2xl font-bold text-white mb-6">Teste Dashboard/Admin do ChatWidget</h1>
-      <div className="w-full max-w-md">
-        <ChatWidget />
-      </div>
-      <p className="text-white/40 mt-6">Ambiente logado (admin/dashboard)</p>
-    </div>
-  </AuthProtect>
-);
-                    {/* Páginas de teste do ChatWidget */}
-                    <Route path="/chatwidget-test-public" element={<ChatWidgetTestPublic />} />
-                    <Route path="/chatwidget-test-client" element={<ChatWidgetTestClient />} />
-                    <Route path="/chatwidget-test-dashboard" element={<ChatWidgetTestDashboard />} />
-        </HashRouter>
-      {/* </AuthProvider> */}
+          {/* Protected Routes */}
+          <Route 
+            path="/dashboard" 
+            element={
+              <AuthProtect>
+                <Dashboard />
+                <FreshchatWidgetPortal />
+              </AuthProtect>
+            } 
+          />
+          <Route 
+            path="/admin" 
+            element={
+              <AuthProtect>
+                <Dashboard />
+                <FreshchatWidgetPortal />
+              </AuthProtect>
+            } 
+          />
+          <Route 
+            path="/perfil" 
+            element={
+              <AuthProtect>
+                <ProfilePage />
+                <FreshchatWidgetPortal />
+              </AuthProtect>
+            } 
+          />
+          {/* Páginas de teste do ChatWidget */}
+          <Route path="/chatwidget-test-public" element={<><FreshchatWidgetPublic /><ChatWidget /></>} />
+          <Route path="/chatwidget-test-client" element={<AuthProtect><FreshchatWidgetPortal /><ChatWidget /></AuthProtect>} />
+          <Route path="/chatwidget-test-dashboard" element={<AuthProtect><FreshchatWidgetPortal /><ChatWidget /></AuthProtect>} />
+        </Routes>
+      </HashRouter>
     </CartProvider>
   );
 };

@@ -81,7 +81,7 @@ export default function LoginPage() {
       const { error, data } = await supabase.auth.verifyOtp({ email, token: otp, type: 'email' });
       if (!error) {
         setUser(data.user);
-        navigate("/portal", { replace: true });
+        navigate("/account", { replace: true });
       } else {
         setError(error.message || "Código inválido.");
       }

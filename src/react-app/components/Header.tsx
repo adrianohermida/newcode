@@ -26,8 +26,12 @@ export function Header() {
   const isAdmin = user && adminEmails.some(email => email.toLowerCase() === userEmail);
 
   useEffect(() => {
-    supabase.auth.getUser().then(({ data }) => {
-      setUser(data.user || null);
+    supabase.auth.getSession().then(({ data }) => {
+      if (data.session) {
+        setUser(data.session.user);
+      } else {
+        setUser(null);
+      }
     });
     const { data: listener } = supabase.auth.onAuthStateChange((_event, session) => {
       setUser(session?.user || null);
