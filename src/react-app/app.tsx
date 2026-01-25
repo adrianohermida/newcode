@@ -21,7 +21,42 @@ import { UnsubscribePage } from "./pages/UnsubscribePage";
 import { AuthProtect } from "./components/AuthProtect";
 import { ChatWidget } from "./components/ChatWidget";
 import { CartProvider } from "./components/Cart";
+import React from "react";
 
+// Widget Freshworks para páginas públicas
+const FreshworksWidget = () => {
+  React.useEffect(() => {
+    if (document.getElementById('fw-widget-public')) return;
+    const script = document.createElement('script');
+    script.id = 'fw-widget-public';
+    script.src = '//eu.fw-cdn.com/10713913/375987.js';
+    script.setAttribute('chat', 'true');
+    script.async = true;
+    document.body.appendChild(script);
+    return () => {
+      script.remove();
+    };
+  }, []);
+  return null;
+};
+
+// Widget Freshworks para ClientPortal
+const FreshworksWidgetPortal = () => {
+  React.useEffect(() => {
+    if (document.getElementById('fw-widget-portal')) return;
+    const script = document.createElement('script');
+    script.id = 'fw-widget-portal';
+    script.src = '//eu.fw-cdn.com/10713913/375987.js';
+    script.setAttribute('chat', 'true');
+    script.setAttribute('widgetId', '2bb07572-34a4-4ea6-9708-4ec2ed23589d');
+    script.async = true;
+    document.body.appendChild(script);
+    return () => {
+      script.remove();
+    };
+  }, []);
+  return null;
+};
 export const App = () => {
   return (
     <CartProvider>
@@ -29,20 +64,20 @@ export const App = () => {
         <HashRouter>
           <Routes>
             {/* Public Routes */}
-            <Route path="/" element={<HomePage />} />
-            <Route path="/sobre" element={<AboutPage />} />
-            <Route path="/contato" element={<ContactPage />} />
-            <Route path="/agendar" element={<AppointmentsPage />} />
-            <Route path="/blog" element={<BlogPage />} />
-            <Route path="/blog/:slug" element={<BlogPostPage />} />
-            <Route path="/unsubscribe" element={<UnsubscribePage />} />
-            <Route path="/login" element={<LoginPage />} />
-            <Route path="/auth/callback" element={<AuthCallback />} />
-            <Route path="/checkout/success" element={<CheckoutSuccessPage />} />
-            <Route path="/checkout/error" element={<CheckoutErrorPage />} />
-            <Route path="/checkout/cancel" element={<CheckoutCancelPage />} />
-            <Route path="/account" element={<AuthProtect><ClientPortal /></AuthProtect>} />
-            <Route path="/processos/:id" element={<AuthProtect><ProcessDetailPage /></AuthProtect>} />
+            <Route path="/" element={<><HomePage /><FreshworksWidget /></>} />
+            <Route path="/sobre" element={<><AboutPage /><FreshworksWidget /></>} />
+            <Route path="/contato" element={<><ContactPage /><FreshworksWidget /></>} />
+            <Route path="/agendar" element={<><AppointmentsPage /><FreshworksWidget /></>} />
+            <Route path="/blog" element={<><BlogPage /><FreshworksWidget /></>} />
+            <Route path="/blog/:slug" element={<><BlogPostPage /><FreshworksWidget /></>} />
+            <Route path="/unsubscribe" element={<><UnsubscribePage /><FreshworksWidget /></>} />
+            <Route path="/login" element={<><LoginPage /><FreshworksWidget /></>} />
+            <Route path="/auth/callback" element={<><AuthCallback /><FreshworksWidget /></>} />
+            <Route path="/checkout/success" element={<><CheckoutSuccessPage /><FreshworksWidget /></>} />
+            <Route path="/checkout/error" element={<><CheckoutErrorPage /><FreshworksWidget /></>} />
+            <Route path="/checkout/cancel" element={<><CheckoutCancelPage /><FreshworksWidget /></>} />
+            <Route path="/account" element={<AuthProtect><ClientPortal /><FreshworksWidgetPortal /></AuthProtect>} />
+            <Route path="/processos/:id" element={<AuthProtect><ProcessDetailPage /><FreshworksWidgetPortal /></AuthProtect>} />
 
             {/* Protected Routes */}
             <Route 
