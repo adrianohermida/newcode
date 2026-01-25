@@ -10,7 +10,7 @@
 import React, { useState, useEffect, useRef } from 'react';
 import { MessageCircle, X, Send, Loader2, User, Bot, ChevronRight, FileText, Calendar, Search, History, MessageSquare, Receipt, Shield } from 'lucide-react';
 import { cn } from '../utils';
-import { useAuth } from '@hey-boss/users-service/react';
+// import { useAuth } from '@hey-boss/users-service/react';
 
 interface Message {
   role: 'user' | 'assistant';
@@ -20,10 +20,32 @@ interface Message {
   data?: any;
 }
 
+
 export const ChatWidget = () => {
-// Widget desativado temporariamente
-const ChatWidget = () => null;
-export default ChatWidget;
+  const [isOpen, setIsOpen] = useState(false);
+  const [input, setInput] = useState("");
+  const [messages, setMessages] = useState<Message[]>([]);
+  const [isLoading, setIsLoading] = useState(false);
+  const [sessionId, setSessionId] = useState<string | null>(null);
+  const [hasConsent, setHasConsent] = useState(false);
+  const messagesEndRef = useRef<HTMLDivElement>(null);
+
+  useEffect(() => {
+    const savedSessionId = sessionStorage.getItem('chat_session_id');
+    if (savedSessionId) setSessionId(savedSessionId);
+  }, []);
+
+  useEffect(() => {
+    if (messagesEndRef.current) {
+      messagesEndRef.current.scrollIntoView({ behavior: 'smooth' });
+    }
+  }, [messages]);
+
+  const handleConsent = () => {
+    setHasConsent(true);
+  };
+
+  // ...existing code...
 
   const handleSend = async (overrideInput?: string) => {
     const messageText = overrideInput || input;
@@ -206,7 +228,7 @@ export default ChatWidget;
                 className="w-full bg-brand-dark border border-white/10 rounded-xl py-3 pl-4 pr-12 text-sm text-white outline-none focus:border-brand-primary transition-all"
               />
               <button 
-                onClick={handleSend}
+                onClick={() => handleSend()}
                 disabled={!input.trim() || isLoading}
                 className="absolute right-2 top-1/2 -translate-y-1/2 p-2 text-brand-primary hover:text-brand-primary/80 disabled:opacity-30 transition-all"
               >

@@ -1,6 +1,8 @@
 # Contribuição — Hermida Maia Advocacia
 
 ## Estrutura de Pastas
+## Estrutura de Pastas
+
 - `src/react-app/pages/` — Páginas principais (1 arquivo por rota)
 - `src/react-app/components/` — Componentes reutilizáveis
 - `src/react-app/assets/` — Imagens e arquivos estáticos
@@ -8,6 +10,8 @@
 - `shared/` — Schemas, configs e serviços compartilhados
 
 ## Convenções de Código
+## Convenções de Código
+
 - Use nomes descritivos e camelCase para arquivos JS/TS, PascalCase para componentes React.
 - Exporte componentes como default quando possível.
 - Prefira funções puras e componentes funcionais.

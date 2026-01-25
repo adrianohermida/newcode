@@ -901,4 +901,7 @@ const Footer = () => {
       <Footer />
     </div>
   );
-};
+
+export function HomePage() {
+  // ...existing code...
+}

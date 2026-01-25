@@ -62,9 +62,10 @@ import { Link } from 'react-router-dom';
         a.href = url;
         a.download = `meus_dados_hermida_maia.json`;
         a.click();
+
+      export function ClientPortal() {
+        // ...existing code...
       }
-    } catch (err) {
-      console.error("Erro ao exportar dados:", err);
     } finally {
       setExporting(false);
     }
@@ -249,7 +250,7 @@ import { Link } from 'react-router-dom';
             );
           }
 
-          export default ClientPortal;
+          export { ClientPortal };
               <div className="space-y-6 animate-fade-in">
                 <div className="flex items-center justify-between">
                   <h2 className="text-2xl font-extrabold">Meus Processos</h2>
