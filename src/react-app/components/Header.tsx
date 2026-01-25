@@ -35,11 +35,15 @@ export function Header() {
     });
     const { data: listener } = supabase.auth.onAuthStateChange((_event, session) => {
       setUser(session?.user || null);
+      // Redireciona para /account após login
+      if (session?.user) {
+        navigate('/account', { replace: true });
+      }
     });
     return () => {
       listener?.subscription.unsubscribe();
     };
-  }, []);
+  }, [navigate]);
 
   const handleLogout = async () => {
     await supabase.auth.signOut();
