@@ -29,17 +29,30 @@
  * - No manual user interaction required - fully automated flow
  */
 
-import React from "react";
-import { useEffect } from "react";
-import { useAuth } from "@hey-boss/users-service/react";
+import React, { useEffect } from "react";
 import { LoaderCircle } from "lucide-react";
+import { useNavigate } from "react-router-dom";
+import { supabase } from "../utils/supabaseClient";
 
 export function AuthCallback() {
-  const { notifyParentWindowWithOAuthCode } = useAuth();
+  const navigate = useNavigate();
 
   useEffect(() => {
-    notifyParentWindowWithOAuthCode();
-  }, [notifyParentWindowWithOAuthCode]);
+    // Supabase já processa o callback automaticamente
+    supabase.auth.getUser().then(({ data }) => {
+      if (data.user) {
+        navigate("/account", { replace: true });
+      }
+    });
+    const { data: listener } = supabase.auth.onAuthStateChange((_event, session) => {
+      if (session?.user) {
+        navigate("/account", { replace: true });
+      }
+    });
+    return () => {
+      listener?.subscription.unsubscribe();
+    };
+  }, [navigate]);
 
   return (
     <div className="w-screen h-screen flex justify-center items-center px-4 bg-slate-50">

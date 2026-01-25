@@ -44,15 +44,32 @@
  * - Only renders children when user is authenticated
  */
 
-import React from "react";
-import { useAuth } from "@hey-boss/users-service/react";
+import React, { useEffect, useState } from "react";
 import { Loader2 } from "lucide-react";
 import { Navigate } from "react-router-dom";
+import { supabase } from "../utils/supabaseClient";
 
 export const AuthProtect = ({ children }) => {
-  const { user, isPending } = useAuth();
+  const [user, setUser] = useState<any>(null);
+  const [loading, setLoading] = useState(true);
 
-  if (isPending) {
+  useEffect(() => {
+    let unsub: any = null;
+    supabase.auth.getUser().then(({ data }) => {
+      setUser(data.user || null);
+      setLoading(false);
+    });
+    const { data: listener } = supabase.auth.onAuthStateChange((_event, session) => {
+      setUser(session?.user || null);
+      setLoading(false);
+    });
+    unsub = listener?.subscription;
+    return () => {
+      unsub?.unsubscribe();
+    };
+  }, []);
+
+  if (loading) {
     return (
       <div className="min-h-screen bg-gradient-to-br from-blue-50 via-white to-purple-50 flex items-center justify-center">
         <div className="animate-spin">
