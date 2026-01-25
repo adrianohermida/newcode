@@ -85,6 +85,7 @@ export const App = () => {
               element={
                 <AuthProtect>
                   <Dashboard />
+                  <ChatWidget />
                 </AuthProtect>
               } 
             />
@@ -105,7 +106,18 @@ export const App = () => {
               } 
             />
           </Routes>
-          <ChatWidget />
+          {/* ChatWidget global removido, agora só no Dashboard e página de teste */}
+        // Página de teste para ChatWidget
+        const ChatWidgetTestPage = () => (
+          <div className="min-h-screen bg-brand-dark flex flex-col items-center justify-center p-8">
+            <h1 className="text-2xl font-bold text-white mb-6">Teste do ChatWidget</h1>
+            <div className="w-full max-w-md">
+              <ChatWidget />
+            </div>
+          </div>
+        );
+                    {/* Página de teste do ChatWidget */}
+                    <Route path="/chatwidget-test" element={<ChatWidgetTestPage />} />
         </HashRouter>
       </AuthProvider>
     </CartProvider>
