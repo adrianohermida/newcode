@@ -3,9 +3,8 @@
   <head>
     <meta http-equiv="refresh" content="0; url=/newcode/" />
     <script>
-      // SPA fallback para GitHub Pages com domínio próprio
-      var redirectTo = '/' + window.location.pathname.replace(/^\/+/, '');
-      window.location.replace(redirectTo);
+      // SPA fallback para GitHub Pages
+      window.location.replace('/newcode/' + (window.location.pathname.split('/newcode/')[1] || ''));
     </script>
   </head>
   <body></body>
