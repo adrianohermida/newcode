@@ -6,7 +6,6 @@
  *             It uses Tailwind CSS for styling and Lucide React for iconography.
  */
 
-import React from 'react';
 import React, { useEffect, useState } from 'react';
 import { Link } from 'react-router-dom';
 import { 
@@ -34,7 +33,7 @@ import {
 import { Header } from '../components/Header';
 import { supabase } from '../utils/supabaseClient';
 import { CustomForm } from '../components/CustomForm';
-import { newsletterTheme } from '../components/CustomForm/themes';
+import { newsletterTheme } from '../components/CustomForm/theme';
 import allConfigs from '../../shared/form-configs.json';
 
 // --- Components ---
@@ -228,27 +227,27 @@ const Calculator = () => {
     }
   };
       // Exemplo: buscar dados públicos de uma tabela "posts"
-      export function SupabaseDemo() {
-        const [posts, setPosts] = useState<any[]>([]);
-        const [loading, setLoading] = useState(true);
-        useEffect(() => {
-          supabase.from('posts').select('*').then(({ data }) => {
-            setPosts(data || []);
-            setLoading(false);
-          });
-        }, []);
-        if (loading) return <div>Carregando posts do Supabase...</div>;
-        return (
-          <div>
-            <h2>Posts do Supabase</h2>
-            <ul>
-              {posts.map((post) => (
-                <li key={post.id}>{post.title}</li>
-              ))}
-            </ul>
-          </div>
-        );
-      }
+function SupabaseDemo() {
+  const [posts, setPosts] = useState<{ id: number; title: string }[]>([]);
+  const [loading, setLoading] = useState(true);
+  useEffect(() => {
+    supabase.from('posts').select('id, title').then(({ data }: { data: { id: number; title: string }[] }) => {
+      setPosts(data || []);
+      setLoading(false);
+    });
+  }, []);
+  if (loading) return <div>Carregando posts do Supabase...</div>;
+  return (
+    <div>
+      <h2>Posts do Supabase</h2>
+      <ul>
+        {posts.map((post) => (
+          <li key={post.id}>{post.title}</li>
+        ))}
+      </ul>
+    </div>
+  );
+}
 
   return (
     <section id="calculadora" className="py-24 bg-brand-dark relative overflow-hidden">
@@ -607,14 +606,23 @@ const VideoJourney = () => {
   );
 };
 
+type BlogPost = {
+  id: number;
+  title: string;
+  date: string;
+  image: string;
+  url?: string;
+  slug?: string;
+};
+
 const Blog = () => {
-  const [posts, setPosts] = React.useState([]);
+  const [posts, setPosts] = React.useState<BlogPost[]>([]);
   const [loading, setLoading] = React.useState(true);
 
   React.useEffect(() => {
     fetch('/api/blog')
       .then(res => res.json())
-      .then(data => {
+      .then((data: BlogPost[]) => {
         setPosts(data);
         setLoading(false);
       })
@@ -623,18 +631,21 @@ const Blog = () => {
         // Fallback para dados estáticos caso a API falhe
         setPosts([
           { 
+            id: 1,
             title: "Lei do Superendividamento: Como sair do sufoco financeiro legalmente", 
             date: "20 Mai, 2024",
             image: "https://heyboss.heeyo.ai/gemini-image-c5df3e56df0a49fdb468a4708ef7c8a8.png",
             url: "#"
           },
           { 
+            id: 2,
             title: "Justiça garante preservação do mínimo existencial para famílias endividadas", 
             date: "12 Mai, 2024",
             image: "https://heyboss.heeyo.ai/gemini-image-805a2be1c3c8401c828287f865b36b4c.png",
             url: "#"
           },
           { 
+            id: 3,
             title: "Renegociação em bloco: A estratégia definitiva contra juros abusivos", 
             date: "05 Mai, 2024",
             image: "https://heyboss.heeyo.ai/gemini-image-66fd2e2355974def87a7cb3056023985.png",
@@ -659,12 +670,12 @@ const Blog = () => {
           </div>
         ) : (
           <div className="grid md:grid-cols-3 gap-8 mb-12">
-            {posts.map((post, idx) => (
+            {posts.map((post) => (
               <article 
-                key={post.id || idx} 
+                key={post.id} 
                 className="bg-brand-elevated rounded-3xl overflow-hidden border border-white/5 group hover:border-brand-primary/30 transition-all cursor-pointer"
               >
-                <Link to={`/blog/${post.slug}`} className="block">
+                <Link to={post.url || `/blog/${post.slug || ''}`} className="block">
                   <div className="aspect-video overflow-hidden">
                     <img 
                       src={post.image} 
@@ -832,7 +843,7 @@ const Footer = () => {
                 <p className="text-white/40 text-xs font-medium ml-1">Assine nossa newsletter jurídica:</p>
                 <CustomForm 
                   id="newsletter_form"
-                  schema={allConfigs.newsletter_form.jsonSchema}
+                  schema={{ ...(allConfigs.newsletter_form.jsonSchema as any), type: "object" }}
                   onSubmit={handleNewsletterSubmit}
                   theme={newsletterTheme}
                   labels={{ submit: "Assinar" }}
