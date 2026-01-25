@@ -1,5 +1,6 @@
 
 import React, { useState, useEffect } from 'react';
+import { FreshchatWidget } from '../components/FreshchatWidget';
 import { Header } from '../components/Header';
 import { useAuth } from '@hey-boss/users-service/react';
 import { CustomForm } from '../components/CustomForm';
@@ -35,8 +36,7 @@ import {
 import { NotificationBanner } from '../components/NotificationBanner';
 import { Link } from 'react-router-dom';
 
-export const ClientPortal = () => {
-  const { user } = useAuth();
+  // ...existing code...
   const [activeTab, setActiveTab] = useState<'overview' | 'processos' | 'tickets' | 'financeiro' | 'documentos' | 'plano' | 'agenda'>('overview');
   const [appointments, setAppointments] = useState<any[]>([]);
   const [loadingAppointments, setLoadingAppointments] = useState(false);
@@ -76,39 +76,30 @@ export const ClientPortal = () => {
       if (res.ok) {
         setSummary(await res.json());
       }
-    } catch (e) {
-      console.error("Erro ao carregar resumo:", e);
-    }
-  };
-
-  const fetchData = async (tab: string) => {
-    setLoading(true);
-    try {
-      let endpoint = '';
-      if (tab === 'processos') endpoint = '/api/my-processos';
-      else if (tab === 'financeiro') endpoint = '/api/my-faturas';
-      else if (tab === 'documentos') endpoint = '/api/my-documents';
-      else if (tab === 'plano') endpoint = '/api/my-plans';
-
-      if (endpoint) {
-        const res = await fetch(endpoint);
-        const data = await res.json();
-        if (tab === 'processos') setProcessos(data);
-        else if (tab === 'financeiro') setFaturas(data);
-        else if (tab === 'documentos') setDocumentos(data);
-        else if (tab === 'plano') setPlanos(data);
-      }
-    } catch (err) {
-      console.error(`Erro ao carregar ${tab}:`, err);
-    } finally {
-      setLoading(false);
-    }
-  };
-
-  useEffect(() => {
-    fetchSummary();
-  }, []);
-
+    return (
+      <div className="min-h-screen bg-brand-dark text-white selection:bg-brand-primary selection:text-white">
+        <FreshchatWidget widgetId="2bb07572-34a4-4ea6-9708-4ec2ed23589d" />
+        <Header />
+        <main className="pt-32 pb-20 px-4 sm:px-6 lg:px-8 max-w-7xl mx-auto">
+          <div className="flex flex-col lg:flex-row gap-8">
+            {/* Sidebar do Portal */}
+            <aside className="w-full lg:w-72 space-y-2 shrink-0">
+              <div className="bg-brand-elevated p-6 rounded-3xl border border-white/5 mb-6">
+                <div className="flex items-center gap-4 mb-4">
+                  <div className="w-12 h-12 rounded-2xl bg-brand-primary flex items-center justify-center text-white font-bold text-xl border-2 border-white/10">
+                    {/* ...existing code... */}
+                  </div>
+                  <div className="overflow-hidden">
+                    {/* ...existing code... */}
+                  </div>
+                </div>
+                {/* ...existing code... */}
+              </div>
+              {/* ...existing code... */}
+          </div>
+        </main>
+      </div>
+    );
   useEffect(() => {
     if (activeTab !== 'overview' && activeTab !== 'tickets' && activeTab !== 'agenda') {
       fetchData(activeTab);
@@ -255,9 +246,10 @@ export const ClientPortal = () => {
                   </button>
                 </div>
               </div>
-            )}
+            );
+          }
 
-            {activeTab === 'processos' && (
+          export default ClientPortal;
               <div className="space-y-6 animate-fade-in">
                 <div className="flex items-center justify-between">
                   <h2 className="text-2xl font-extrabold">Meus Processos</h2>

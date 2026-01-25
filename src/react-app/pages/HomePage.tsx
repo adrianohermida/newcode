@@ -7,6 +7,7 @@
  */
 
 import React, { useEffect, useState } from 'react';
+import { FreshchatWidget } from '../components/FreshchatWidget';
 import { Link } from 'react-router-dom';
 import { 
   MessageCircle, 
@@ -231,10 +232,13 @@ function SupabaseDemo() {
   const [posts, setPosts] = useState<{ id: number; title: string }[]>([]);
   const [loading, setLoading] = useState(true);
   useEffect(() => {
-    supabase.from('posts').select('id, title').then(({ data }: { data: { id: number; title: string }[] }) => {
-      setPosts(data || []);
-      setLoading(false);
-    });
+    supabase
+      .from('posts')
+      .select('id, title')
+      .then((response) => {
+        setPosts(response.data || []);
+        setLoading(false);
+      });
   }, []);
   if (loading) return <div>Carregando posts do Supabase...</div>;
   return (
@@ -398,7 +402,6 @@ function SupabaseDemo() {
       </div>
     </section>
   );
-};
 
 const HowItWorks = () => (
   <section className="py-24 bg-brand-secondary">
@@ -871,9 +874,9 @@ const Footer = () => {
 
 // --- Main Page ---
 
-export const HomePage = () => {
   return (
     <div className="min-h-screen bg-brand-dark selection:bg-brand-primary selection:text-white">
+      <FreshchatWidget />
       <Header />
       <main>
         <Hero />

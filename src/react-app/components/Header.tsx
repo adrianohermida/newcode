@@ -13,6 +13,7 @@ import { Link, useNavigate } from 'react-router-dom';
 import { User, LogOut, Briefcase, ChevronDown, LayoutDashboard, Menu, X, Shield, Settings } from 'lucide-react';
 import { supabase } from '../utils/supabaseClient';
 
+export function Header() {
   const navigate = useNavigate();
   const [isMenuOpen, setIsMenuOpen] = useState(false);
   const [isMobileMenuOpen, setIsMobileMenuOpen] = useState(false);
@@ -195,6 +196,11 @@ import { supabase } from '../utils/supabaseClient';
                 Fazer Login
               </Link>
             )}
+              {!user && (
+                <Link to="/login" onClick={() => setIsMobileMenuOpen(false)} className="bg-brand-primary text-white text-center py-4 rounded-xl font-bold text-lg mt-4">
+                  Fazer Login
+                </Link>
+              )}
             
             {user && (
               <div className="space-y-4 pt-4 border-t border-white/10">
@@ -242,5 +248,6 @@ import { supabase } from '../utils/supabaseClient';
       )}
     </header>
   );
-};
+}
+
 
