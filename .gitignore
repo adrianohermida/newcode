@@ -12,6 +12,7 @@
 *.env
 .env.*
 node_modules/
+# dist/ removido para permitir publicação do build no branch main
 dist/
 build/
 .DS_Store
