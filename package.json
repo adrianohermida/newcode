@@ -26,10 +26,10 @@
     "wrangler": "4.27.0"
   },
   "scripts": {
-    "dev": "vite --config vite.config.ts --root react-app",
-    "build": "vite build --config vite.config.ts --root react-app",
+    "dev": "vite",
+    "build": "vite build",
     "predeploy": "npm run build",
-    "deploy": "gh-pages -d react-app/dist"
+    "deploy": "gh-pages -d dist"
   },
   "devDependencies": {
     "gh-pages": "^6.3.0"
