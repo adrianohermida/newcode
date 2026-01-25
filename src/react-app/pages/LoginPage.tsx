@@ -27,13 +27,13 @@ export default function LoginPage() {
     const session = supabase.auth.getSession().then(({ data }) => {
       if (data.session) {
         setUser(data.session.user);
-        navigate("/portal", { replace: true });
+        navigate("/account", { replace: true });
       }
     });
     const { data: listener } = supabase.auth.onAuthStateChange((_event, session) => {
       if (session?.user) {
         setUser(session.user);
-        navigate("/portal", { replace: true });
+        navigate("/account", { replace: true });
       }
     });
     return () => {
@@ -94,6 +94,8 @@ export default function LoginPage() {
 
   return (
     <div className="min-h-screen bg-brand-dark flex items-center justify-center px-4 py-12">
+      {/* Widget Freshworks para login */}
+      <div id="fw-widget-login"><FreshworksWidget /></div>
       <div className="max-w-md w-full space-y-8 bg-brand-elevated p-8 sm:p-12 rounded-[2.5rem] border border-white/10 shadow-2xl relative overflow-hidden">
         <div className="absolute top-0 left-0 w-full h-1 bg-brand-primary" />
         
