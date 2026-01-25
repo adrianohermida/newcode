@@ -63,8 +63,12 @@ import { Link } from 'react-router-dom';
         a.download = `meus_dados_hermida_maia.json`;
         a.click();
 
+
       export function ClientPortal() {
         // ...existing code...
+        return (
+          // ...existing JSX...
+        );
       }
     } finally {
       setExporting(false);
