@@ -12,7 +12,7 @@ import { AuthProvider } from "@hey-boss/users-service/react";
 import { CheckoutSuccessPage } from "./pages/CheckoutSuccessPage";
 import { CheckoutErrorPage } from "./pages/CheckoutErrorPage";
 import { CheckoutCancelPage } from "./pages/CheckoutCancelPage";
-import { LoginPage } from "./pages/LoginPage";
+import LoginPage from "./pages/LoginPage";
 import { Dashboard } from "./pages/Dashboard";
 import { ClientPortal } from "./pages/ClientPortal";
 import { ProfilePage } from "./pages/ProfilePage";

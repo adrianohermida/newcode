@@ -13,6 +13,7 @@ import { useNavigate } from "react-router-dom";
 import { Mail, Lock, ArrowRight, Loader2, Chrome } from "lucide-react";
 
 
+export default function LoginPage() {
   const navigate = useNavigate();
   const [email, setEmail] = useState("");
   const [otp, setOtp] = useState("");
@@ -185,5 +186,5 @@ import { Mail, Lock, ArrowRight, Loader2, Chrome } from "lucide-react";
       </div>
     </div>
   );
-};
+}
 
