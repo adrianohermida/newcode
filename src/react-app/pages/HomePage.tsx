@@ -885,6 +885,15 @@ export const HomePage = () => {
         <Services />
         <Blog />
         <FinalCTA />
+        {/* Links para teste do ChatWidget */}
+        <div className="max-w-2xl mx-auto mt-16 p-6 bg-brand-elevated rounded-2xl border border-white/10 text-center">
+          <h2 className="text-lg font-bold text-white mb-2">Testes do ChatWidget</h2>
+          <div className="flex flex-col gap-2 items-center">
+            <a href="/chatwidget-test-public" className="text-brand-primary hover:underline">Teste Público</a>
+            <a href="/chatwidget-test-client" className="text-brand-primary hover:underline">Teste Cliente (logado)</a>
+            <a href="/chatwidget-test-dashboard" className="text-brand-primary hover:underline">Teste Dashboard/Admin</a>
+          </div>
+        </div>
       </main>
       <Footer />
     </div>

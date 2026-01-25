@@ -107,17 +107,46 @@ export const App = () => {
             />
           </Routes>
           {/* ChatWidget global removido, agora só no Dashboard e página de teste */}
-        // Página de teste para ChatWidget
-        const ChatWidgetTestPage = () => (
+        // Página de teste pública para ChatWidget
+        const ChatWidgetTestPublic = () => (
           <div className="min-h-screen bg-brand-dark flex flex-col items-center justify-center p-8">
-            <h1 className="text-2xl font-bold text-white mb-6">Teste do ChatWidget</h1>
+            <h1 className="text-2xl font-bold text-white mb-6">Teste Público do ChatWidget</h1>
             <div className="w-full max-w-md">
               <ChatWidget />
             </div>
+            <p className="text-white/40 mt-6">Ambiente público (não logado)</p>
           </div>
         );
-                    {/* Página de teste do ChatWidget */}
-                    <Route path="/chatwidget-test" element={<ChatWidgetTestPage />} />
+
+        // Página de teste protegida (cliente)
+        const ChatWidgetTestClient = () => (
+          <AuthProtect>
+            <div className="min-h-screen bg-brand-dark flex flex-col items-center justify-center p-8">
+              <h1 className="text-2xl font-bold text-white mb-6">Teste Cliente do ChatWidget</h1>
+              <div className="w-full max-w-md">
+                <ChatWidget />
+              </div>
+              <p className="text-white/40 mt-6">Ambiente logado (cliente)</p>
+            </div>
+          </AuthProtect>
+        );
+
+        // Página de teste protegida (dashboard/admin)
+        const ChatWidgetTestDashboard = () => (
+          <AuthProtect>
+            <div className="min-h-screen bg-brand-dark flex flex-col items-center justify-center p-8">
+              <h1 className="text-2xl font-bold text-white mb-6">Teste Dashboard/Admin do ChatWidget</h1>
+              <div className="w-full max-w-md">
+                <ChatWidget />
+              </div>
+              <p className="text-white/40 mt-6">Ambiente logado (admin/dashboard)</p>
+            </div>
+          </AuthProtect>
+        );
+                    {/* Páginas de teste do ChatWidget */}
+                    <Route path="/chatwidget-test-public" element={<ChatWidgetTestPublic />} />
+                    <Route path="/chatwidget-test-client" element={<ChatWidgetTestClient />} />
+                    <Route path="/chatwidget-test-dashboard" element={<ChatWidgetTestDashboard />} />
         </HashRouter>
       </AuthProvider>
     </CartProvider>
