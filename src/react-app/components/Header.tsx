@@ -152,9 +152,13 @@ export const Header = () => {
 
           {/* Mobile Menu Button */}
           <div className="lg:hidden flex items-center gap-4">
-            {user && (
-              <Link to={isAdmin ? "/dashboard" : "/portal"} className="w-10 h-10 rounded-full bg-brand-primary flex items-center justify-center text-white font-bold text-xs">
+            {user ? (
+              <Link to={isAdmin ? "/dashboard" : "/account"} className="w-10 h-10 rounded-full bg-brand-primary flex items-center justify-center text-white font-bold text-xs">
                 {user.name?.[0] || user.email?.[0].toUpperCase()}
+              </Link>
+            ) : (
+              <Link to="/login" className="w-10 h-10 rounded-full bg-white/10 flex items-center justify-center text-white font-bold text-xs">
+                <User size={20} />
               </Link>
             )}
             <button 
