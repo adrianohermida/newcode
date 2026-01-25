@@ -11,6 +11,7 @@ import React, { useState, useEffect } from "react";
 import { supabase } from "../utils/supabaseClient";
 import { useNavigate } from "react-router-dom";
 import { Mail, Lock, ArrowRight, Loader2, Chrome } from "lucide-react";
+import { FreshchatWidget } from "../components/FreshchatWidget";
 
 
 export default function LoginPage() {
@@ -94,8 +95,8 @@ export default function LoginPage() {
 
   return (
     <div className="min-h-screen bg-brand-dark flex items-center justify-center px-4 py-12">
-      {/* Widget Freshworks para login */}
-      <div id="fw-widget-login"><FreshworksWidget /></div>
+      {/* Widget Freshchat para login */}
+      <FreshchatWidget />
       <div className="max-w-md w-full space-y-8 bg-brand-elevated p-8 sm:p-12 rounded-[2.5rem] border border-white/10 shadow-2xl relative overflow-hidden">
         <div className="absolute top-0 left-0 w-full h-1 bg-brand-primary" />
         
