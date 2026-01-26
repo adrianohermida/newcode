@@ -1,3 +1,28 @@
+// == BLOG PUBLIC ENDPOINTS ==
+app.get("/api/blog", async (c) => {
+  const categoria = c.req.query("categoria");
+  let query = "SELECT * FROM blog ORDER BY published_at DESC";
+  let params: any[] = [];
+  if (categoria) {
+    query = "SELECT * FROM blog WHERE category = ? ORDER BY published_at DESC";
+    params = [categoria];
+  }
+  try {
+    const { results } = await c.env.DB.prepare(query).bind(...params).all();
+    return c.json(results);
+  } catch (e: any) {
+    return c.json({ error: e.message }, 500);
+  }
+});
+
+app.get("/api/admin/blog-categories", async (c) => {
+  try {
+    const { results } = await c.env.DB.prepare("SELECT * FROM blog_categories ORDER BY nome ASC").all();
+    return c.json(results);
+  } catch (e: any) {
+    return c.json({ error: e.message }, 500);
+  }
+});
 import { Hono } from "hono";
 import { getCookie, setCookie } from "hono/cookie";
 import {

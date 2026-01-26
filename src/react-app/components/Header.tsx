@@ -26,21 +26,25 @@ export function Header() {
   const isAdmin = user && adminEmails.some(email => email.toLowerCase() === userEmail);
 
   useEffect(() => {
+    let ignore = false;
     supabase.auth.getSession().then(({ data }) => {
-      if (data.session) {
-        setUser(data.session.user);
-      } else {
-        setUser(null);
+      if (!ignore) {
+        if (data.session) {
+          setUser(data.session.user);
+        } else {
+          setUser(null);
+        }
       }
     });
     const { data: listener } = supabase.auth.onAuthStateChange((_event, session) => {
       setUser(session?.user || null);
-      // Redireciona para /account após login
+      // Redireciona para /account após login, nunca para /portal
       if (session?.user) {
         navigate('/account', { replace: true });
       }
     });
     return () => {
+      ignore = true;
       listener?.subscription.unsubscribe();
     };
   }, [navigate]);
