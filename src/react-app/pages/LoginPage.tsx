@@ -14,6 +14,7 @@ import { Mail, Lock, ArrowRight, Loader2, Chrome } from "lucide-react";
 import { FreshchatWidget } from "../components/FreshchatWidget";
 
 
+
 export default function LoginPage() {
   const navigate = useNavigate();
   const [email, setEmail] = useState("");
@@ -23,22 +24,26 @@ export default function LoginPage() {
   const [loading, setLoading] = useState(false);
   const [user, setUser] = useState<any>(null);
 
-  // Checa sessão do Supabase
+  // Checa sessão do Supabase apenas uma vez e escuta mudanças de autenticação
   useEffect(() => {
-    const session = supabase.auth.getSession().then(({ data }) => {
-      if (data.session) {
+    let ignore = false;
+    let unsub: any = null;
+    supabase.auth.getSession().then(({ data }) => {
+      if (!ignore && data.session && data.session.user) {
         setUser(data.session.user);
         navigate("/account", { replace: true });
       }
     });
     const { data: listener } = supabase.auth.onAuthStateChange((_event, session) => {
-      if (session?.user) {
+      if (!ignore && session?.user) {
         setUser(session.user);
         navigate("/account", { replace: true });
       }
     });
+    unsub = listener?.subscription;
     return () => {
-      listener?.subscription.unsubscribe();
+      ignore = true;
+      unsub?.unsubscribe();
     };
   }, [navigate]);
 

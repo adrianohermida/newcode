@@ -38,14 +38,24 @@ export const BlogPage = () => {
           fetch(`/api/blog${activeCategory ? `?categoria=${activeCategory}` : ''}`),
           fetch('/api/admin/blog-categories')
         ]);
-        
+
+        if (!postsRes.ok) {
+          const text = await postsRes.text();
+          throw new Error(`Erro ao carregar posts: HTTP ${postsRes.status} - ${text.substring(0, 100)}`);
+        }
+        if (!catsRes.ok) {
+          const text = await catsRes.text();
+          throw new Error(`Erro ao carregar categorias: HTTP ${catsRes.status} - ${text.substring(0, 100)}`);
+        }
+
         const postsData = await postsRes.json();
         const catsData = await catsRes.json();
-        
+
         if (Array.isArray(postsData)) setPosts(postsData);
         if (Array.isArray(catsData)) setCategories(catsData);
-      } catch (err) {
+      } catch (err: any) {
         console.error('Erro ao carregar dados do blog:', err);
+        alert('Erro ao carregar dados do blog: ' + (err?.message || err));
       } finally {
         setLoading(false);
       }
