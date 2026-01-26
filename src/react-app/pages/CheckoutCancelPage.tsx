@@ -25,11 +25,11 @@ export const CheckoutCancelPage: React.FC = () => {
 
         <div className="space-y-4">
           <Link 
-            to="/portal"
+            to="/account"
             className="w-full bg-brand-primary hover:bg-brand-primary/90 text-white py-4 rounded-xl font-bold flex items-center justify-center gap-2 transition-all"
           >
             <ShoppingBag size={18} />
-            Voltar ao Portal
+            Voltar à Conta
           </Link>
           
           <Link 

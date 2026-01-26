@@ -85,7 +85,7 @@ export const Dashboard = () => {
   /* ===== ADMIN GUARD ===== */
   useEffect(() => {
     if (!isPending && user && !(user as any).isAdmin) {
-      navigate('/portal', { replace: true });
+      navigate('/account', { replace: true });
     }
   }, [user, isPending, navigate]);
 
