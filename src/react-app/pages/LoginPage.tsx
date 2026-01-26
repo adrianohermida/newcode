@@ -23,11 +23,19 @@ export default function LoginPage() {
   const [error, setError] = useState("");
   const [loading, setLoading] = useState(false);
   const [user, setUser] = useState<any>(null);
+  const [apiStatus, setApiStatus] = useState<string>("");
 
   // Checa sessão do Supabase apenas uma vez e escuta mudanças de autenticação
   useEffect(() => {
     let ignore = false;
     let unsub: any = null;
+    // Testa conectividade com backend
+    Promise.all([
+      fetch("/api/blog").then(res => res.ok ? null : Promise.reject("/api/blog: " + res.status)),
+      fetch("/api/users/me").then(res => res.ok ? null : Promise.reject("/api/users/me: " + res.status))
+    ]).catch(err => {
+      setApiStatus("Erro de conectividade com backend: " + err);
+    });
     supabase.auth.getSession().then(({ data }) => {
       if (!ignore && data.session && data.session.user) {
         setUser(data.session.user);
@@ -116,6 +124,11 @@ export default function LoginPage() {
         {error && (
           <div className="bg-red-500/10 border border-red-500/20 text-red-400 px-4 py-3 rounded-xl text-sm text-center">
             {error}
+          </div>
+        )}
+        {apiStatus && (
+          <div className="bg-yellow-500/10 border border-yellow-500/20 text-yellow-400 px-4 py-3 rounded-xl text-sm text-center">
+            {apiStatus}
           </div>
         )}
 
