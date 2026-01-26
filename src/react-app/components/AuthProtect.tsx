@@ -49,7 +49,13 @@ import { Loader2 } from "lucide-react";
 import { Navigate } from "react-router-dom";
 import { supabase } from "../utils/supabaseClient";
 
-export const AuthProtect = ({ children }) => {
+import { ReactNode } from 'react';
+
+interface AuthProtectProps {
+  children: ReactNode;
+}
+
+export const AuthProtect = ({ children }: AuthProtectProps) => {
   const [user, setUser] = useState<any>(null);
   const [loading, setLoading] = useState(true);
 

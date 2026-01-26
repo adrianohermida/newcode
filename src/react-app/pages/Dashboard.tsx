@@ -32,16 +32,7 @@ import {
 } from 'lucide-react';
 
 /* ===== MÓDULOS EXISTENTES ===== */
-import { OverviewModule } from '../modules/OverviewModule';
-import { CRMModule } from '../modules/CRMModule';
-import { DocumentsModule } from '../modules/DocumentsModule';
-import { PlanoPagamentoModule } from '../modules/PlanoPagamentoModule';
-import { FaturasModule } from '../modules/FaturasModule';
-import { TicketsModule } from '../modules/TicketsModule';
-import { AdminAgendaModule } from '../modules/AdminAgendaModule';
-import { ProcessosModule } from '../modules/ProcessosModule';
-import { ProcessoDetailInline } from '../modules/ProcessoDetailInline';
-import { ConfigModule } from '../modules/ConfigModule';
+// Removed broken imports for non-existent modules. All components are defined in this file.
 
 import { PublicacoesModule } from '../components/Publicacoes/PublicacoesModule';
 import { BlogManagementModule } from '../components/BlogManagement/BlogManagementModule';
