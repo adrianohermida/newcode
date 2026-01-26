@@ -3,9 +3,11 @@
 /**
  * @description Componente de cabeçalho global para o site Hermida Maia Advocacia.
  *             Gerencia a navegação principal e o estado de autenticação do usuário.
+
  *             Implementa um menu dropdown no avatar do usuário com rotas dinâmicas.
  *             Utiliza useAuth do @hey-boss/users-service/react para controle de sessão.
  *             Ajustado para exibir "Monte Seu Plano" apenas no desktop.
+ *             (Atenção: Todas as referências a /portal removidas, não existe mais essa rota)
  */
 
 import React, { useState, useRef, useEffect } from 'react';
