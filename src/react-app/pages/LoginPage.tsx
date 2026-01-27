@@ -14,7 +14,7 @@ import { Mail, Lock, ArrowRight, Loader2, Chrome } from "lucide-react";
 import { FreshchatWidget } from "../components/FreshchatWidget";
 import { useApi } from "../hooks/useApi";
 
-
+import { useAuthContext } from "../hooks/AuthContext";
 
 
 export default function LoginPage() {
@@ -25,7 +25,6 @@ export default function LoginPage() {
   const [error, setError] = useState("");
   const [loading, setLoading] = useState(false);
   const [user, setUser] = useState<any>(null);
-  const [apiStatus, setApiStatus] = useState<string>("");
   const { fetchBlog, fetchUser, blogError, userError } = useApi();
   // Teste de conexão manual
   const [testStatus, setTestStatus] = useState<string | null>(null);
@@ -34,11 +33,11 @@ export default function LoginPage() {
   useEffect(() => {
     let ignore = false;
     let unsub: any = null;
-    // Testa conectividade com backend usando useApi
-    Promise.all([
-      fetchBlog(),
-      fetchUser()
-    ]).then(() => {
+    supabase.auth.getSession().then(({ data }) => {
+      if (!ignore && data.session && data.session.user) {
+        setUser(data.session.user);
+        navigate("/account", { replace: true });
+      }
       supabase.auth.getSession().then(({ data }) => {
         if (!ignore && data.session && data.session.user) {
           setUser(data.session.user);
@@ -46,66 +45,44 @@ export default function LoginPage() {
         }
       });
       const { data: listener } = supabase.auth.onAuthStateChange((_event, session) => {
-        if (!ignore && session?.user) {
-          setUser(session.user);
-          navigate("/account", { replace: true });
-        }
-      });
-      unsub = listener?.subscription;
-    }).catch(err => {
-      setApiStatus(
-        typeof err === "string"
           ? "Erro de conectividade com backend: " + err
           : err?.message
             ? "Erro de conectividade com backend: " + err.message
         import { useAuthContext } from "../hooks/AuthContext";
-      );
     });
     return () => {
       ignore = true;
       unsub?.unsubscribe();
     };
-  }, [navigate, fetchBlog, fetchUser]);
-
-  // Botão manual de teste de conexão
-  const handleTestConnection = async () => {
-    setTestStatus('Testando...');
-    try {
-      await fetchBlog();
-      await fetchUser();
-      setTestStatus('Conexão bem-sucedida!');
-    } catch (e) {
-      setTestStatus('Erro ao testar conexão.');
-    }
-    setTimeout(() => setTestStatus(null), 3000);
-  };
-
-
-  const handleGoogleLogin = async () => {
-    setError("");
-    setLoading(true);
-    try {
-      const { error } = await supabase.auth.signInWithOAuth({ provider: 'google', options: { redirectTo: window.location.origin + '/#/auth/callback' } });
-      if (error) setError("Falha ao entrar com Google. Tente novamente.");
-    } catch (err) {
-      setError("Falha ao entrar com Google. Tente novamente.");
-    } finally {
-      setLoading(false);
-    }
+      // Testa apenas a conexão com o backend do Supabase
+      const { data, error } = await supabase.auth.getSession();
+        supabase.auth.getSession().then(({ data }) => {
+          if (!ignore && data.session && data.session.user) {
+            setUser(data.session.user);
+            navigate("/account", { replace: true });
+          }
+        });
+        const { data: listener } = supabase.auth.onAuthStateChange((_event, session) => {
+          if (!ignore && session?.user) {
+            setUser(session.user);
+            navigate("/account", { replace: true });
+          }
+        });
+        unsub = listener?.subscription;
+        return () => {
+          ignore = true;
+          unsub?.unsubscribe();
+        };
   };
 
   const handleSendOTP = async (e: React.FormEvent) => {
     e.preventDefault();
     setLoading(true);
     setError("");
-    try {
-      const { error } = await supabase.auth.signInWithOtp({ email, options: { shouldCreateUser: true } });
-      if (!error) {
-        setStep("otp");
-      } else {
-        setError(error.message || "Erro ao enviar código.");
-      }
-    } catch (err) {
+          // Testa apenas a conexão com o backend do Supabase
+          const { data, error } = await supabase.auth.getSession();
+          if (error || !data.session) throw new Error('Sem sessão');
+          setTestStatus('Conexão bem-sucedida!');
       setError("Erro de conexão.");
     } finally {
       setLoading(false);
@@ -156,12 +133,7 @@ export default function LoginPage() {
             {apiStatus}
           </div>
         )}
-        {(blogError || userError) && (
-          <div className="bg-red-500/10 border border-red-500/20 text-red-400 px-4 py-3 rounded-xl text-sm text-center">
-            {blogError && <div>Erro Blog: {blogError}</div>}
-            {userError && <div>Erro Usuário: {userError}</div>}
-          </div>
-        )}
+        {/* Erros de blog/user removidos pois useApi não é mais usado aqui */}
         <div className="flex justify-center py-2">
           <button
             onClick={handleTestConnection}
