@@ -33,6 +33,7 @@ import {
 } from 'lucide-react';
 import { Header } from '../components/Header';
 import { supabase } from '../utils/supabaseClient';
+import { useApi } from '../hooks/useApi';
 import { CustomForm } from '../components/CustomForm';
 import { newsletterTheme } from '../components/CustomForm/theme';
 import allConfigs from '../../shared/form-configs.json';
@@ -618,46 +619,22 @@ type BlogPost = {
   slug?: string;
 };
 
-const Blog = () => {
-  const [posts, setPosts] = React.useState<BlogPost[]>([]);
-  const [loading, setLoading] = React.useState(true);
 
-  React.useEffect(() => {
-    fetch('/api/blog')
-      .then(res => res.json())
-      .then((data: BlogPost[]) => {
-        setPosts(data);
-        setLoading(false);
-      })
-      .catch(err => {
-        console.error('Erro ao carregar blog:', err);
-        // Fallback para dados estáticos caso a API falhe
-        setPosts([
-          { 
-            id: 1,
-            title: "Lei do Superendividamento: Como sair do sufoco financeiro legalmente", 
-            date: "20 Mai, 2024",
-            image: "https://heyboss.heeyo.ai/gemini-image-c5df3e56df0a49fdb468a4708ef7c8a8.png",
-            url: "#"
-          },
-          { 
-            id: 2,
-            title: "Justiça garante preservação do mínimo existencial para famílias endividadas", 
-            date: "12 Mai, 2024",
-            image: "https://heyboss.heeyo.ai/gemini-image-805a2be1c3c8401c828287f865b36b4c.png",
-            url: "#"
-          },
-          { 
-            id: 3,
-            title: "Renegociação em bloco: A estratégia definitiva contra juros abusivos", 
-            date: "05 Mai, 2024",
-            image: "https://heyboss.heeyo.ai/gemini-image-66fd2e2355974def87a7cb3056023985.png",
-            url: "#"
-          }
-        ]);
-        setLoading(false);
-      });
-  }, []);
+const Blog = () => {
+  const { blog, blogLoading, blogError, fetchBlog } = useApi();
+  // Teste de conexão manual
+  const [testStatus, setTestStatus] = React.useState<string | null>(null);
+
+  const handleTestConnection = async () => {
+    setTestStatus('Testando...');
+    try {
+      await fetchBlog();
+      setTestStatus('Conexão bem-sucedida!');
+    } catch (e) {
+      setTestStatus('Erro ao testar conexão.');
+    }
+    setTimeout(() => setTestStatus(null), 3000);
+  };
 
   return (
     <section id="blog" className="py-24 bg-brand-dark">
@@ -667,13 +644,26 @@ const Blog = () => {
           <p className="text-white/60">Mantenha-se informado sobre a Lei 14.181/2021 e como eliminar dívidas legalmente com nossa consultoria jurídica.</p>
         </div>
 
-        {loading ? (
+        <div className="flex justify-center py-4">
+          <button
+            onClick={handleTestConnection}
+            className="bg-brand-primary text-white px-4 py-2 rounded-xl font-bold text-sm hover:bg-brand-primary/90 transition-all"
+          >
+            Testar conexão Blog
+          </button>
+          {testStatus && (
+            <span className="ml-4 text-white/80 text-sm">{testStatus}</span>
+          )}
+        </div>
+        {blogLoading ? (
           <div className="flex justify-center py-20">
             <div className="animate-spin rounded-full h-12 w-12 border-t-2 border-b-2 border-brand-primary"></div>
           </div>
+        ) : blogError ? (
+          <div className="text-red-400 text-center py-8">Erro ao carregar blog: {blogError}</div>
         ) : (
           <div className="grid md:grid-cols-3 gap-8 mb-12">
-            {posts.map((post) => (
+            {blog.map((post: BlogPost) => (
               <article 
                 key={post.id} 
                 className="bg-brand-elevated rounded-3xl overflow-hidden border border-white/5 group hover:border-brand-primary/30 transition-all cursor-pointer"
