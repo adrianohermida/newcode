@@ -10,47 +10,26 @@
  *             (Atenção: Todas as referências a /portal removidas, não existe mais essa rota)
  */
 
-import React, { useState, useRef, useEffect } from 'react';
+import React, { useState, useRef } from 'react';
 import { Link, useNavigate } from 'react-router-dom';
 import { User, LogOut, Briefcase, ChevronDown, LayoutDashboard, Menu, X, Shield, Settings } from 'lucide-react';
 import { supabase } from '../utils/supabaseClient';
+import { useApi } from '../hooks/useApi';
+
 
 export function Header() {
   const navigate = useNavigate();
   const [isMenuOpen, setIsMenuOpen] = useState(false);
   const [isMobileMenuOpen, setIsMobileMenuOpen] = useState(false);
   const menuRef = useRef<HTMLDivElement>(null);
-  const [user, setUser] = useState<any>(null);
-
+  const { user } = useApi();
   // Verifica se o usuário é admin (membro da equipe) - Insensível a maiúsculas
   const adminEmails = ["contato@hermidamaia.adv.br", "adrianohermida@gmail.com", "admin@example.com"];
   const userEmail = (user?.email || "").toLowerCase();
   const isAdmin = user && adminEmails.some(email => email.toLowerCase() === userEmail);
 
-  useEffect(() => {
-    let ignore = false;
-    supabase.auth.getSession().then(({ data }) => {
-      if (!ignore) {
-        if (data.session) {
-          setUser(data.session.user);
-        } else {
-          setUser(null);
-        }
-      }
-    });
-    const { data: listener } = supabase.auth.onAuthStateChange((_event, session) => {
-      setUser(session?.user || null);
-      // Não redireciona automaticamente após login
-    });
-    return () => {
-      ignore = true;
-      listener?.subscription.unsubscribe();
-    };
-  }, []);
-
   const handleLogout = async () => {
     await supabase.auth.signOut();
-    setUser(null);
     navigate('/login');
   };
 
