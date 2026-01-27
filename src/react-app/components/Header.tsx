@@ -10,7 +10,7 @@
  *             (Atenção: Todas as referências a /portal removidas, não existe mais essa rota)
  */
 
-import React, { useState, useRef } from 'react';
+import React, { useState, useRef, useEffect } from 'react';
 import { Link, useNavigate } from 'react-router-dom';
 import { User, LogOut, Briefcase, ChevronDown, LayoutDashboard, Menu, X, Shield, Settings } from 'lucide-react';
 import { supabase } from '../utils/supabaseClient';
