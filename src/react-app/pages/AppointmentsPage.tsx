@@ -29,15 +29,13 @@ import {
 import { Link, useNavigate } from 'react-router-dom';
 import { cn } from '../utils';
 import { useAuth } from '@hey-boss/users-service/react';
+import { useApi } from '../hooks/useApi';
 
-export const AppointmentsPage = () => {
   const { user, loading: authLoading } = useAuth();
   const navigate = useNavigate();
   const [step, setStep] = useState(0); // Step 0: Tipo, Step 1: Horário, Step 2: Dados
   const [submitted, setSubmitted] = useState(false);
   const [loading, setLoading] = useState(false);
-  
-  // State para seleção
   const [appointmentType, setAppointmentType] = useState<'avaliacao' | 'tecnica'>('avaliacao');
   const [profissionais, setProfissionais] = useState<any[]>([]);
   const [selectedProf, setSelectedProf] = useState<any>(null);
@@ -45,7 +43,26 @@ export const AppointmentsPage = () => {
   const [selectedDate, setSelectedDate] = useState<string>('');
   const [availableSlots, setAvailableSlots] = useState<any[]>([]);
   const [selectedSlot, setSelectedSlot] = useState<any>(null);
-
+  const [testStatus, setTestStatus] = useState<string | null>(null);
+  // Função de teste de conexão
+  const handleTestConnection = async () => {
+    setTestStatus('Testando...');
+    try {
+      // Testa profissionais
+      const profRes = await fetch('/api/appointments/profissionais');
+      if (!profRes.ok) throw new Error('Profissionais: ' + profRes.status);
+      // Testa slots (usa data e prof fictício se necessário)
+      const profList = await profRes.json();
+      const profId = profList[0]?.id || 1;
+      const today = new Date().toISOString().split('T')[0];
+      const slotRes = await fetch(`/api/appointments/slots?date=${today}&profId=${profId}&type=avaliacao`);
+      if (!slotRes.ok) throw new Error('Slots: ' + slotRes.status);
+      setTestStatus('Conexão bem-sucedida!');
+    } catch (e: any) {
+      setTestStatus('Erro ao testar conexão: ' + (e.message || 'Erro desconhecido'));
+    }
+    setTimeout(() => setTestStatus(null), 3000);
+  };
   // Carregar profissionais ao iniciar
   useEffect(() => {
     fetch('/api/appointments/profissionais')
@@ -55,7 +72,6 @@ export const AppointmentsPage = () => {
         if (data.length > 0) setSelectedProf(data[0]);
       });
   }, []);
-
   // Carregar slots quando data, profissional ou tipo mudar
   useEffect(() => {
     if (selectedDate && selectedProf) {
@@ -208,6 +224,17 @@ export const AppointmentsPage = () => {
           </div>
 
           <div className="bg-brand-elevated p-8 sm:p-10 rounded-[2.5rem] border border-white/10 shadow-2xl relative">
+            <div className="flex justify-center py-2">
+              <button
+                onClick={handleTestConnection}
+                className="bg-brand-primary text-white px-4 py-2 rounded-xl font-bold text-sm hover:bg-brand-primary/90 transition-all"
+              >
+                Testar conexão Agendamento
+              </button>
+              {testStatus && (
+                <span className="ml-4 text-white/80 text-sm">{testStatus}</span>
+              )}
+            </div>
             {!user && !authLoading && (
               <div className="absolute inset-0 z-50 bg-brand-dark/60 backdrop-blur-md rounded-[2.5rem] flex flex-col items-center justify-center p-8 text-center">
                 <div className="bg-brand-primary/20 p-4 rounded-full mb-6">

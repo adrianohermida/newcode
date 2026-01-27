@@ -12,6 +12,8 @@ import { supabase } from "../utils/supabaseClient";
 import { useNavigate } from "react-router-dom";
 import { Mail, Lock, ArrowRight, Loader2, Chrome } from "lucide-react";
 import { FreshchatWidget } from "../components/FreshchatWidget";
+import { useApi } from "../hooks/useApi";
+
 
 
 
@@ -24,21 +26,19 @@ export default function LoginPage() {
   const [loading, setLoading] = useState(false);
   const [user, setUser] = useState<any>(null);
   const [apiStatus, setApiStatus] = useState<string>("");
+  const { fetchBlog, fetchUser, blogError, userError } = useApi();
+  // Teste de conexão manual
+  const [testStatus, setTestStatus] = useState<string | null>(null);
 
   // Checa sessão do Supabase apenas uma vez e escuta mudanças de autenticação
   useEffect(() => {
     let ignore = false;
     let unsub: any = null;
-    // Testa conectividade com backend
+    // Testa conectividade com backend usando useApi
     Promise.all([
-      fetch("/api/blog")
-        .then(async res => {
-          if (!res.ok) throw new Error("/api/blog: " + res.status);
-          try { await res.json(); } catch { throw new Error("/api/blog: resposta inválida do servidor"); }
-        }),
-      fetch("/api/users/me").then(res => res.ok ? null : Promise.reject("/api/users/me: " + res.status))
+      fetchBlog(),
+      fetchUser()
     ]).then(() => {
-      // Só tenta navegar se o backend está ok
       supabase.auth.getSession().then(({ data }) => {
         if (!ignore && data.session && data.session.user) {
           setUser(data.session.user);
@@ -65,7 +65,20 @@ export default function LoginPage() {
       ignore = true;
       unsub?.unsubscribe();
     };
-  }, [navigate]);
+  }, [navigate, fetchBlog, fetchUser]);
+
+  // Botão manual de teste de conexão
+  const handleTestConnection = async () => {
+    setTestStatus('Testando...');
+    try {
+      await fetchBlog();
+      await fetchUser();
+      setTestStatus('Conexão bem-sucedida!');
+    } catch (e) {
+      setTestStatus('Erro ao testar conexão.');
+    }
+    setTimeout(() => setTestStatus(null), 3000);
+  };
 
 
   const handleGoogleLogin = async () => {
@@ -143,6 +156,23 @@ export default function LoginPage() {
             {apiStatus}
           </div>
         )}
+        {(blogError || userError) && (
+          <div className="bg-red-500/10 border border-red-500/20 text-red-400 px-4 py-3 rounded-xl text-sm text-center">
+            {blogError && <div>Erro Blog: {blogError}</div>}
+            {userError && <div>Erro Usuário: {userError}</div>}
+          </div>
+        )}
+        <div className="flex justify-center py-2">
+          <button
+            onClick={handleTestConnection}
+            className="bg-brand-primary text-white px-4 py-2 rounded-xl font-bold text-sm hover:bg-brand-primary/90 transition-all"
+          >
+            Testar conexão Login
+          </button>
+          {testStatus && (
+            <span className="ml-4 text-white/80 text-sm">{testStatus}</span>
+          )}
+        </div>
 
         <div className="space-y-4">
           <button
