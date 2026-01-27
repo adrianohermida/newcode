@@ -88,30 +88,21 @@ import { useAuth } from '@hey-boss/users-service/react';
       navigate('/login');
       return;
     }
-
     try {
-      const response = await fetch('/api/forms/submit', {
-        method: 'POST',
-        headers: { 'Content-Type': 'application/json' },
-        body: JSON.stringify({
-          formId: 'appointment_form',
-          ...formData,
-          appointment_type: appointmentType,
-          appointment_date: selectedDate,
-          appointment_time: selectedSlot.hora_inicio,
-          profissional_id: selectedProf.id
-        })
+      await submitForm({
+        formId: 'appointment_form',
+        ...formData,
+        appointment_type: appointmentType,
+        appointment_date: selectedDate,
+        appointment_time: selectedSlot.hora_inicio,
+        profissional_id: selectedProf.id
       });
-
-      if (response.ok) {
-        setSubmitted(true);
-        window.scrollTo({ top: 0, behavior: 'smooth' });
-      } else {
-        const error = await response.json();
-        alert(error.error || "Ocorreu um erro ao processar seu agendamento.");
-      }
-    } catch (error) {
-      console.error("Erro ao enviar agendamento:", error);
+      setSubmitted(true);
+      setFallbackError(null);
+      window.scrollTo({ top: 0, behavior: 'smooth' });
+    } catch (e: any) {
+      setSubmitted(false);
+      setFallbackError(e?.message || 'Erro ao enviar agendamento.');
     }
   };
 
