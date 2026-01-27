@@ -34,15 +34,25 @@ export default function LoginPage() {
       fetch("/api/blog")
         .then(async res => {
           if (!res.ok) throw new Error("/api/blog: " + res.status);
-          // Tenta parsear JSON, se falhar, mostra erro amigável
-          try {
-            await res.json();
-          } catch {
-            throw new Error("/api/blog: resposta inválida do servidor");
-          }
+          try { await res.json(); } catch { throw new Error("/api/blog: resposta inválida do servidor"); }
         }),
       fetch("/api/users/me").then(res => res.ok ? null : Promise.reject("/api/users/me: " + res.status))
-    ]).catch(err => {
+    ]).then(() => {
+      // Só tenta navegar se o backend está ok
+      supabase.auth.getSession().then(({ data }) => {
+        if (!ignore && data.session && data.session.user) {
+          setUser(data.session.user);
+          navigate("/account", { replace: true });
+        }
+      });
+      const { data: listener } = supabase.auth.onAuthStateChange((_event, session) => {
+        if (!ignore && session?.user) {
+          setUser(session.user);
+          navigate("/account", { replace: true });
+        }
+      });
+      unsub = listener?.subscription;
+    }).catch(err => {
       setApiStatus(
         typeof err === "string"
           ? "Erro de conectividade com backend: " + err
@@ -51,19 +61,6 @@ export default function LoginPage() {
             : "Erro de conectividade com backend."
       );
     });
-    supabase.auth.getSession().then(({ data }) => {
-      if (!ignore && data.session && data.session.user) {
-        setUser(data.session.user);
-        navigate("/account", { replace: true });
-      }
-    });
-    const { data: listener } = supabase.auth.onAuthStateChange((_event, session) => {
-      if (!ignore && session?.user) {
-        setUser(session.user);
-        navigate("/account", { replace: true });
-      }
-    });
-    unsub = listener?.subscription;
     return () => {
       ignore = true;
       unsub?.unsubscribe();
