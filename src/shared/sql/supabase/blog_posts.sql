@@ -10,6 +10,7 @@ CREATE TABLE IF NOT EXISTS public.blog_posts (
   autor_nome TEXT,
   imagem_capa_url TEXT,
   categoria_id INTEGER,
+  categoria_nome TEXT,
   tags TEXT,
   status TEXT DEFAULT 'publicado',
   data_publicacao TIMESTAMP WITH TIME ZONE,
