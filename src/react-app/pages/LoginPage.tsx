@@ -25,7 +25,6 @@ export default function LoginPage() {
   const [error, setError] = useState("");
   const [loading, setLoading] = useState(false);
   const [user, setUser] = useState<any>(null);
-  const { fetchBlog, fetchUser, blogError, userError } = useApi();
   // Teste de conexão manual
   const [testStatus, setTestStatus] = useState<string | null>(null);
 
@@ -38,42 +37,19 @@ export default function LoginPage() {
         setUser(data.session.user);
         navigate("/account", { replace: true });
       }
-      supabase.auth.getSession().then(({ data }) => {
-        if (!ignore && data.session && data.session.user) {
-          setUser(data.session.user);
-          navigate("/account", { replace: true });
-        }
-      });
-      const { data: listener } = supabase.auth.onAuthStateChange((_event, session) => {
-          ? "Erro de conectividade com backend: " + err
-          : err?.message
-            ? "Erro de conectividade com backend: " + err.message
-        import { useAuthContext } from "../hooks/AuthContext";
     });
+    const { data: listener } = supabase.auth.onAuthStateChange((_event, session) => {
+      if (!ignore && session?.user) {
+        setUser(session.user);
+        navigate("/account", { replace: true });
+      }
+    });
+    unsub = listener?.subscription;
     return () => {
       ignore = true;
       unsub?.unsubscribe();
     };
-      // Testa apenas a conexão com o backend do Supabase
-      const { data, error } = await supabase.auth.getSession();
-        supabase.auth.getSession().then(({ data }) => {
-          if (!ignore && data.session && data.session.user) {
-            setUser(data.session.user);
-            navigate("/account", { replace: true });
-          }
-        });
-        const { data: listener } = supabase.auth.onAuthStateChange((_event, session) => {
-          if (!ignore && session?.user) {
-            setUser(session.user);
-            navigate("/account", { replace: true });
-          }
-        });
-        unsub = listener?.subscription;
-        return () => {
-          ignore = true;
-          unsub?.unsubscribe();
-        };
-  };
+  }, [navigate]);
 
   const handleSendOTP = async (e: React.FormEvent) => {
     e.preventDefault();
