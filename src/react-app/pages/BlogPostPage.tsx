@@ -7,6 +7,8 @@
  */
 
 import React, { useState, useEffect } from 'react';
+import { getBlogPost } from '../controllers/ApiPublic';
+import FallbackPage from './FallbackPage';
 import { useParams, Link, useNavigate } from 'react-router-dom';
 import { 
   ArrowLeft, 
@@ -32,26 +34,26 @@ export const BlogPostPage = () => {
   const [post, setPost] = useState<any>(null);
   const [loading, setLoading] = useState(true);
 
+  const [fallbackError, setFallbackError] = useState<string | null>(null);
   useEffect(() => {
     window.scrollTo(0, 0);
-    
-    fetch(`/api/blog/${slug}`)
-  import { useAuthContext } from '../hooks/AuthContext';
+    setLoading(true);
+    getBlogPost(slug as string)
       .then(data => {
         if (data.error) {
           navigate('/blog');
         } else {
           setPost(data);
           document.title = `${data.meta_titulo || data.titulo} | Blog Hermida Maia`;
-          
           // Atualizar meta tags dinamicamente (simulado para SPA)
           const metaDesc = document.querySelector('meta[name="description"]');
           if (metaDesc) metaDesc.setAttribute('content', data.meta_descricao || data.resumo || '');
         }
+        setFallbackError(null);
         setLoading(false);
       })
       .catch(err => {
-        console.error('Erro ao carregar post:', err);
+        setFallbackError(err?.message || 'Erro ao carregar post.');
         setLoading(false);
       });
   }, [slug, navigate]);
@@ -69,6 +71,9 @@ export const BlogPostPage = () => {
     }
   };
 
+  if (fallbackError) {
+    return <FallbackPage message={fallbackError} />;
+  }
   if (loading) {
     return (
       <div className="min-h-screen bg-brand-dark flex flex-col items-center justify-center gap-4">

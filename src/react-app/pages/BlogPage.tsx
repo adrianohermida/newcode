@@ -17,6 +17,8 @@ import {
   Filter
 } from 'lucide-react';
 import { Header } from '../components/Header';
+import { getBlogPosts, getBlogCategories } from '../controllers/ApiPublic';
+import FallbackPage from './FallbackPage';
 
   const [posts, setPosts] = useState<any[]>([]);
   const [categories, setCategories] = useState<any[]>([]);
@@ -24,14 +26,13 @@ import { Header } from '../components/Header';
   const [searchTerm, setSearchTerm] = useState('');
   const [activeCategory, setActiveCategory] = useState<number | null>(null);
   const [testStatus, setTestStatus] = useState<string | null>(null);
+  const [fallbackError, setFallbackError] = useState<string | null>(null);
   // Teste de conexão manual
   const handleTestConnection = async () => {
     setTestStatus('Testando...');
     try {
-      const postsRes = await fetch(`/api/blog${activeCategory ? `?categoria=${activeCategory}` : ''}`);
-      if (!postsRes.ok) throw new Error('Blog: ' + postsRes.status);
-      const catsRes = await fetch('/api/admin/blog-categories');
-      if (!catsRes.ok) throw new Error('Categorias: ' + catsRes.status);
+      await getBlogPosts(activeCategory ?? undefined);
+      await getBlogCategories();
       setTestStatus('Conexão bem-sucedida!');
     } catch (e: any) {
       setTestStatus('Erro ao testar conexão: ' + (e.message || 'Erro desconhecido'));
@@ -44,19 +45,17 @@ import { Header } from '../components/Header';
     const fetchData = async () => {
       setLoading(true);
       try {
-        const [postsRes, catsRes] = await Promise.all([
-          fetch(`/api/blog${activeCategory ? `?categoria=${activeCategory}` : ''}`),
-          fetch('/api/admin/blog-categories')
+        const [postsData, catsData] = await Promise.all([
+          getBlogPosts(activeCategory ?? undefined),
+          getBlogCategories()
         ]);
-        if (!postsRes.ok) throw new Error('Erro ao carregar posts: HTTP ' + postsRes.status);
-        if (!catsRes.ok) throw new Error('Erro ao carregar categorias: HTTP ' + catsRes.status);
-        const postsData = await postsRes.json();
-        const catsData = await catsRes.json();
         if (Array.isArray(postsData)) setPosts(postsData);
         if (Array.isArray(catsData)) setCategories(catsData);
+        setFallbackError(null);
       } catch (err: any) {
         setPosts([]);
         setCategories([]);
+        setFallbackError(err?.message || 'Erro ao conectar ao blog.');
       } finally {
         setLoading(false);
       }
@@ -68,10 +67,13 @@ import { Header } from '../components/Header';
     (post.resumo && post.resumo.toLowerCase().includes(searchTerm.toLowerCase()))
   );
 
+  if (fallbackError) {
+    return <FallbackPage message={fallbackError} />;
+  }
+
   return (
     <div className="min-h-screen bg-brand-dark text-white selection:bg-brand-primary selection:text-white">
       <Header />
-
       <main className="pt-32 pb-24">
         <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
           {/* Hero Section */}

@@ -1,3 +1,5 @@
+import { getUserMe } from '../controllers/ApiPublic';
+import FallbackPage from './FallbackPage';
 /**
  * @description Página de Login para Hermida Maia Advocacia.
  *             Oferece opções de login via Google e E-mail (OTP).
@@ -20,21 +22,36 @@ export default function LoginPage() {
   const [error, setError] = useState("");
   const [loading, setLoading] = useState(false);
   const [user, setUser] = useState<any>(null);
+  const [fallbackError, setFallbackError] = useState<string | null>(null);
 
   // Checa sessão do Supabase apenas uma vez e escuta mudanças de autenticação
   useEffect(() => {
     let ignore = false;
     let unsub: any = null;
+    // Tenta obter sessão do Supabase
     supabase.auth.getSession().then(({ data }) => {
       if (!ignore && data.session && data.session.user) {
         setUser(data.session.user);
-        navigate("/account", { replace: true });
+        // Confirma usuário no backend
+        getUserMe().then(() => {
+          navigate("/account", { replace: true });
+        }).catch(() => {
+          setFallbackError('Sua sessão foi autenticada, mas não foi possível validar o usuário no backend.');
+        });
+      } else {
+        setFallbackError('Não foi possível validar sua sessão. Faça login novamente.');
       }
+    }).catch(() => {
+      setFallbackError('Erro de conexão com o serviço de autenticação.');
     });
     const { data: listener } = supabase.auth.onAuthStateChange((_event, session) => {
       if (!ignore && session?.user) {
         setUser(session.user);
-        navigate("/account", { replace: true });
+        getUserMe().then(() => {
+          navigate("/account", { replace: true });
+        }).catch(() => {
+          setFallbackError('Sua sessão foi autenticada, mas não foi possível validar o usuário no backend.');
+        });
       }
     });
     unsub = listener?.subscription;
@@ -43,6 +60,9 @@ export default function LoginPage() {
       unsub?.unsubscribe();
     };
   }, [navigate]);
+  if (fallbackError) {
+    return <FallbackPage message={fallbackError} />;
+  }
 
   const handleSendOTP = async (e: React.FormEvent) => {
     e.preventDefault();
