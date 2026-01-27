@@ -1,5 +1,3 @@
-
-
 /**
  * @description Página de Login para Hermida Maia Advocacia.
  *             Oferece opções de login via Google e E-mail (OTP).
@@ -12,10 +10,7 @@ import { supabase } from "../utils/supabaseClient";
 import { useNavigate } from "react-router-dom";
 import { Mail, Lock, ArrowRight, Loader2, Chrome } from "lucide-react";
 import { FreshchatWidget } from "../components/FreshchatWidget";
-import { useApi } from "../hooks/useApi";
-
 import { useAuthContext } from "../hooks/AuthContext";
-
 
 export default function LoginPage() {
   const navigate = useNavigate();
@@ -25,8 +20,6 @@ export default function LoginPage() {
   const [error, setError] = useState("");
   const [loading, setLoading] = useState(false);
   const [user, setUser] = useState<any>(null);
-  // Teste de conexão manual
-  const [testStatus, setTestStatus] = useState<string | null>(null);
 
   // Checa sessão do Supabase apenas uma vez e escuta mudanças de autenticação
   useEffect(() => {
@@ -55,10 +48,14 @@ export default function LoginPage() {
     e.preventDefault();
     setLoading(true);
     setError("");
-          // Testa apenas a conexão com o backend do Supabase
-          const { data, error } = await supabase.auth.getSession();
-          if (error || !data.session) throw new Error('Sem sessão');
-          setTestStatus('Conexão bem-sucedida!');
+    try {
+      const { error } = await supabase.auth.signInWithOtp({ email, options: { shouldCreateUser: true } });
+      if (!error) {
+        setStep("otp");
+      } else {
+        setError(error.message || "Erro ao enviar código.");
+      }
+    } catch (err) {
       setError("Erro de conexão.");
     } finally {
       setLoading(false);

@@ -1,5 +1,3 @@
-
-
 /**
  * @description Página de listagem do Blog para Hermida Maia Advocacia.
  *             Exibe uma grade de artigos jurídicos com filtros por categoria e busca.
@@ -7,7 +5,6 @@
  */
 
 import React, { useState, useEffect } from 'react';
-import { useApi } from '../hooks/useApi';
 import { Link } from 'react-router-dom';
 import { 
   ArrowRight, 

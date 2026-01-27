@@ -1,4 +1,3 @@
-
 /**
  * @description Página de agendamento aprimorada para Hermida Maia Advocacia.
  *             Implementa um calendário interativo integrado ao banco de dados interno.
@@ -29,7 +28,6 @@ import {
 import { Link, useNavigate } from 'react-router-dom';
 import { cn } from '../utils';
 import { useAuth } from '@hey-boss/users-service/react';
-import { useApi } from '../hooks/useApi';
 
   const { user, loading: authLoading } = useAuth();
   const navigate = useNavigate();
