@@ -40,16 +40,13 @@ export function Header() {
     });
     const { data: listener } = supabase.auth.onAuthStateChange((_event, session) => {
       setUser(session?.user || null);
-      // Redireciona para /account após login, nunca para /portal
-      if (session?.user) {
-        navigate('/account', { replace: true });
-      }
+      // Não redireciona automaticamente após login
     });
     return () => {
       ignore = true;
       listener?.subscription.unsubscribe();
     };
-  }, [navigate]);
+  }, []);
 
   const handleLogout = async () => {
     await supabase.auth.signOut();
