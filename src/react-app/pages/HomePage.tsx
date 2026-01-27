@@ -32,11 +32,11 @@ import {
   AlertCircle
 } from 'lucide-react';
 import { Header } from '../components/Header';
-import { supabase } from '../utils/supabaseClient';
-import { useApi } from '../hooks/useApi';
+import { useAuthContext } from '../hooks/AuthContext';
 import { CustomForm } from '../components/CustomForm';
 import { newsletterTheme } from '../components/CustomForm/theme';
 import allConfigs from '../../shared/form-configs.json';
+
 
 // --- Components ---
 

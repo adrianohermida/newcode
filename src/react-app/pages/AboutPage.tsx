@@ -25,6 +25,7 @@ import {
   Youtube,
   ExternalLink
 } from 'lucide-react';
+import { useAuthContext } from '../hooks/AuthContext';
 import { Header } from '../components/Header';
 
 const AboutHero = () => (

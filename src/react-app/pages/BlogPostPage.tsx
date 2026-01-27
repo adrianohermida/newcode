@@ -36,7 +36,7 @@ export const BlogPostPage = () => {
     window.scrollTo(0, 0);
     
     fetch(`/api/blog/${slug}`)
-      .then(res => res.json())
+  import { useAuthContext } from '../hooks/AuthContext';
       .then(data => {
         if (data.error) {
           navigate('/blog');

@@ -47,7 +47,7 @@
 import React, { useEffect, useState } from "react";
 import { Loader2 } from "lucide-react";
 import { Navigate } from "react-router-dom";
-import { supabase } from "../utils/supabaseClient";
+import { useAuthContext } from "../hooks/AuthContext";
 
 import { ReactNode } from 'react';
 
@@ -55,25 +55,7 @@ interface AuthProtectProps {
   children: ReactNode;
 }
 
-export const AuthProtect = ({ children }: AuthProtectProps) => {
-  const [user, setUser] = useState<any>(null);
-  const [loading, setLoading] = useState(true);
-
-  useEffect(() => {
-    let unsub: any = null;
-    supabase.auth.getUser().then(({ data }) => {
-      setUser(data.user || null);
-      setLoading(false);
-    });
-    const { data: listener } = supabase.auth.onAuthStateChange((_event, session) => {
-      setUser(session?.user || null);
-      setLoading(false);
-    });
-    unsub = listener?.subscription;
-    return () => {
-      unsub?.unsubscribe();
-    };
-  }, []);
+  const { user, loading } = useAuthContext();
 
   if (loading) {
     return (

@@ -58,7 +58,7 @@ export default function LoginPage() {
           ? "Erro de conectividade com backend: " + err
           : err?.message
             ? "Erro de conectividade com backend: " + err.message
-            : "Erro de conectividade com backend."
+        import { useAuthContext } from "../hooks/AuthContext";
       );
     });
     return () => {
