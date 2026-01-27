@@ -34,10 +34,20 @@ import { LoaderCircle } from "lucide-react";
 import { useNavigate } from "react-router-dom";
 import { supabase } from "../utils/supabaseClient";
 
-export function AuthCallback() {
+
   const navigate = useNavigate();
 
   useEffect(() => {
+    // Workaround: extrai ?code=... do hash e reescreve para query string se necessário
+    if (window.location.hash && window.location.hash.includes('code=')) {
+      const hash = window.location.hash.substring(1); // remove '#'
+      const [route, params] = hash.split('?');
+      if (params) {
+        // reescreve para /auth/callback?code=...
+        window.location.replace(window.location.pathname + '?' + params);
+        return;
+      }
+    }
     // Supabase já processa o callback automaticamente
     supabase.auth.getUser().then(({ data }) => {
       if (data.user) {
