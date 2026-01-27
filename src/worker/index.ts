@@ -1,10 +1,10 @@
 // == BLOG PUBLIC ENDPOINTS ==
 app.get("/api/blog", async (c) => {
   const categoria = c.req.query("categoria");
-  let query = "SELECT * FROM blog ORDER BY published_at DESC";
+  let query = "SELECT * FROM blog_posts ORDER BY data_publicacao DESC";
   let params: any[] = [];
   if (categoria) {
-    query = "SELECT * FROM blog WHERE category = ? ORDER BY published_at DESC";
+    query = "SELECT * FROM blog_posts WHERE categoria_id = ? ORDER BY data_publicacao DESC";
     params = [categoria];
   }
   try {
