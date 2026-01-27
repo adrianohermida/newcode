@@ -2,7 +2,8 @@
 -- Inserção de dados iniciais para o blog
 -- A estrutura da tabela é definida em src/shared/schemas/blog_posts-schema.json
 
-INSERT INTO blog_posts (titulo, slug, conteudo, resumo, imagem_capa_url, categoria)
+-- Corrigido para inserir em categoria_nome (ou categoria_id se preferir usar IDs)
+INSERT INTO blog_posts (titulo, slug, conteudo, resumo, imagem_capa_url, categoria_nome)
 VALUES
   (
     'Lei do Superendividamento: Como sair do sufoco financeiro legalmente',
