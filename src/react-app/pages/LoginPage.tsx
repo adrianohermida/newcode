@@ -31,10 +31,25 @@ export default function LoginPage() {
     let unsub: any = null;
     // Testa conectividade com backend
     Promise.all([
-      fetch("/api/blog").then(res => res.ok ? null : Promise.reject("/api/blog: " + res.status)),
+      fetch("/api/blog")
+        .then(async res => {
+          if (!res.ok) throw new Error("/api/blog: " + res.status);
+          // Tenta parsear JSON, se falhar, mostra erro amigável
+          try {
+            await res.json();
+          } catch {
+            throw new Error("/api/blog: resposta inválida do servidor");
+          }
+        }),
       fetch("/api/users/me").then(res => res.ok ? null : Promise.reject("/api/users/me: " + res.status))
     ]).catch(err => {
-      setApiStatus("Erro de conectividade com backend: " + err);
+      setApiStatus(
+        typeof err === "string"
+          ? "Erro de conectividade com backend: " + err
+          : err?.message
+            ? "Erro de conectividade com backend: " + err.message
+            : "Erro de conectividade com backend."
+      );
     });
     supabase.auth.getSession().then(({ data }) => {
       if (!ignore && data.session && data.session.user) {
