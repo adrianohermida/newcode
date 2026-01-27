@@ -21,11 +21,27 @@ import { CustomForm } from '../components/CustomForm';
 import { contactFormTheme } from '../components/CustomForm/theme';
 import allConfigs from '../../shared/form-configs.json';
 
-export const ContactPage = () => {
   const [status, setStatus] = useState<{ type: 'success' | 'error' | null; message: string }>({
     type: null,
     message: ''
   });
+  const [testStatus, setTestStatus] = useState<string | null>(null);
+  // Teste de conexão manual
+  const handleTestConnection = async () => {
+    setTestStatus('Testando...');
+    try {
+      const response = await fetch('/api/forms/submit', {
+        method: 'POST',
+        headers: { 'Content-Type': 'application/json' },
+        body: JSON.stringify({ formId: 'contact_form', nome: 'Teste', email: 'teste@teste.com', mensagem: 'Teste de conexão' }),
+      });
+      if (!response.ok) throw new Error('Contato: ' + response.status);
+      setTestStatus('Conexão bem-sucedida!');
+    } catch (e: any) {
+      setTestStatus('Erro ao testar conexão: ' + (e.message || 'Erro desconhecido'));
+    }
+    setTimeout(() => setTestStatus(null), 3000);
+  };
 
   const handleSubmit = async (formData: any) => {
     try {
@@ -135,6 +151,17 @@ export const ContactPage = () => {
           </div>
 
           {/* Seção do Formulário */}
+          <div className="flex justify-center py-2">
+            <button
+              onClick={handleTestConnection}
+              className="bg-brand-primary text-white px-4 py-2 rounded-xl font-bold text-sm hover:bg-brand-primary/90 transition-all"
+            >
+              Testar conexão Contato
+            </button>
+            {testStatus && (
+              <span className="ml-4 text-white/80 text-sm">{testStatus}</span>
+            )}
+          </div>
           <div className="max-w-3xl mx-auto">
             <div className="bg-brand-elevated rounded-[2.5rem] p-8 sm:p-12 border border-white/10 shadow-2xl relative overflow-hidden">
               <div className="absolute top-0 left-0 w-full h-1 bg-brand-primary" />

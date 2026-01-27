@@ -7,6 +7,7 @@
  */
 
 import React, { useState, useEffect } from 'react';
+import { useApi } from '../hooks/useApi';
 import { Link } from 'react-router-dom';
 import { 
   ArrowRight, 
@@ -20,17 +21,29 @@ import {
 } from 'lucide-react';
 import { Header } from '../components/Header';
 
-export const BlogPage = () => {
   const [posts, setPosts] = useState<any[]>([]);
   const [categories, setCategories] = useState<any[]>([]);
   const [loading, setLoading] = useState(true);
   const [searchTerm, setSearchTerm] = useState('');
   const [activeCategory, setActiveCategory] = useState<number | null>(null);
-
+  const [testStatus, setTestStatus] = useState<string | null>(null);
+  // Teste de conexão manual
+  const handleTestConnection = async () => {
+    setTestStatus('Testando...');
+    try {
+      const postsRes = await fetch(`/api/blog${activeCategory ? `?categoria=${activeCategory}` : ''}`);
+      if (!postsRes.ok) throw new Error('Blog: ' + postsRes.status);
+      const catsRes = await fetch('/api/admin/blog-categories');
+      if (!catsRes.ok) throw new Error('Categorias: ' + catsRes.status);
+      setTestStatus('Conexão bem-sucedida!');
+    } catch (e: any) {
+      setTestStatus('Erro ao testar conexão: ' + (e.message || 'Erro desconhecido'));
+    }
+    setTimeout(() => setTestStatus(null), 3000);
+  };
   useEffect(() => {
     window.scrollTo(0, 0);
     document.title = "Blog | Hermida Maia Advocacia";
-    
     const fetchData = async () => {
       setLoading(true);
       try {
@@ -38,34 +51,23 @@ export const BlogPage = () => {
           fetch(`/api/blog${activeCategory ? `?categoria=${activeCategory}` : ''}`),
           fetch('/api/admin/blog-categories')
         ]);
-
-        if (!postsRes.ok) {
-          const text = await postsRes.text();
-          throw new Error(`Erro ao carregar posts: HTTP ${postsRes.status} - ${text.substring(0, 100)}`);
-        }
-        if (!catsRes.ok) {
-          const text = await catsRes.text();
-          throw new Error(`Erro ao carregar categorias: HTTP ${catsRes.status} - ${text.substring(0, 100)}`);
-        }
-
+        if (!postsRes.ok) throw new Error('Erro ao carregar posts: HTTP ' + postsRes.status);
+        if (!catsRes.ok) throw new Error('Erro ao carregar categorias: HTTP ' + catsRes.status);
         const postsData = await postsRes.json();
         const catsData = await catsRes.json();
-
         if (Array.isArray(postsData)) setPosts(postsData);
         if (Array.isArray(catsData)) setCategories(catsData);
       } catch (err: any) {
-        console.error('Erro ao carregar dados do blog:', err);
-        alert('Erro ao carregar dados do blog: ' + (err?.message || err));
+        setPosts([]);
+        setCategories([]);
       } finally {
         setLoading(false);
       }
     };
-
     fetchData();
   }, [activeCategory]);
-
   const filteredPosts = posts.filter(post => 
-    post.titulo.toLowerCase().includes(searchTerm.toLowerCase()) ||
+    post.titulo?.toLowerCase().includes(searchTerm.toLowerCase()) ||
     (post.resumo && post.resumo.toLowerCase().includes(searchTerm.toLowerCase()))
   );
 
@@ -119,6 +121,17 @@ export const BlogPage = () => {
             </div>
           </div>
 
+          <div className="flex justify-center py-2">
+            <button
+              onClick={handleTestConnection}
+              className="bg-brand-primary text-white px-4 py-2 rounded-xl font-bold text-sm hover:bg-brand-primary/90 transition-all"
+            >
+              Testar conexão Blog
+            </button>
+            {testStatus && (
+              <span className="ml-4 text-white/80 text-sm">{testStatus}</span>
+            )}
+          </div>
           {loading ? (
             <div className="flex flex-col items-center justify-center py-20 gap-4">
               <Loader2 className="text-brand-primary animate-spin" size={48} />

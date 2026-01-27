@@ -6,7 +6,7 @@
  *             Utiliza componentes visuais consistentes com o tema dark/brand-primary.
  */
 
-import React, { useEffect } from 'react';
+import React, { useEffect, useState } from 'react';
 import { Link } from 'react-router-dom';
 import { 
   ShieldCheck, 
@@ -311,15 +311,39 @@ const Footer = () => (
   </footer>
 );
 
-export const AboutPage = () => {
+  const [testStatus, setTestStatus] = useState<string | null>(null);
   useEffect(() => {
     window.scrollTo(0, 0);
     document.title = "Sobre o Escritório | Hermida Maia Advocacia";
   }, []);
 
+  // Teste de conexão manual
+  const handleTestConnection = async () => {
+    setTestStatus('Testando...');
+    try {
+      const res = await fetch('/api/blog');
+      if (!res.ok) throw new Error('About: ' + res.status);
+      setTestStatus('Conexão bem-sucedida!');
+    } catch (e: any) {
+      setTestStatus('Erro ao testar conexão: ' + (e.message || 'Erro desconhecido'));
+    }
+    setTimeout(() => setTestStatus(null), 3000);
+  };
+
   return (
     <div className="min-h-screen bg-brand-dark text-white selection:bg-brand-primary selection:text-white">
       <Header />
+      <div className="flex justify-center py-2">
+        <button
+          onClick={handleTestConnection}
+          className="bg-brand-primary text-white px-4 py-2 rounded-xl font-bold text-sm hover:bg-brand-primary/90 transition-all"
+        >
+          Testar conexão Sobre
+        </button>
+        {testStatus && (
+          <span className="ml-4 text-white/80 text-sm">{testStatus}</span>
+        )}
+      </div>
       <main>
         <AboutHero />
         <ProfileSection />
@@ -328,7 +352,6 @@ export const AboutPage = () => {
         <StatsSection />
         <PodcastSection />
         <WorksSection />
-        
         <section className="py-24 bg-brand-secondary">
           <div className="max-w-4xl mx-auto px-4 text-center">
             <h2 className="text-3xl sm:text-4xl font-extrabold mb-8 text-white">Pronto para recomeçar sua história?</h2>
