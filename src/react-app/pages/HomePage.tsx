@@ -13,7 +13,7 @@ import {
   CheckCircle2, Star, Play, ChevronRight, Mail, Phone, Instagram, Facebook, Linkedin, Youtube, AlertCircle
 } from 'lucide-react';
 // const supabase = createClient(import.meta.env.VITE_SUPABASE_URL, import.meta.env.VITE_SUPABASE_ANON_KEY);
-import { useAuthContext } from '../hooks/AuthContext';
+
 
 
 // --- Components ---

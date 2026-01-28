@@ -13,7 +13,7 @@ import { ProfilePage } from "./pages/ProfilePage";
 import { ProcessDetailPage } from "./pages/ProcessDetailPage";
 import { UnsubscribePage } from "./pages/UnsubscribePage";
 import { ChatWidget } from "./components/ChatWidget";
-import { AuthProvider } from "./hooks/AuthContext";
+
 import AuthTest from "./pages/AuthTest";
 import PrivateTest from "./pages/PrivateTest";
 import { DevFallbackPanel } from "./components/DevFallbackPanel";
@@ -150,7 +150,5 @@ export const App = () => {
           </Routes>
         </HashRouter>
          {/* CartProvider removido */}
-    </AuthProvider>
-  );
-};
+    {/* ...existing code... */}
 

@@ -29,9 +29,10 @@ import {
 } from 'lucide-react';
 import { Link, useNavigate } from 'react-router-dom';
 import { cn } from '../utils';
-import { useAuthContext } from '../hooks/AuthContext';
+import { useSupabaseSession } from '../hooks/useSupabaseSession';
 
-  const { user, loading: authLoading } = useAuthContext();
+  const session = useSupabaseSession();
+  const user = session?.user;
   const navigate = useNavigate();
   const [step, setStep] = useState(0); // Step 0: Tipo, Step 1: Horário, Step 2: Dados
   const [submitted, setSubmitted] = useState(false);

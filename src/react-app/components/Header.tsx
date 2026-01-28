@@ -14,14 +14,15 @@ import React, { useState, useRef, useEffect } from 'react';
 import { Link, useNavigate } from 'react-router-dom';
 import { User, LogOut, Briefcase, ChevronDown, LayoutDashboard, Menu, X, Shield, Settings } from 'lucide-react';
 import { supabase } from '../utils/supabaseClient';
-import { useAuthContext } from '../hooks/AuthContext';
+import { useSupabaseSession } from '../hooks/useSupabaseSession';
 
 
   const navigate = useNavigate();
   const [isMenuOpen, setIsMenuOpen] = useState(false);
   const [isMobileMenuOpen, setIsMobileMenuOpen] = useState(false);
   const menuRef = useRef<HTMLDivElement>(null);
-  const { user, logout } = useAuthContext();
+  const session = useSupabaseSession();
+  const user = session?.user;
   // Verifica se o usuário é admin (membro da equipe) - Insensível a maiúsculas
   const adminEmails = ["contato@hermidamaia.adv.br", "adrianohermida@gmail.com", "admin@example.com"];
   const userEmail = (user?.email || "").toLowerCase();

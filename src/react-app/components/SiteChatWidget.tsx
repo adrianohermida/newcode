@@ -1,5 +1,5 @@
 import React from 'react';
-import { useAuthContext } from '../hooks/AuthContext';
+import { useSupabaseSession } from '../hooks/useSupabaseSession';
 import { ChatWidget } from './ChatWidget';
 
 /**
@@ -7,7 +7,8 @@ import { ChatWidget } from './ChatWidget';
  * Detecta tipo de usuário (admin, cliente, visitante) e repassa para ChatWidget.
  */
 export const SiteChatWidget: React.FC = () => {
-  const { user } = useAuthContext();
+  const session = useSupabaseSession();
+  const user = session?.user;
   let mode: 'admin' | 'client' | 'visitor' = 'visitor';
   if (user) {
     mode = user.isAdmin ? 'admin' : 'client';

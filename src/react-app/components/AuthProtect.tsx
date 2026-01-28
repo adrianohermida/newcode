@@ -48,7 +48,7 @@ export default AuthProtect;
 import React, { useEffect, useState } from "react";
 import { Loader2 } from "lucide-react";
 import { Navigate } from "react-router-dom";
-import { useAuthContext } from "../hooks/AuthContext";
+import { useSupabaseSession } from "../hooks/useSupabaseSession";
 
 import { ReactNode } from 'react';
 
@@ -56,7 +56,8 @@ interface AuthProtectProps {
   children: ReactNode;
 }
 
-  const { user, loading } = useAuthContext();
+  const session = useSupabaseSession();
+  const user = session?.user;
 
   if (loading) {
     return (
