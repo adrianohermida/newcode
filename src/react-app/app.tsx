@@ -8,7 +8,7 @@ import { CheckoutErrorPage } from "./pages/CheckoutErrorPage";
 import { CheckoutCancelPage } from "./pages/CheckoutCancelPage";
 import LoginPage from "./pages/LoginPage";
 import { Dashboard } from "./pages/Dashboard";
-import { ClientPortal } from "./pages/ClientPortal";
+import ClientPortal from "./pages/ClientPortal";
 import { ProfilePage } from "./pages/ProfilePage";
 import { ProcessDetailPage } from "./pages/ProcessDetailPage";
 import { UnsubscribePage } from "./pages/UnsubscribePage";
@@ -96,7 +96,7 @@ export const App = () => {
   // App normal
   return (
     <AuthProvider>
-      <CartProvider>
+         {/* CartProvider removido */}
         <HashRouter>
           <Routes>
             {/* Public Routes */}
@@ -146,7 +146,7 @@ export const App = () => {
             <Route path="/chatwidget-test-dashboard" element={<AuthProtect><ChatWidget /></AuthProtect>} />
           </Routes>
         </HashRouter>
-      </CartProvider>
+         {/* CartProvider removido */}
     </AuthProvider>
   );
 };
