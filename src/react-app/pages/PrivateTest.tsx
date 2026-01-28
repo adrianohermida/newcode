@@ -1,11 +1,16 @@
 import React from "react";
-import { supabase } from "../utils/supabaseClient";
-import { useNavigate } from "react-router-dom";
+import { createClient } from "@supabase/supabase-js";
+
+// Instância local, sem dependência de contexto global
+const supabase = createClient(
+  import.meta.env.VITE_SUPABASE_URL,
+  import.meta.env.VITE_SUPABASE_ANON_KEY
+);
+// Não usar useNavigate para evitar dependência de contexto de rotas
 
 export default function PrivateTest() {
   const [user, setUser] = React.useState<any>(null);
   const [loading, setLoading] = React.useState(true);
-  const navigate = useNavigate();
 
   React.useEffect(() => {
     supabase.auth.getUser().then(({ data, error }) => {

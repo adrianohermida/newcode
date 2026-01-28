@@ -1,5 +1,11 @@
 import React, { useState } from "react";
-import { supabase } from "../utils/supabaseClient";
+import { createClient } from "@supabase/supabase-js";
+
+// Instância local, sem dependência de contexto global
+const supabase = createClient(
+  import.meta.env.VITE_SUPABASE_URL,
+  import.meta.env.VITE_SUPABASE_ANON_KEY
+);
 
 export default function AuthTest() {
   const [email, setEmail] = useState("");
