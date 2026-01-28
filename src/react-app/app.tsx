@@ -17,7 +17,6 @@ import { ChatWidget } from "./components/ChatWidget";
 import AuthTest from "./pages/AuthTest";
 import PrivateTest from "./pages/PrivateTest";
 import { DevFallbackPanel } from "./components/DevFallbackPanel";
-import AuthProtect from "./components/AuthProtect";
 import AboutPage from "./pages/AboutPage";
 import ContactPage from "./pages/ContactPage";
 import AppointmentsPage from "./pages/AppointmentsPage";
@@ -115,26 +114,12 @@ export const App = () => {
             <Route path="/checkout/success" element={<CheckoutSuccessPage />} />
             <Route path="/checkout/error" element={<CheckoutErrorPage />} />
             <Route path="/checkout/cancel" element={<CheckoutCancelPage />} />
-            <Route path="/account" element={<AuthProtect><ClientPortal /></AuthProtect>} />
+            <Route path="/portal" element={<ClientPortal />} />
+            <Route path="/dashboard" element={<Dashboard />} />
             <Route path="/processos/:id" element={<AuthProtect><ProcessDetailPage /></AuthProtect>} />
-
-            {/* Protected Routes */}
-            <Route 
-              path="/dashboard" 
-              element={<Dashboard />} 
-            />
-            <Route 
-              path="/admin" 
-              element={<Dashboard />} 
-            />
-            <Route 
-              path="/perfil" 
-              element={
-                <AuthProtect>
-                  <ProfilePage />
-                </AuthProtect>
-              } 
-            />
+            <Route path="/perfil" element={<AuthProtect><ProfilePage /></AuthProtect>} />
+                        {/* Fallback 404 */}
+                        <Route path="*" element={<DevFallbackPanel />} />
             {/* Páginas de teste do ChatWidget */}
             <Route path="/chatwidget-test-public" element={<ChatWidget />} />
             <Route path="/chatwidget-test-client" element={<AuthProtect><ChatWidget /></AuthProtect>} />
