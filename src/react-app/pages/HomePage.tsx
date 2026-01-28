@@ -2,7 +2,7 @@ import React from 'react';
 import { Link } from 'react-router-dom';
 import Header from '../components/Header';
 import { useApi } from '../hooks/useApi';
-import { createClient } from '@supabase/supabase-js';
+// import { createClient } from '@supabase/supabase-js';
 import { ChatWidget } from '../components/ChatWidget';
 import { SiteChatWidget } from '../components/SiteChatWidget';
 import { CustomForm } from '../components/CustomForm';
@@ -12,7 +12,7 @@ import {
   MessageCircle, ArrowRight, ShieldCheck, TrendingDown, Zap, Smile, Calendar, Scale, Handshake,
   CheckCircle2, Star, Play, ChevronRight, Mail, Phone, Instagram, Facebook, Linkedin, Youtube, AlertCircle
 } from 'lucide-react';
-const supabase = createClient(import.meta.env.VITE_SUPABASE_URL, import.meta.env.VITE_SUPABASE_ANON_KEY);
+// const supabase = createClient(import.meta.env.VITE_SUPABASE_URL, import.meta.env.VITE_SUPABASE_ANON_KEY);
 import { useAuthContext } from '../hooks/AuthContext';
 
 
@@ -188,7 +188,7 @@ const Calculator = () => {
     <section id="calculadora" className="py-24 bg-brand-dark relative overflow-hidden">
       <div className="absolute top-1/2 left-1/2 -translate-x-1/2 -translate-y-1/2 w-[800px] h-[800px] bg-brand-primary/5 rounded-full blur-[120px] pointer-events-none" />
       <div className="max-w-4xl mx-auto px-4 relative z-10">
-            <SupabaseDemo />
+
         <div className="bg-brand-elevated rounded-[2.5rem] p-8 sm:p-12 border border-white/10 shadow-2xl">
           <div className="text-center mb-12">
             <h2 className="text-3xl sm:text-4xl font-extrabold text-white mb-4">Calculadora de Superendividamento: Veja como Eliminar Dívidas</h2>
@@ -706,7 +706,8 @@ const Footer = () => {
 
   const handleNewsletterSubmit = async (formData: any) => {
     try {
-      const response = await apiFetch('/api/forms/submit', {
+      // Substitua por fetch padrão ou lógica apropriada
+      const response = await fetch('/api/forms/submit', {
         method: 'POST',
         headers: { 'Content-Type': 'application/json' },
         body: JSON.stringify({ 
@@ -715,7 +716,6 @@ const Footer = () => {
           source: 'footer_newsletter'
         }),
       });
-
       if (response.ok) {
         setIsSubscribed(true);
       }
