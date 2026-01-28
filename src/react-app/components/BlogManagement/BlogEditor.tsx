@@ -57,7 +57,7 @@ export const BlogEditor: React.FC<BlogEditorProps> = ({ post, categories, onBack
     reader.onloadend = async () => {
       const base64 = (reader.result as string).split(',')[1];
       try {
-        const res = await apiFetch('https://api.heybossai.com/v1/run', {
+        const data = await apiFetch('https://api.heybossai.com/v1/run', {
           method: 'POST',
           headers: {
             "Content-Type": "application/json",
@@ -68,7 +68,6 @@ export const BlogEditor: React.FC<BlogEditorProps> = ({ post, categories, onBack
             inputs: { base64_data: base64 }
           })
         });
-        const data = await res.json();
         if (data.url) {
           setFormData({ ...formData, imagem_capa_url: data.url });
         }
@@ -86,21 +85,19 @@ export const BlogEditor: React.FC<BlogEditorProps> = ({ post, categories, onBack
     try {
       const url = post ? `/api/admin/blog/posts/${post.id}` : '/api/admin/blog/posts';
       const method = post ? 'PUT' : 'POST';
-      
-      const res = await apiFetch(url, {
+      const result = await apiFetch(url, {
         method,
         headers: { 'Content-Type': 'application/json' },
         body: JSON.stringify(data)
       });
-
-      if (res.ok) {
+      if (result && !result.error) {
         onBack();
       } else {
-        const err = await res.json();
-        alert(`Erro ao salvar: ${err.error}`);
+        alert(`Erro ao salvar: ${result?.error || 'Erro desconhecido'}`);
       }
     } catch (e) {
       console.error(e);
+      alert('Erro ao salvar artigo. Tente novamente.');
     } finally {
       setIsSaving(false);
     }
@@ -110,7 +107,7 @@ export const BlogEditor: React.FC<BlogEditorProps> = ({ post, categories, onBack
     if (!formData.titulo) return alert('Digite um título primeiro!');
     
     try {
-      const res = await apiFetch('https://api.heybossai.com/v1/run', {
+      const data = await apiFetch('https://api.heybossai.com/v1/run', {
         method: 'POST',
         headers: {
           "Content-Type": "application/json",
@@ -123,11 +120,17 @@ export const BlogEditor: React.FC<BlogEditorProps> = ({ post, categories, onBack
           }
         })
       });
-      const data = await res.json();
-      const suggestions = JSON.parse(data.output || '{}');
+      let suggestions = {};
+      try {
+        suggestions = JSON.parse(data.output || '{}');
+      } catch (e) {
+        console.error('Erro ao parsear sugestões IA:', e, data.output);
+        alert('Erro ao interpretar resposta da IA. Tente novamente.');
+      }
       setFormData({ ...formData, ...suggestions });
     } catch (e) {
       console.error(e);
+      alert('Erro ao buscar sugestões IA. Tente novamente.');
     }
   };
 
