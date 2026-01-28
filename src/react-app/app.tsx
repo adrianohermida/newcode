@@ -67,20 +67,18 @@ import PrivateTest from "./pages/PrivateTest";
 // Widget Freshchat para páginas públicas
 export const App = () => {
   // Detecta se está em rota de teste
-  const [isTestRoute, setIsTestRoute] = React.useState(() => {
-    if (typeof window === 'undefined') return false;
+  const [routeState, setRouteState] = React.useState<'unknown'|'test'|'normal'>(() => {
+    if (typeof window === 'undefined') return 'unknown';
     const hash = window.location.hash;
-    return hash.startsWith('#/auth-test') || hash.startsWith('#/private-test');
+    return (hash.startsWith('#/auth-test') || hash.startsWith('#/private-test')) ? 'test' : 'normal';
   });
   React.useEffect(() => {
     if (typeof window === 'undefined') return;
     const check = () => {
       const hash = window.location.hash;
-      const test = hash.startsWith('#/auth-test') || hash.startsWith('#/private-test');
-      setIsTestRoute(test);
+      setRouteState((hash.startsWith('#/auth-test') || hash.startsWith('#/private-test')) ? 'test' : 'normal');
     };
     window.addEventListener('hashchange', check);
-    // Hot reload: força reload se mudar para rota de teste
     if (import.meta.hot) {
       import.meta.hot.on('vite:afterUpdate', () => {
         check();
@@ -88,7 +86,10 @@ export const App = () => {
     }
     return () => window.removeEventListener('hashchange', check);
   }, []);
-  if (isTestRoute) {
+  if (routeState === 'unknown') {
+    return <div style={{textAlign:'center',marginTop:40}}>Carregando...</div>;
+  }
+  if (routeState === 'test') {
     return (
       <HashRouter>
         <Routes>
