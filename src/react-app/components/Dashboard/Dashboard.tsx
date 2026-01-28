@@ -259,7 +259,12 @@ export const Dashboard = () => {
                   <ProcessosModule data={filteredData} onSelect={setSelectedProcesso} />
                 )}
                 {activeTab === 'processos' && selectedProcesso && (
-                  <ProcessoDetailInline processo={selectedProcesso} onBack={() => setSelectedProcesso(null)} />
+                  <div className="bg-brand-elevated p-10 rounded-3xl border border-white/5 text-center text-white/40">
+                    Detalhe do processo não implementado.<br />
+                    <button className="block mt-4 text-brand-primary font-bold" onClick={() => setSelectedProcesso(null)}>
+                      Voltar
+                    </button>
+                  </div>
                 )}
                 {activeTab === 'documentos' && <DocumentsModule data={filteredData} />}
                 {activeTab === 'planos_pagamento' && <PlanoPagamentoModule data={filteredData} />}
