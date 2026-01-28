@@ -1,3 +1,4 @@
+export default AboutPage;
 
 /**
  * @description Página "Sobre" para Hermida Maia Advocacia.

@@ -1,3 +1,4 @@
+export default BlogPage;
 /**
  * @description Página de listagem do Blog para Hermida Maia Advocacia.
  *             Exibe uma grade de artigos jurídicos com filtros por categoria e busca.

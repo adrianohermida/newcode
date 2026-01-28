@@ -1,3 +1,4 @@
+export default AppointmentsPage;
 /**
  * @description Página de agendamento aprimorada para Hermida Maia Advocacia.
  *             Implementa um calendário interativo integrado ao banco de dados interno.

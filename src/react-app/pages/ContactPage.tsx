@@ -1,3 +1,4 @@
+export default ContactPage;
 import { SiteChatWidget } from '../components/SiteChatWidget';
 
 /**

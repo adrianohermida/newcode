@@ -22,7 +22,7 @@ interface Message {
 }
 
 
-export const ChatWidget = ({ mode = 'visitor' }: { mode?: 'admin' | 'client' | 'visitor' }) => {
+export const ChatWidget = ({ mode = 'visitor' }: { mode?: 'admin' | 'client' | 'visitor' }) : React.ReactElement => {
   const [isOpen, setIsOpen] = useState(false);
   const [input, setInput] = useState("");
   const [messages, setMessages] = useState<Message[]>([]);

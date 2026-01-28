@@ -1,3 +1,4 @@
+export default AuthCallback;
 /**
  * AuthCallback.tsx - OAuth Authentication Callback Page
  *

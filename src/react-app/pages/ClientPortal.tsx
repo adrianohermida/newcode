@@ -1,3 +1,4 @@
+export default ClientPortal;
 
 import React, { useState, useEffect } from 'react';
 import { ChatWidget } from '../components/ChatWidget';
