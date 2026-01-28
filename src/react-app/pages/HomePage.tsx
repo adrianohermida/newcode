@@ -77,7 +77,7 @@ const Hero = () => (
               {[1, 2, 3, 4].map((num) => (
                 <img
                   key={num}
-                  src={`/src/react-app/assets/img/avatar${num}.png`}
+                  src={`/assets/img/avatar${num}.png`}
                   className="w-10 h-10 rounded-full border-2 border-brand-dark"
                   alt={`Avatar ${num}`}
                 />
