@@ -7,6 +7,8 @@ import React, { useEffect, useMemo, useState } from 'react';
 import { useAuth } from '@hey-boss/users-service/react';
 import { useNavigate } from 'react-router-dom';
 import { Header } from '../components/Header';
+import { apiFetch } from '../controllers/ApiController';
+import FallbackPage from './FallbackPage';
 
 import {
   Users,
@@ -72,6 +74,7 @@ export const Dashboard = () => {
   const [data, setData] = useState<any[]>([]);
   const [selectedProcesso, setSelectedProcesso] = useState<any | null>(null);
   const [selectedTicket, setSelectedTicket] = useState<any | null>(null);
+  const [fallbackError, setFallbackError] = useState<string | null>(null);
 
   /* ===== ADMIN GUARD ===== */
   useEffect(() => {
@@ -140,9 +143,7 @@ useEffect(() => {
   const fetchData = async () => {
     setLoading(true);
     try {
-      const res = await fetch(endpoint);
-      const json = await res.json();
-
+      const json = await apiFetch(endpoint);
       const normalized =
         activeTab === 'tickets'
           ? Array.isArray(json)
@@ -153,11 +154,15 @@ useEffect(() => {
           : Array.isArray(json)
           ? json
           : [];
-
-      if (!aborted) setData(normalized);
-    } catch (err) {
-      console.error(err);
-      if (!aborted) setData([]);
+      if (!aborted) {
+        setData(normalized);
+        setFallbackError(null);
+      }
+    } catch (err: any) {
+      if (!aborted) {
+        setData([]);
+        setFallbackError(err?.message || 'Erro ao conectar ao painel administrativo.');
+      }
     } finally {
       if (!aborted) setLoading(false);
     }
