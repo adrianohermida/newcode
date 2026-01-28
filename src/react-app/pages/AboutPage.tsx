@@ -26,6 +26,7 @@ import {
   ExternalLink
 } from 'lucide-react';
 import { useAuthContext } from '../hooks/AuthContext';
+import { SiteChatWidget } from '../components/SiteChatWidget';
 import { Header } from '../components/Header';
 
 const AboutHero = () => (

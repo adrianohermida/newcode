@@ -1,3 +1,4 @@
+import { SiteChatWidget } from '../components/SiteChatWidget';
 /**
  * Dashboard Administrativo – Hermida Maia Advocacia
  * Template original restaurado + integração real de módulos existentes

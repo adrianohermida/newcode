@@ -25,6 +25,7 @@ import {
   Mail
 } from 'lucide-react';
 import { Header } from '../components/Header';
+import { SiteChatWidget } from '../components/SiteChatWidget';
 import { CustomForm } from '../components/CustomForm';
 import allConfigs from '../../shared/form-configs.json';
 

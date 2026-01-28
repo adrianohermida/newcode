@@ -17,6 +17,7 @@ import {
   Filter
 } from 'lucide-react';
 import { Header } from '../components/Header';
+import { SiteChatWidget } from '../components/SiteChatWidget';
 import { getBlogPosts, getBlogCategories } from '../controllers/ApiPublic';
 import FallbackPage from './FallbackPage';
 

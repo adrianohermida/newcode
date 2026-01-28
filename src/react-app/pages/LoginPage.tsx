@@ -12,6 +12,7 @@ import { supabase } from "../utils/supabaseClient";
 import { useNavigate } from "react-router-dom";
 import { Mail, Lock, ArrowRight, Loader2, Chrome } from "lucide-react";
 import { ChatWidget } from "../components/ChatWidget";
+import { SiteChatWidget } from "../components/SiteChatWidget";
 import { useAuthContext } from "../hooks/AuthContext";
 
 export default function LoginPage() {

@@ -8,6 +8,7 @@
 
 import React, { useEffect, useState } from 'react';
 import { ChatWidget } from '../components/ChatWidget';
+import { SiteChatWidget } from '../components/SiteChatWidget';
 import { Link } from 'react-router-dom';
 import { 
   MessageCircle, 

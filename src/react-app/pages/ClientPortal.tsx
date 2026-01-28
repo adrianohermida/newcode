@@ -1,6 +1,7 @@
 
 import React, { useState, useEffect } from 'react';
 import { ChatWidget } from '../components/ChatWidget';
+import { SiteChatWidget } from '../components/SiteChatWidget';
 import { Header } from '../components/Header';
 import { useAuth } from '@hey-boss/users-service/react';
 import { CustomForm } from '../components/CustomForm';

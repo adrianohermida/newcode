@@ -1,3 +1,4 @@
+import { SiteChatWidget } from '../components/SiteChatWidget';
 
 /**
  * @description Página de Contato para Hermida Maia Advocacia.
