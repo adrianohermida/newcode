@@ -69,6 +69,11 @@ export const App = () => {
       <CartProvider>
         <HashRouter>
           <Routes>
+                        {/* Testes Supabase Auth */}
+                        <Route path="/auth-test" element={<React.Suspense fallback={<div>Carregando...</div>}><AuthTest /></React.Suspense>} />
+                        <Route path="/private-test" element={<React.Suspense fallback={<div>Carregando...</div>}><PrivateTest /></React.Suspense>} />
+            const AuthTest = React.lazy(() => import("./pages/AuthTest"));
+            const PrivateTest = React.lazy(() => import("./pages/PrivateTest"));
             {/* Public Routes */}
             <Route path="/" element={<HomePage />} />
             <Route path="/sobre" element={<AboutPage />} />
