@@ -8,17 +8,23 @@ import { supabase } from '../utils/supabaseClient';
 }
 }
 export async function getBlogPosts(category?: number) {
-  try {
-    return await apiFetch(`/api/blog${category ? `?categoria=${category}` : ''}`);
-  } catch (err: any) {
+  // Chama Edge Function via Supabase SDK
+  const { data, error } = await supabase.functions.invoke('blog', {
+    body: category ? { categoria: category } : {},
+  });
+  if (error) {
     if (typeof window !== 'undefined') {
-      window.__BLOG_ERROR__ = err?.message || 'Erro ao carregar blog.';
+      window.__BLOG_ERROR__ = error.message || 'Erro ao carregar blog.';
     }
-    throw err;
+    throw new Error(error.message || 'Erro ao carregar blog.');
   }
+  return data;
 }
 export async function getBlogCategories() {
-  return apiFetch('/api/admin/blog-categories');
+  // Chama Edge Function via Supabase SDK
+  const { data, error } = await supabase.functions.invoke('blog-categories');
+  if (error) throw new Error(error.message || 'Erro ao carregar categorias do blog.');
+  return data;
 }
 export async function getBlogPost(slug: string) {
   return apiFetch(`/api/blog/${slug}`);
