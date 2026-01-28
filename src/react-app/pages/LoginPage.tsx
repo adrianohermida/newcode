@@ -1,67 +1,70 @@
-import React, { useState, useEffect } from 'react';
+import React, { useState } from 'react';
 import { supabase } from '../utils/supabaseClient';
-import { useSupabaseSession } from '../hooks/useSupabaseSession';
-import type { Session } from '@supabase/supabase-js';
-import { useNavigate } from 'react-router-dom';
 
 export default function LoginPage() {
   const [email, setEmail] = useState('');
   const [password, setPassword] = useState('');
-  const [error, setError] = useState('');
+  const [error, setError] = useState<string | null>(null);
   const [loading, setLoading] = useState(false);
-  const session: Session | null = useSupabaseSession();
-  const navigate = useNavigate();
-
-  useEffect(() => {
-    if (session && session.user) {
-      navigate('/'); // Redireciona para home se já autenticado
-    }
-  }, [session, navigate]);
 
   const handleLogin = async (e: React.FormEvent) => {
     e.preventDefault();
-    setError('');
+    setError(null);
     setLoading(true);
-    const { error } = await supabase.auth.signInWithPassword({ email, password });
+
+    const { error } = await supabase.auth.signInWithPassword({
+      email,
+      password,
+    });
+
     setLoading(false);
-    if (error) setError(error.message);
-    // O redirecionamento será feito pelo useEffect
+
+    if (error) {
+      setError(error.message);
+      return;
+    }
+
+    // 🔑 NUNCA redireciona aqui
+    // O Supabase vai atualizar a sessão
+    // e o AuthCallback cuidará disso
   };
 
   return (
-    <div className="min-h-screen flex items-center justify-center bg-brand-dark">
-      <form
-        onSubmit={handleLogin}
-        className="bg-brand-elevated p-8 rounded-2xl shadow-xl w-full max-w-sm flex flex-col gap-6 border border-white/10"
-        autoComplete="off"
+    <form
+      onSubmit={handleLogin}
+      className="max-w-sm mx-auto mt-32 space-y-4"
+    >
+      <h1 className="text-2xl font-extrabold text-center">Entrar</h1>
+
+      <input
+        type="email"
+        placeholder="E-mail"
+        required
+        value={email}
+        onChange={e => setEmail(e.target.value)}
+        className="w-full px-4 py-3 rounded-xl bg-brand-dark border border-white/10"
+      />
+
+      <input
+        type="password"
+        placeholder="Senha"
+        required
+        value={password}
+        onChange={e => setPassword(e.target.value)}
+        className="w-full px-4 py-3 rounded-xl bg-brand-dark border border-white/10"
+      />
+
+      <button
+        type="submit"
+        disabled={loading}
+        className="w-full bg-brand-primary py-3 rounded-xl font-bold"
       >
-        <h2 className="text-2xl font-bold text-white text-center mb-2">Entrar na Plataforma</h2>
-        <input
-          className="px-4 py-3 rounded-lg bg-brand-dark text-white border border-white/10 focus:border-brand-primary outline-none"
-          value={email}
-          onChange={e => setEmail(e.target.value)}
-          placeholder="Email"
-          type="email"
-          required
-        />
-        <input
-          className="px-4 py-3 rounded-lg bg-brand-dark text-white border border-white/10 focus:border-brand-primary outline-none"
-          value={password}
-          onChange={e => setPassword(e.target.value)}
-          type="password"
-          placeholder="Senha"
-          required
-        />
-        <button
-          type="submit"
-          className="bg-brand-primary hover:bg-brand-primary/90 text-white font-bold py-3 rounded-lg transition-all disabled:opacity-60"
-          disabled={loading}
-        >
-          {loading ? 'Entrando...' : 'Entrar'}
-        </button>
-        {error && <div className="text-red-400 text-center text-sm">{error}</div>}
-      </form>
-    </div>
+        {loading ? 'Entrando…' : 'Entrar'}
+      </button>
+
+      {error && (
+        <p className="text-red-400 text-sm text-center">{error}</p>
+      )}
+    </form>
   );
 }
-
