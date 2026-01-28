@@ -1,32 +1,28 @@
 #!/bin/bash
-# Copia favicons e apple-touch-icons para a pasta de build (dist)
-
+# Copia favicons e apple-touch-icons para a pasta de build (dist/assets)
 set -e
 
 SRC_DIR="$(dirname "$0")/.."
-DIST_DIR="$SRC_DIR/dist"
+ASSET_DIR="$SRC_DIR/assets"
+DIST_ASSET_DIR="$SRC_DIR/dist/assets"
 
-# Lista de arquivos essenciais
-FILES=(
-  "favicon.ico"
-  "genfavicon-32.png"
-  "genfavicon-16.png"
-  "apple-touch-icon-57x57.png"
-  "apple-touch-icon-114x114.png"
-  "apple-touch-icon-120x120.png"
-  "apple-touch-icon-180x180.png"
-  "site.webmanifest"
-)
+mkdir -p "$DIST_ASSET_DIR"
 
-mkdir -p "$DIST_DIR"
+# Copia todos os favicons e apple-touch-icons do root
+cp -v $SRC_DIR/favicon.ico $DIST_ASSET_DIR/ 2>/dev/null || true
+cp -v $SRC_DIR/apple-touch-icon*.png $DIST_ASSET_DIR/ 2>/dev/null || true
+cp -v $SRC_DIR/genfavicon-*.png $DIST_ASSET_DIR/ 2>/dev/null || true
 
-for file in "${FILES[@]}"; do
-  if [ -f "$SRC_DIR/$file" ]; then
-    cp "$SRC_DIR/$file" "$DIST_DIR/"
-    echo "Copiado: $file"
-  else
-    echo "Aviso: $file não encontrado no diretório raiz."
-  fi
-done
+# Copia do assets também
+cp -v $ASSET_DIR/apple-touch-icon*.png $DIST_ASSET_DIR/ 2>/dev/null || true
+cp -v $ASSET_DIR/genfavicon-*.png $DIST_ASSET_DIR/ 2>/dev/null || true
+cp -v $ASSET_DIR/favicon.ico $DIST_ASSET_DIR/ 2>/dev/null || true
 
-echo "Favicons e manifest copiados para $DIST_DIR."
+# Copia o manifest se existir
+if [ -f "$SRC_DIR/site.webmanifest" ]; then
+  cp -v "$SRC_DIR/site.webmanifest" "$DIST_ASSET_DIR/"
+fi
+
+echo "Arquivos copiados para $DIST_ASSET_DIR:"
+ls -lh $DIST_ASSET_DIR | grep icon || true
+ls -lh $DIST_ASSET_DIR | grep favicon || true
