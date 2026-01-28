@@ -1,10 +1,10 @@
 import { ChatWidget } from '../components/ChatWidget';
 import { Header } from '../components/Header';
 import { Footer } from '../components/Footer';
-import { useAuth } from '@hey-boss/users-service/react';
+import { useSupabaseSession } from '../hooks/useSupabaseSession';
 
-export default function ChatWidgetTestClient() {
-  const { user } = useAuth();
+  const session = useSupabaseSession();
+  const user = session?.user;
   return (
     <div className="min-h-screen bg-brand-dark text-white">
       <ChatWidget />

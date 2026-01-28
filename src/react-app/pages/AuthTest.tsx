@@ -1,11 +1,6 @@
 import React, { useState } from "react";
-import { createClient } from "@supabase/supabase-js";
-
-// Instância local, sem dependência de contexto global
-const supabase = createClient(
-  import.meta.env.VITE_SUPABASE_URL,
-  import.meta.env.VITE_SUPABASE_ANON_KEY
-);
+import { supabase } from '../utils/supabaseClient';
+import { useSupabaseSession } from '../hooks/useSupabaseSession';
 
 export default function AuthTest() {
   React.useEffect(() => {
@@ -14,8 +9,8 @@ export default function AuthTest() {
   }, []);
   const [email, setEmail] = useState("");
   const [password, setPassword] = useState("");
-  const [session, setSession] = useState<any>(null);
   const [error, setError] = useState<string | null>(null);
+  const session = useSupabaseSession();
 
   const handleLogin = async (e: React.FormEvent) => {
     e.preventDefault();
@@ -25,22 +20,14 @@ export default function AuthTest() {
       password,
     });
     if (error) setError(error.message);
-    else setSession(data.session);
+    // session will update automatically via useSupabaseSession
   };
 
   const handleLogout = async () => {
     await supabase.auth.signOut();
-    setSession(null);
     window.location.hash = '#/auth-test'; // Garante que volta para rota válida
+    // session will update automatically via useSupabaseSession
   };
-
-  React.useEffect(() => {
-    const getSession = async () => {
-      const { data } = await supabase.auth.getSession();
-      setSession(data.session);
-    };
-    getSession();
-  }, []);
 
   return (
     <div style={{ maxWidth: 400, margin: "2rem auto", padding: 24, border: "1px solid #ccc", borderRadius: 8 }}>
