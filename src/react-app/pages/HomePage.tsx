@@ -552,8 +552,25 @@ type BlogPost = {
 
 
 const Blog = () => {
-  const { blog, blogLoading, blogError, fetchBlog } = useApi();
+  const [blog, setBlog] = React.useState<any[]>([]);
+  const [blogLoading, setBlogLoading] = React.useState(false);
+  const [blogError, setBlogError] = React.useState<string | null>(null);
   const [testStatus, setTestStatus] = React.useState<string | null>(null);
+  const fetchBlog = async () => {
+    setBlogLoading(true);
+    setBlogError(null);
+    try {
+      const res = await fetch('/api/blog');
+      if (!res.ok) throw new Error('Erro HTTP: ' + res.status);
+      const data = await res.json();
+      setBlog(data);
+    } catch (e: any) {
+      setBlogError(e?.message || 'Erro desconhecido');
+    } finally {
+      setBlogLoading(false);
+    }
+  };
+  React.useEffect(() => { fetchBlog(); }, []);
   const handleTestConnection = async () => {
     setTestStatus('Testando...');
     try {
