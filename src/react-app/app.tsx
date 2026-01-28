@@ -1,26 +1,32 @@
-            <Route path="/chatwidget-test-public" element={<ChatWidgetTestPublic />} />
-            <Route path="/chatwidget-test-client" element={<ChatWidgetTestClient />} />
-            <Route path="/chatwidget-test-dashboard" element={<ChatWidgetTestDashboard />} />
-
-
+import React from "react";
 import { HashRouter, Route, Routes } from "react-router-dom";
 import { HomePage } from "./pages/HomePage";
-import { AboutPage } from "./pages/AboutPage";
-import { ContactPage } from "./pages/ContactPage";
-import { AppointmentsPage } from "./pages/AppointmentsPage";
-import { BlogPage } from "./pages/BlogPage";
+import AboutPage from "./pages/AboutPage";
+import ContactPage from "./pages/ContactPage";
+import AppointmentsPage from "./pages/AppointmentsPage";
+import BlogPage from "./pages/BlogPage";
 import { BlogPostPage } from "./pages/BlogPostPage";
-import { AuthCallback } from "./pages/AuthCallback";
-// import { AuthProvider } from "@hey-boss/users-service/react";
-import { CheckoutSuccessPage } from "./pages/CheckoutSuccessPage";
-import { CheckoutErrorPage } from "./pages/CheckoutErrorPage";
-import { CheckoutCancelPage } from "./pages/CheckoutCancelPage";
+import AuthCallback from "./pages/AuthCallback";
+import CheckoutSuccessPage from "./pages/CheckoutSuccessPage";
+import CheckoutErrorPage from "./pages/CheckoutErrorPage";
+import CheckoutCancelPage from "./pages/CheckoutCancelPage";
 import LoginPage from "./pages/LoginPage";
-// import { FreshworksWidget } from "./pages/LoginPage";
 import { Dashboard } from "./pages/Dashboard";
 import { ClientPortal } from "./pages/ClientPortal";
+import { ProfilePage } from "./pages/ProfilePage";
+import { ProcessDetailPage } from "./pages/ProcessDetailPage";
+import { UnsubscribePage } from "./pages/UnsubscribePage";
+import AuthProtect from "./components/AuthProtect";
+import { ChatWidget } from "./components/ChatWidget";
+import { CartProvider } from "./components/Cart";
+import { AuthProvider } from "./hooks/AuthContext";
+import AuthTest from "./pages/AuthTest";
+import PrivateTest from "./pages/PrivateTest";
+import { DevFallbackPanel } from "./components/DevFallbackPanel";
 
-export const ChatWidgetTestPublic = () => (
+
+// Rotas de teste do ChatWidget (mantidas para compatibilidade, mas não usadas no fluxo principal)
+const ChatWidgetTestPublic = () => (
   <div className="min-h-screen bg-brand-dark flex flex-col items-center justify-center p-8">
     <h1 className="text-2xl font-bold text-white mb-6">Teste Público do ChatWidget</h1>
     <div className="w-full max-w-md">
@@ -29,8 +35,7 @@ export const ChatWidgetTestPublic = () => (
     <p className="text-white/40 mt-6">Ambiente público (não logado)</p>
   </div>
 );
-
-export const ChatWidgetTestClient = () => (
+const ChatWidgetTestClient = () => (
   <AuthProtect>
     <div className="min-h-screen bg-brand-dark flex flex-col items-center justify-center p-8">
       <h1 className="text-2xl font-bold text-white mb-6">Teste Cliente do ChatWidget</h1>
@@ -41,8 +46,7 @@ export const ChatWidgetTestClient = () => (
     </div>
   </AuthProtect>
 );
-
-export const ChatWidgetTestDashboard = () => (
+const ChatWidgetTestDashboard = () => (
   <AuthProtect>
     <div className="min-h-screen bg-brand-dark flex flex-col items-center justify-center p-8">
       <h1 className="text-2xl font-bold text-white mb-6">Teste Dashboard/Admin do ChatWidget</h1>
@@ -139,7 +143,6 @@ export const App = () => {
               element={
                 <AuthProtect>
                   <Dashboard />
-                  <FreshchatWidgetPortal />
                 </AuthProtect>
               } 
             />
@@ -148,7 +151,6 @@ export const App = () => {
               element={
                 <AuthProtect>
                   <ProfilePage />
-                  <FreshchatWidgetPortal />
                 </AuthProtect>
               } 
             />
