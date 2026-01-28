@@ -17,6 +17,7 @@ import { AuthProvider } from "./hooks/AuthContext";
 import AuthTest from "./pages/AuthTest";
 import PrivateTest from "./pages/PrivateTest";
 import { DevFallbackPanel } from "./components/DevFallbackPanel";
+import AuthProtect from "./components/AuthProtect";
 import AboutPage from "./pages/AboutPage";
 import ContactPage from "./pages/ContactPage";
 import AppointmentsPage from "./pages/AppointmentsPage";
