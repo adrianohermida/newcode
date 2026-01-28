@@ -57,6 +57,7 @@ import { Loader2 } from 'lucide-react';
 
 export const Dashboard = () => {
   const session = useSupabaseSession();
+  const isAdmin = useIsAdmin();
   const navigate = useNavigate();
   const [activeTab, setActiveTab] = useState<DashboardTab>('overview');
   const [selectedTicket, setSelectedTicket] = useState<any | null>(null);
@@ -67,8 +68,10 @@ export const Dashboard = () => {
     if (session === undefined) return;
     if (!session) {
       navigate('/login', { replace: true });
+    } else if (!isAdmin) {
+      navigate('/clientportal', { replace: true });
     }
-  }, [session, navigate]);
+  }, [session, isAdmin, navigate]);
 
   if (session === undefined) {
     return (
@@ -77,7 +80,7 @@ export const Dashboard = () => {
       </div>
     );
   }
-  if (!session) return null;
+  if (!session || !isAdmin) return null;
 
       // Fetch data for each tab
       useEffect(() => {
