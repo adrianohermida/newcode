@@ -4,19 +4,33 @@
 export async function apiFetch(url: string, options?: RequestInit) {
   try {
     const res = await fetch(url, options);
+    const contentType = res.headers.get('content-type') || '';
     if (!res.ok) {
       // Tenta extrair mensagem de erro do backend
       let message = `Erro ao acessar ${url}: ${res.status}`;
-      try {
-        const data = await res.json();
-        if (data?.error) message += ` - ${data.error}`;
-        if (data?.message) message += ` - ${data.message}`;
-      } catch {}
+      if (contentType.includes('application/json')) {
+        try {
+          const data = await res.json();
+          if (data?.error) message += ` - ${data.error}`;
+          if (data?.message) message += ` - ${data.message}`;
+        } catch {}
+      } else {
+        // Se for HTML, não tenta parsear
+        message += ' (Resposta não-JSON recebida)';
+      }
       throw new Error(message);
     }
-    return res.json();
+    if (contentType.includes('application/json')) {
+      return res.json();
+    } else {
+      // Se não for JSON, retorna string ou erro
+      const text = await res.text();
+      if (text.startsWith('<!DOCTYPE')) {
+        throw new Error('Resposta HTML recebida em vez de JSON. Verifique se o backend está rodando corretamente.');
+      }
+      return text;
+    }
   } catch (err: any) {
-    // Fallback para erro de rede ou parsing
     throw new Error(err?.message || `Erro de conexão com ${url}`);
   }
 }
