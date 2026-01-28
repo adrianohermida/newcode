@@ -29,8 +29,16 @@ export const useAuthContext = () => useContext(AuthContext);
 export const AuthProvider: React.FC<{ children: React.ReactNode }> = ({ children }) => {
   const [user, setUser] = useState<AuthUser | null>(null);
   const [loading, setLoading] = useState(true);
+  const [refreshing, setRefreshing] = useState(false); // novo estado para feedback visual
 
+  // Tempo mínimo entre refreshes (ms)
+  const REFRESH_INTERVAL = 15000;
+  let lastRefresh = 0;
   const fetchUser = useCallback(async () => {
+    const now = Date.now();
+    if (now - lastRefresh < REFRESH_INTERVAL) return; // evita refresh excessivo
+    lastRefresh = now;
+    setRefreshing(true);
     setLoading(true);
     try {
       const res = await fetch('/api/users/me');
@@ -38,7 +46,6 @@ export const AuthProvider: React.FC<{ children: React.ReactNode }> = ({ children
         const data = await res.json();
         setUser(data && data.email ? data : null);
       } else {
-        // Tenta identificar erro de sessão/OAuth
         let msg = 'Usuário não autenticado';
         try {
           const text = await res.text();
@@ -60,6 +67,7 @@ export const AuthProvider: React.FC<{ children: React.ReactNode }> = ({ children
       }
     } finally {
       setLoading(false);
+      setRefreshing(false);
     }
   }, []);
 
@@ -84,8 +92,13 @@ export const AuthProvider: React.FC<{ children: React.ReactNode }> = ({ children
     if (window.location.pathname.includes('auth/callback') || window.location.search.includes('code=')) {
       setTimeout(() => fetchUser(), 1000);
     }
+    // Adiciona polling para atualização periódica do contexto
+    const interval = setInterval(() => {
+      fetchUser();
+    }, REFRESH_INTERVAL);
     return () => {
       unsub?.unsubscribe();
+      clearInterval(interval);
     };
   }, [fetchUser]);
 
@@ -114,6 +127,11 @@ export const AuthProvider: React.FC<{ children: React.ReactNode }> = ({ children
       {authError && (
         <div style={{background:'#f87171',color:'#fff',padding:8,textAlign:'center',zIndex:9999}}>
           <b>Erro de sessão/OAuth:</b> {authError}
+        </div>
+      )}
+      {refreshing && (
+        <div style={{background:'#2563eb',color:'#fff',padding:8,textAlign:'center',zIndex:9999}}>
+          <b>Atualizando contexto...</b> <span className="animate-spin">🔄</span>
         </div>
       )}
       {children}
