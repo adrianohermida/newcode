@@ -50,6 +50,15 @@ export const ProcessDetailPage = () => {
   const session = useSupabaseSession();
   const user = session?.user;
   const isAdmin = useIsAdmin();
+
+  // Proteção de rota privada
+  React.useEffect(() => {
+    if (session === null) {
+      navigate('/login');
+    } else if (session && !isAdmin) {
+      navigate('/portal');
+    }
+  }, [session, isAdmin, navigate]);
   const [loading, setLoading] = useState(true);
   const [data, setData] = useState<any>(null);
   const [activeTab, setActiveTab] = useState<'movements' | 'hearings' | 'tasks' | 'documents' | 'publicacoes' | 'financeiro' | 'suporte'>('movements');
