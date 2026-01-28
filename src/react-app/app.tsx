@@ -74,7 +74,9 @@ export const App = () => {
       <HashRouter>
         <Routes>
           <Route path="auth-test" element={<React.Suspense fallback={<div>Carregando...</div>}><AuthTest /></React.Suspense>} />
+          <Route path="/auth-test" element={<React.Suspense fallback={<div>Carregando...</div>}><AuthTest /></React.Suspense>} />
           <Route path="private-test" element={<React.Suspense fallback={<div>Carregando...</div>}><PrivateTest /></React.Suspense>} />
+          <Route path="/private-test" element={<React.Suspense fallback={<div>Carregando...</div>}><PrivateTest /></React.Suspense>} />
         </Routes>
       </HashRouter>
     );
