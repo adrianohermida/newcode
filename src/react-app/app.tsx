@@ -17,6 +17,10 @@ import { AuthProvider } from "./hooks/AuthContext";
 import AuthTest from "./pages/AuthTest";
 import PrivateTest from "./pages/PrivateTest";
 import { DevFallbackPanel } from "./components/DevFallbackPanel";
+import AboutPage from "./pages/AboutPage";
+import ContactPage from "./pages/ContactPage";
+import AppointmentsPage from "./pages/AppointmentsPage";
+import BlogPage from "./pages/BlogPage";
 // AboutPage, ContactPage, AppointmentsPage, BlogPage, CartProvider, AuthProtect are not imported due to missing or incorrect exports.
 
 
