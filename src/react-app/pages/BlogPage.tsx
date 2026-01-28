@@ -63,6 +63,10 @@ import FallbackPage from './FallbackPage';
         if (typeof window !== 'undefined' && window.__BLOG_ERROR__) {
           blogError = window.__BLOG_ERROR__;
         }
+        // Se erro de JSON, mostra mensagem amigável
+        if (blogError.toLowerCase().includes('json')) {
+          blogError = 'Erro ao carregar os dados do blog. Tente novamente mais tarde ou entre em contato.';
+        }
         setFallbackError(blogError);
       } finally {
         setLoading(false);
