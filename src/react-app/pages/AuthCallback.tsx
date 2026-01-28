@@ -29,13 +29,16 @@
  * - No manual user interaction required - fully automated flow
  */
 
-import React, { useEffect } from "react";
+import React, { useEffect, useState } from "react";
 import { LoaderCircle } from "lucide-react";
 import { useNavigate } from "react-router-dom";
 import { supabase } from "../utils/supabaseClient";
 
 
+
   const navigate = useNavigate();
+  const [techInfo, setTechInfo] = useState<any>(null);
+  const [errorMsg, setErrorMsg] = useState<string | null>(null);
 
   useEffect(() => {
     // Workaround: extrai ?code=... do hash e reescreve para query string se necessário
@@ -43,24 +46,36 @@ import { supabase } from "../utils/supabaseClient";
       const hash = window.location.hash.substring(1); // remove '#'
       const [route, params] = hash.split('?');
       if (params) {
-        // reescreve para /auth/callback?code=...
         window.location.replace(window.location.pathname + '?' + params);
         return;
       }
     }
-    // Se não houver code nem error na URL, redireciona para login
     const urlParams = new URLSearchParams(window.location.search);
     const code = urlParams.get('code');
     const error = urlParams.get('error');
+    // Se não houver code nem error na URL, exibe dados técnicos
     if (!code && !error) {
-      navigate('/login', { replace: true });
+      setTechInfo({
+        hash: window.location.hash,
+        pathname: window.location.pathname,
+        search: window.location.search,
+        fullUrl: window.location.href,
+        message: 'Nenhum parâmetro code ou error encontrado na URL.'
+      });
+      setErrorMsg('Nenhum parâmetro code ou error encontrado na URL.');
       return;
     }
-    // Se houver error na URL, exibe mensagem de erro aprimorada
+    // Se houver error na URL, exibe mensagem de erro técnica
     if (error) {
-      // Opcional: você pode customizar a navegação ou exibir um fallback
-      alert('Erro ao autenticar: ' + decodeURIComponent(error));
-      navigate('/login', { replace: true });
+      setTechInfo({
+        hash: window.location.hash,
+        pathname: window.location.pathname,
+        search: window.location.search,
+        fullUrl: window.location.href,
+        error: decodeURIComponent(error),
+        message: 'Erro retornado pelo provedor OAuth.'
+      });
+      setErrorMsg('Erro ao autenticar: ' + decodeURIComponent(error));
       return;
     }
     // Só processa Supabase se houver code
@@ -81,6 +96,23 @@ import { supabase } from "../utils/supabaseClient";
     }
   }, [navigate]);
 
+  if (errorMsg || techInfo) {
+    return (
+      <div className="w-screen h-screen flex justify-center items-center px-4 bg-slate-50">
+        <div className="max-w-lg w-full space-y-8 p-12 bg-white rounded-xl shadow-lg relative overflow-hidden">
+          <div className="text-center">
+            <h2 className="text-2xl font-bold text-red-600 mb-2">Erro no Callback de Autenticação</h2>
+            {errorMsg && <div className="mb-4 text-red-700">{errorMsg}</div>}
+            <details className="bg-slate-100 text-left p-3 rounded text-xs select-all" open>
+              <summary className="cursor-pointer font-semibold mb-2">Dados técnicos da URL</summary>
+              <pre>{JSON.stringify(techInfo, null, 2)}</pre>
+            </details>
+            <button className="mt-4 px-4 py-2 bg-slate-200 rounded hover:bg-slate-300" onClick={() => window.location.href = '/login'}>Voltar ao login</button>
+          </div>
+        </div>
+      </div>
+    );
+  }
   return (
     <div className="w-screen h-screen flex justify-center items-center px-4 bg-slate-50">
       <div className="max-w-lg w-full space-y-8 p-12 bg-white rounded-xl shadow-lg relative overflow-hidden">
