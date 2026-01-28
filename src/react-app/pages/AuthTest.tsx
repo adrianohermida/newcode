@@ -8,6 +8,10 @@ const supabase = createClient(
 );
 
 export default function AuthTest() {
+  React.useEffect(() => {
+    // Log para depuração de isolamento
+    console.log('[AuthTest] MONTADO');
+  }, []);
   const [email, setEmail] = useState("");
   const [password, setPassword] = useState("");
   const [session, setSession] = useState<any>(null);

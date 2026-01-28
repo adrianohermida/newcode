@@ -85,16 +85,16 @@ export const App = () => {
     return null; // Não renderiza nada até saber a rota
   }
   if (routeState === 'test') {
-    return (
-      <HashRouter>
-        <Routes>
-          <Route path="auth-test" element={<AuthTest />} />
-          <Route path="private-test" element={<PrivateTest />} />
-          {/* Catch-all para rotas de teste com painel técnico */}
-          <Route path="*" element={<DevFallbackPanel />} />
-        </Routes>
-      </HashRouter>
-    );
+    // Isolamento máximo: renderiza apenas o componente puro
+    const hash = typeof window !== 'undefined' ? window.location.hash : '';
+    if (hash.startsWith('#/private-test')) {
+      return <PrivateTest />;
+    }
+    if (hash.startsWith('#/auth-test')) {
+      return <AuthTest />;
+    }
+    // Fallback técnico
+    return <DevFallbackPanel />;
   }
   // App normal
   return (

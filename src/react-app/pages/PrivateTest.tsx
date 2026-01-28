@@ -9,6 +9,10 @@ const supabase = createClient(
 // Não usar useNavigate para evitar dependência de contexto de rotas
 
 export default function PrivateTest() {
+  React.useEffect(() => {
+    // Log para depuração de isolamento
+    console.log('[PrivateTest] MONTADO');
+  }, []);
   const [user, setUser] = React.useState<any>(null);
   const [loading, setLoading] = React.useState(true);
 
