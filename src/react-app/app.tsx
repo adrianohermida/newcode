@@ -82,6 +82,8 @@ export const App = () => {
           <Route path="/auth-test" element={<AuthTest />} />
           <Route path="private-test" element={<PrivateTest />} />
           <Route path="/private-test" element={<PrivateTest />} />
+          {/* Catch-all para rotas de teste */}
+          <Route path="*" element={<div style={{textAlign:'center',marginTop:40}}><b>Rota de teste não encontrada</b><br/>Verifique a URL.</div>} />
         </Routes>
       </HashRouter>
     );
