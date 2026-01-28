@@ -6,6 +6,7 @@
 import React, { useEffect, useMemo, useState } from 'react';
 import { useNavigate } from 'react-router-dom';
 import { useAuth } from '@hey-boss/users-service/react';
+import { useIsAdmin } from '../../hooks/useIsAdmin';
 
 /* ===============================
  * COMPONENTES GLOBAIS
@@ -94,11 +95,16 @@ export const Dashboard = () => {
   /* ===============================
    * ADMIN GUARD
    * =============================== */
+  const isAdmin = useIsAdmin();
   useEffect(() => {
-    if (!isPending && user && !(user as any).isAdmin) {
-      navigate('/portal', { replace: true });
+    if (!session) {
+      navigate('/login', { replace: true });
+      return;
     }
-  }, [user, isPending, navigate]);
+    if (!isAdmin) {
+      navigate('/account', { replace: true });
+    }
+  }, [session, isAdmin, navigate]);
 
   /* ===============================
    * FETCH POR ABA
