@@ -38,7 +38,8 @@ import {
 import Header from '../components/Header';
 import { apiFetch } from '../controllers/ApiController';
 import { cn } from '../utils';
-import { useAuth } from '@hey-boss/users-service/react';
+import { useSupabaseSession } from '../hooks/useSupabaseSession';
+import { useIsAdmin } from '../hooks/useIsAdmin';
 import { CustomForm } from '../components/CustomForm';
 import { contactFormTheme } from '../components/CustomForm/theme';
 import allConfigs from '../../shared/form-configs.json' with { type: 'json' };
@@ -46,13 +47,14 @@ import allConfigs from '../../shared/form-configs.json' with { type: 'json' };
 export const ProcessDetailPage = () => {
   const { id } = useParams();
   const navigate = useNavigate();
-  const { user } = useAuth();
+  const session = useSupabaseSession();
+  const user = session?.user;
+  const isAdmin = useIsAdmin();
   const [loading, setLoading] = useState(true);
   const [data, setData] = useState<any>(null);
   const [activeTab, setActiveTab] = useState<'movements' | 'hearings' | 'tasks' | 'documents' | 'publicacoes' | 'financeiro' | 'suporte'>('movements');
   const [aiSummary, setAiSummary] = useState<string | null>(null);
   const [loadingAI, setLoadingAI] = useState(false);
-  
   // Modais
   const [showAddMovement, setShowAddMovement] = useState(false);
   const [showAddTask, setShowAddTask] = useState(false);
@@ -98,7 +100,7 @@ export const ProcessDetailPage = () => {
   if (!data) return null;
 
   const { processo, movements, hearings, tasks, documents, publicacoes, faturas, tickets } = data;
-  const isAdmin = (user as any)?.isAdmin;
+  // isAdmin now comes from useIsAdmin
 
   return (
     <div className="min-h-screen bg-brand-dark text-white selection:bg-brand-primary selection:text-white">
@@ -435,7 +437,7 @@ export const ProcessDetailPage = () => {
                 await apiFetch(`/api/admin/processos/${id}/movements`, {
                   method: 'POST',
                   headers: { 'Content-Type': 'application/json' },
-                  body: JSON.stringify(formData)
+                          body: JSON.stringify({ ...formData, email: user?.email })
                 });
                 setShowAddMovement(false);
                 fetchDetails();
