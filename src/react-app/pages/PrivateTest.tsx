@@ -10,10 +10,10 @@ export default function PrivateTest() {
   React.useEffect(() => {
     supabase.auth.getUser().then(({ data, error }) => {
       if (data?.user) setUser(data.user);
-      else navigate("/auth-test");
+      else window.location.hash = '#/auth-test';
       setLoading(false);
     });
-  }, [navigate]);
+  }, []);
 
   if (loading) return <div style={{ textAlign: "center", marginTop: 40 }}>Verificando autenticação...</div>;
 
@@ -22,7 +22,7 @@ export default function PrivateTest() {
       <h2>Página Privada de Teste</h2>
       <p>Usuário autenticado:</p>
       <pre style={{ background: "#eee", padding: 8 }}>{JSON.stringify(user, null, 2)}</pre>
-      <button onClick={async () => { await supabase.auth.signOut(); navigate("/auth-test"); }}>
+      <button onClick={async () => { await supabase.auth.signOut(); window.location.hash = '#/auth-test'; }}>
         Logout
       </button>
     </div>

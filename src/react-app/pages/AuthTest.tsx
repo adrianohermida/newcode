@@ -21,6 +21,7 @@ export default function AuthTest() {
   const handleLogout = async () => {
     await supabase.auth.signOut();
     setSession(null);
+    window.location.hash = '#/auth-test'; // Garante que volta para rota válida
   };
 
   React.useEffect(() => {
