@@ -1,21 +1,10 @@
-import React, { useState, useEffect } from 'react';
+import React, { useState } from 'react';
 import { supabase } from '../utils/supabaseClient';
-import { useSupabaseSession } from '../hooks/useSupabaseSession';
-import { useNavigate } from 'react-router-dom';
 
-export default function LoginPage() {
   const [email, setEmail] = useState('');
   const [password, setPassword] = useState('');
   const [error, setError] = useState<string | null>(null);
   const [loading, setLoading] = useState(false);
-  const session = useSupabaseSession();
-  const navigate = useNavigate();
-
-  useEffect(() => {
-    if (session && session.user) {
-      navigate('/account');
-    }
-  }, [session, navigate]);
 
   const handleLogin = async (e: React.FormEvent) => {
     e.preventDefault();
@@ -33,12 +22,11 @@ export default function LoginPage() {
       setError(error.message);
       return;
     }
-    // Supabase session will update and redirect will happen via useEffect
-  };
 
-  if (session === undefined) {
-    return <div className="min-h-screen flex items-center justify-center bg-brand-dark text-white">Verificando autenticação...</div>;
-  }
+    // 🔑 NUNCA redireciona aqui
+    // O Supabase vai atualizar a sessão
+    // e o AuthCallback cuidará disso
+  };
 
   return (
     <form
