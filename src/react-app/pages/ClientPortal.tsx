@@ -53,7 +53,7 @@ import { Link } from 'react-router-dom';
   const handleExportData = async () => {
     setExporting(true);
     try {
-      const res = await fetch('/api/users/personal-data');
+      const res = await apiFetch('/api/users/personal-data');
       if (res.ok) {
         const data = await res.json();
         const blob = new Blob([JSON.stringify(data, null, 2)], { type: 'application/json' });
@@ -77,7 +77,7 @@ import { Link } from 'react-router-dom';
 
   const fetchSummary = async () => {
     try {
-      const res = await fetch('/api/users/summary');
+      const res = await apiFetch('/api/users/summary');
       if (res.ok) {
         setSummary(await res.json());
       }
@@ -114,7 +114,7 @@ import { Link } from 'react-router-dom';
   useEffect(() => {
     if (activeTab === 'agenda') {
       setLoadingAppointments(true);
-      fetch('/api/my-appointments')
+      apiFetch('/api/my-appointments')
         .then(res => res.json())
         .then(data => {
           setAppointments(data);

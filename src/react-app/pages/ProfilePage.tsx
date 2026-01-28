@@ -14,13 +14,14 @@ import allConfigs from '../../shared/form-configs.json';
 import { User, Shield, Phone, Briefcase, Loader2, CheckCircle2 } from 'lucide-react';
 
 export const ProfilePage = () => {
+  import { apiFetch } from '../controllers/ApiController';
   const [profile, setProfile] = useState<any>(null);
   const [loading, setLoading] = useState(true);
   const [saving, setSaving] = useState(false);
   const [message, setMessage] = useState<{ type: 'success' | 'error', text: string } | null>(null);
 
   useEffect(() => {
-    fetch('/api/user/profile')
+    apiFetch('/api/user/profile')
       .then(res => res.json())
       .then(data => {
         setProfile(data);
@@ -33,7 +34,7 @@ export const ProfilePage = () => {
     setSaving(true);
     setMessage(null);
     try {
-      const res = await fetch('/api/user/profile', {
+      const res = await apiFetch('/api/user/profile', {
         method: 'POST',
         headers: { 'Content-Type': 'application/json' },
         body: JSON.stringify(formData)

@@ -322,7 +322,7 @@ const Footer = () => (
   const handleTestConnection = async () => {
     setTestStatus('Testando...');
     try {
-      const res = await fetch('/api/blog');
+      const res = await apiFetch('/api/blog');
       if (!res.ok) throw new Error('About: ' + res.status);
       setTestStatus('Conexão bem-sucedida!');
     } catch (e: any) {

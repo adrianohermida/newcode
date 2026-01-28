@@ -210,7 +210,7 @@ const Calculator = () => {
       // Salvar no banco de dados
       setIsSaving(true);
       try {
-        await fetch('/api/simulations', {
+        await apiFetch('/api/simulations', {
           method: 'POST',
           headers: { 'Content-Type': 'application/json' },
           body: JSON.stringify({
@@ -748,7 +748,7 @@ const Footer = () => {
 
   const handleNewsletterSubmit = async (formData: any) => {
     try {
-      const response = await fetch('/api/forms/submit', {
+      const response = await apiFetch('/api/forms/submit', {
         method: 'POST',
         headers: { 'Content-Type': 'application/json' },
         body: JSON.stringify({ 
