@@ -129,9 +129,9 @@ export const App = () => {
               } 
             />
             {/* Páginas de teste do ChatWidget */}
-            <Route path="/chatwidget-test-public" element={<><FreshchatWidgetPublic /><ChatWidget /></>} />
-            <Route path="/chatwidget-test-client" element={<AuthProtect><FreshchatWidgetPortal /><ChatWidget /></AuthProtect>} />
-            <Route path="/chatwidget-test-dashboard" element={<AuthProtect><FreshchatWidgetPortal /><ChatWidget /></AuthProtect>} />
+            <Route path="/chatwidget-test-public" element={<ChatWidget />} />
+            <Route path="/chatwidget-test-client" element={<AuthProtect><ChatWidget /></AuthProtect>} />
+            <Route path="/chatwidget-test-dashboard" element={<AuthProtect><ChatWidget /></AuthProtect>} />
           </Routes>
         </HashRouter>
       </CartProvider>
