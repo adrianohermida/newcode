@@ -36,4 +36,3 @@ export async function apiFetch(url: string, options?: RequestInit) {
 }
 
 // Exemplo de uso:
-// const data = await apiFetch('/api/users/me');
