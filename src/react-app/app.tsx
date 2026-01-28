@@ -61,8 +61,8 @@ import { ChatWidget } from "./components/ChatWidget";
 import { CartProvider } from "./components/Cart";
 import React from "react";
 import { AuthProvider } from "./hooks/AuthContext";
-const AuthTest = React.lazy(() => import("./pages/AuthTest"));
-const PrivateTest = React.lazy(() => import("./pages/PrivateTest"));
+import AuthTest from "./pages/AuthTest";
+import PrivateTest from "./pages/PrivateTest";
 
 // Widget Freshchat para páginas públicas
 export const App = () => {
@@ -73,10 +73,10 @@ export const App = () => {
     return (
       <HashRouter>
         <Routes>
-          <Route path="auth-test" element={<React.Suspense fallback={<div>Carregando...</div>}><AuthTest /></React.Suspense>} />
-          <Route path="/auth-test" element={<React.Suspense fallback={<div>Carregando...</div>}><AuthTest /></React.Suspense>} />
-          <Route path="private-test" element={<React.Suspense fallback={<div>Carregando...</div>}><PrivateTest /></React.Suspense>} />
-          <Route path="/private-test" element={<React.Suspense fallback={<div>Carregando...</div>}><PrivateTest /></React.Suspense>} />
+          <Route path="auth-test" element={<AuthTest />} />
+          <Route path="/auth-test" element={<AuthTest />} />
+          <Route path="private-test" element={<PrivateTest />} />
+          <Route path="/private-test" element={<PrivateTest />} />
         </Routes>
       </HashRouter>
     );
