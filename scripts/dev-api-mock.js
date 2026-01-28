@@ -1,4 +1,4 @@
-// Simple Express mock for /api/blog and /api/users/me
+// Simple Express mock for /api/blog
 const express = require('express');
 const app = express();
 app.use(express.json());
