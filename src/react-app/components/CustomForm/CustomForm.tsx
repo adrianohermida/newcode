@@ -120,7 +120,8 @@ export const CustomForm: React.FC<FormProps> = ({
     try {
       if (onSubmit) {
         await onSubmit(formData);
-        fetch("/api/webhooks/form-submit", {
+        import { apiFetch } from '../../controllers/ApiController';
+        apiFetch("/api/webhooks/form-submit", {
           method: "POST",
           headers: { "Content-Type": "application/json" },
           body: JSON.stringify({ formData }),
