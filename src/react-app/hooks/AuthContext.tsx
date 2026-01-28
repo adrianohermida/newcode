@@ -41,23 +41,18 @@ export const AuthProvider: React.FC<{ children: React.ReactNode }> = ({ children
     setRefreshing(true);
     setLoading(true);
     try {
-      const res = await fetch('/api/users/me');
-      if (res.ok) {
-        const data = await res.json();
+      const { data, error } = await supabase.functions.invoke('users-me');
+      if (error) {
+        setUser(null);
+        if (typeof window !== 'undefined') {
+          window.__AUTH_ERROR__ = error.message || null;
+        }
+      } else {
         setUser(data && data.email ? data : null);
         if (typeof window !== 'undefined') {
           window.__AUTH_ERROR__ = null;
         }
-      } else if (res.status === 401 || res.status === 404) {
-        // Usuário não autenticado, não exibe erro de sessão
-        setUser(null);
-        if (typeof window !== 'undefined') {
-          window.__AUTH_ERROR__ = null;
-        }
-      } else {
-        let msg = 'Usuário não autenticado';
-        try {
-          const text = await res.text();
+      }
           if (text && text.startsWith('<!DOCTYPE')) {
             msg = 'Erro de backend: resposta HTML recebida em vez de JSON. Verifique se o backend está rodando corretamente.';
           } else if (text) {

@@ -59,9 +59,8 @@ export function useApi() {
     setUserLoading(true);
     setUserError(null);
     try {
-      const res = await fetch('/api/users/me');
-      if (!res.ok) throw new Error(`Erro HTTP: ${res.status}`);
-      const data = await res.json();
+      const { data, error } = await supabase.functions.invoke('users-me');
+      if (error) throw new Error(error.message || 'Erro ao carregar usuário');
       setUser(data);
     } catch (err: any) {
       setUserError(err.message || 'Erro ao carregar usuário');
