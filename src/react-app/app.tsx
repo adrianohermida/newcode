@@ -87,7 +87,7 @@ export const App = () => {
     return () => window.removeEventListener('hashchange', check);
   }, []);
   if (routeState === 'unknown') {
-    return <div style={{textAlign:'center',marginTop:40}}>Carregando...</div>;
+    return null; // Não renderiza nada até saber a rota
   }
   if (routeState === 'test') {
     return (
