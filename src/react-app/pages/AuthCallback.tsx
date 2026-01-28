@@ -40,6 +40,45 @@ import { supabase } from "../utils/supabaseClient";
   const [techInfo, setTechInfo] = useState<any>(null);
   const [errorMsg, setErrorMsg] = useState<string | null>(null);
 
+  // Helper para coletar informações técnicas ampliadas
+  function collectTechInfo(extra: any = {}) {
+    let supabaseEnv = {};
+    try {
+      supabaseEnv = {
+        VITE_SUPABASE_URL: import.meta.env.VITE_SUPABASE_URL,
+        VITE_SUPABASE_ANON_KEY: import.meta.env.VITE_SUPABASE_ANON_KEY,
+      };
+    } catch {}
+    let localStorageKeys = [];
+    let sessionStorageKeys = [];
+    try { localStorageKeys = Object.keys(window.localStorage); } catch {}
+    try { sessionStorageKeys = Object.keys(window.sessionStorage); } catch {}
+    // Detect assets carregados
+    const loadedAssets = Array.from(document.querySelectorAll('link[rel~="icon"],link[rel~="apple-touch-icon"],link[rel~="manifest"],script[src],link[rel~="stylesheet"]')).map(el => {
+      if (el instanceof HTMLLinkElement) return { tag: 'link', rel: el.rel, href: el.href };
+      if (el instanceof HTMLScriptElement) return { tag: 'script', src: el.src };
+      return { tag: el.tagName.toLowerCase() };
+    });
+    // Detect rotas navegáveis
+    const navLinks = Array.from(document.querySelectorAll('a')).map(a => a.href);
+    // Detect ambiente
+    const isDev = !('update_vite_data' in window);
+    return {
+      hash: window.location.hash,
+      pathname: window.location.pathname,
+      search: window.location.search,
+      fullUrl: window.location.href,
+      supabaseEnv,
+      loadedAssets,
+      navLinks,
+      localStorageKeys,
+      sessionStorageKeys,
+      userAgent: navigator.userAgent,
+      isDev,
+      ...extra
+    };
+  }
+
   useEffect(() => {
     // Workaround: extrai ?code=... do hash e reescreve para query string se necessário
     if (window.location.hash && window.location.hash.includes('code=')) {
@@ -55,26 +94,18 @@ import { supabase } from "../utils/supabaseClient";
     const error = urlParams.get('error');
     // Se não houver code nem error na URL, exibe dados técnicos
     if (!code && !error) {
-      setTechInfo({
-        hash: window.location.hash,
-        pathname: window.location.pathname,
-        search: window.location.search,
-        fullUrl: window.location.href,
+      setTechInfo(collectTechInfo({
         message: 'Nenhum parâmetro code ou error encontrado na URL.'
-      });
+      }));
       setErrorMsg('Nenhum parâmetro code ou error encontrado na URL.');
       return;
     }
     // Se houver error na URL, exibe mensagem de erro técnica
     if (error) {
-      setTechInfo({
-        hash: window.location.hash,
-        pathname: window.location.pathname,
-        search: window.location.search,
-        fullUrl: window.location.href,
+      setTechInfo(collectTechInfo({
         error: decodeURIComponent(error),
         message: 'Erro retornado pelo provedor OAuth.'
-      });
+      }));
       setErrorMsg('Erro ao autenticar: ' + decodeURIComponent(error));
       return;
     }
