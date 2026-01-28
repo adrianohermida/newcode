@@ -1,10 +1,3 @@
-/**
- * @description This file defines the HomePage component for Hermida Maia Advocacia.
- *             It serves as the main landing page, orchestrating multiple sections
- *             including Hero, Stats, Calculator, Testimonials, and Services.
- *             It uses Tailwind CSS for styling and Lucide React for iconography.
- */
-
 import React from 'react';
 import { Link } from 'react-router-dom';
 import Header from '../components/Header';
@@ -20,11 +13,7 @@ import {
   CheckCircle2, Star, Play, ChevronRight, Mail, Phone, Instagram, Facebook, Linkedin, Youtube, AlertCircle
 } from 'lucide-react';
 const supabase = createClient(import.meta.env.VITE_SUPABASE_URL, import.meta.env.VITE_SUPABASE_ANON_KEY);
-import { Header } from '../components/Header';
 import { useAuthContext } from '../hooks/AuthContext';
-import { CustomForm } from '../components/CustomForm';
-import { newsletterTheme } from '../components/CustomForm/theme';
-import allConfigs from '../../shared/form-configs.json';
 
 
 // --- Components ---
@@ -186,56 +175,14 @@ const Calculator = () => {
   const calculate = async () => {
     const installment = parseCurrency(formData.monthlyInstallment);
     const income = parseCurrency(formData.monthlyIncome);
-
     if (income > 0) {
       const percentage = (installment / income) * 100;
-      const calculationResult = {
-
-        import React, { useEffect, useState } from 'react';
-        import { ChatWidget } from '../components/ChatWidget';
-        import { SiteChatWidget } from '../components/SiteChatWidget';
-        import { Link } from 'react-router-dom';
-        import Header from '../components/Header';
-        import { useAuthContext } from '../hooks/AuthContext';
-        import { CustomForm } from '../components/CustomForm';
-        import { newsletterTheme } from '../components/CustomForm/theme';
-        import allConfigs from '../../shared/form-configs.json';
-        import { useApi } from '../hooks/useApi';
-        import { createClient } from '@supabase/supabase-js';
-        const supabase = createClient(import.meta.env.VITE_SUPABASE_URL, import.meta.env.VITE_SUPABASE_ANON_KEY);
+      setResult({
+        percentage,
         isSuperendividado: percentage > 30
-
-        import {
-          MessageCircle,
-          ArrowRight,
-          ShieldCheck,
-          TrendingDown,
-          Zap,
-          Smile,
-          Calendar,
-          Scale,
-          Handshake,
-          CheckCircle2,
-          Star,
-          Play,
-          ChevronRight,
-          Mail,
-          Phone,
-          Instagram,
-          Facebook,
-          Linkedin,
-          Youtube,
-          AlertCircle
-        } from 'lucide-react';
-      <h2>Posts do Supabase</h2>
-      <ul>
-        {posts.map((post) => (
-          <li key={post.id}>{post.title}</li>
-        ))}
-      </ul>
-    </div>
-  );
-}
+      });
+    }
+  };
 
   return (
     <section id="calculadora" className="py-24 bg-brand-dark relative overflow-hidden">
@@ -643,17 +590,17 @@ const Blog = () => {
           <div className="text-red-400 text-center py-8">Erro ao carregar blog: {blogError}</div>
         ) : (
           <div className="grid md:grid-cols-3 gap-8 mb-12">
-            {blog.map((post: any) => (
-              <article
-                key={post.id}
+            {blog.map((post: BlogPost) => (
+              <article 
+                key={post.id} 
                 className="bg-brand-elevated rounded-3xl overflow-hidden border border-white/5 group hover:border-brand-primary/30 transition-all cursor-pointer"
               >
                 <Link to={post.url || `/blog/${post.slug || ''}`} className="block">
                   <div className="aspect-video overflow-hidden">
-                    <img
-                      src={post.image}
-                      className="w-full h-full object-cover group-hover:scale-110 transition-transform duration-500"
-                      alt={`Artigo: ${post.title} - Advocacia especializada em dívidas`}
+                    <img 
+                      src={post.image} 
+                      className="w-full h-full object-cover group-hover:scale-110 transition-transform duration-500" 
+                      alt={`Artigo: ${post.title} - Advocacia especializada em dívidas`} 
                     />
                   </div>
                   <div className="p-8">
@@ -671,7 +618,7 @@ const Blog = () => {
           </div>
         )}
         <div className="text-center">
-          <Link
+          <Link 
             to="/blog"
             className="inline-block bg-white/5 hover:bg-white/10 text-white border border-white/10 px-8 py-4 rounded-xl font-bold transition-all"
           >
@@ -683,18 +630,33 @@ const Blog = () => {
   );
 };
 
-// Exporta o componente principal HomePage
+// --- Main Page ---
 const HomePage = () => {
   return (
-    <div>
+    <div className="min-h-screen bg-brand-dark selection:bg-brand-primary selection:text-white">
+      <ChatWidget />
       <Header />
       <main>
         <Hero />
         <Stats />
         <Calculator />
+        <HowItWorks />
+        <VideoJourney />
+        <Testimonials />
+        <Services />
         <Blog />
+        <FinalCTA />
+        {/* Links para teste do ChatWidget */}
+        <div className="max-w-2xl mx-auto mt-16 p-6 bg-brand-elevated rounded-2xl border border-white/10 text-center">
+          <h2 className="text-lg font-bold text-white mb-2">Testes do ChatWidget</h2>
+          <div className="flex flex-col gap-2 items-center">
+            <a href="/chatwidget-test-public" className="text-brand-primary hover:underline">Teste Público</a>
+            <a href="/chatwidget-test-client" className="text-brand-primary hover:underline">Teste Cliente (logado)</a>
+            <a href="/chatwidget-test-dashboard" className="text-brand-primary hover:underline">Teste Dashboard/Admin</a>
+          </div>
+        </div>
       </main>
-      <SiteChatWidget />
+      <Footer />
     </div>
   );
 };
@@ -889,33 +851,4 @@ const Footer = () => {
   );
 
 
-export function HomePage() {
-  // ...existing code...
-  return (
-    <div className="min-h-screen bg-brand-dark selection:bg-brand-primary selection:text-white">
-      {/* FreshchatWidget removido para desativação global */}
-      <Header />
-      <main>
-        <Hero />
-        <Stats />
-        <Calculator />
-        <HowItWorks />
-        <VideoJourney />
-        <Testimonials />
-        <Services />
-        <Blog />
-        <FinalCTA />
-        {/* Links para teste do ChatWidget */}
-        <div className="max-w-2xl mx-auto mt-16 p-6 bg-brand-elevated rounded-2xl border border-white/10 text-center">
-          <h2 className="text-lg font-bold text-white mb-2">Testes do ChatWidget</h2>
-          <div className="flex flex-col gap-2 items-center">
-            <a href="/chatwidget-test-public" className="text-brand-primary hover:underline">Teste Público</a>
-            <a href="/chatwidget-test-client" className="text-brand-primary hover:underline">Teste Cliente (logado)</a>
-            <a href="/chatwidget-test-dashboard" className="text-brand-primary hover:underline">Teste Dashboard/Admin</a>
-          </div>
-        </div>
-      </main>
-      <Footer />
-    </div>
-  );
-}
+
