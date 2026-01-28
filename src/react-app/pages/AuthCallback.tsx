@@ -41,21 +41,42 @@ export default function AuthCallback() {
   const isAdmin = useIsAdmin();
   const navigate = useNavigate();
 
+  // Fragment parsing fallback
   useEffect(() => {
-    // ainda carregando sessão
-    if (session === undefined) return;
-
-    // não logado
-    if (!session) {
-      navigate('/login', { replace: true });
+    // Se já temos sessão, segue fluxo normal
+    if (session !== undefined) {
+      if (!session) {
+        navigate('/login', { replace: true });
+        return;
+      }
+      if (isAdmin) {
+        navigate('/dashboard', { replace: true });
+      } else {
+        navigate('/portal', { replace: true });
+      }
       return;
     }
 
-    // logado → decide rota
-    if (isAdmin) {
-      navigate('/dashboard', { replace: true });
-    } else {
-      navigate('/portal', { replace: true });
+    // Se não há sessão, tenta parsing do fragmento
+    const fragment = window.location.hash;
+    if (fragment && fragment.includes('access_token')) {
+      const params = new URLSearchParams(fragment.replace('#', ''));
+      const access_token = params.get('access_token');
+      const refresh_token = params.get('refresh_token');
+      const expires_in = params.get('expires_in');
+      const token_type = params.get('token_type');
+      if (access_token && refresh_token && expires_in && token_type) {
+        // Tenta salvar manualmente no Supabase
+        import('../utils/supabaseClient').then(({ supabase }) => {
+          supabase.auth.setSession({
+            access_token,
+            refresh_token,
+          }).then(() => {
+            window.location.hash = '';
+            window.location.reload();
+          });
+        });
+      }
     }
   }, [session, isAdmin, navigate]);
 
