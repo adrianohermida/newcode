@@ -68,9 +68,15 @@ export const BlogEditor: React.FC<BlogEditorProps> = ({ post, categories, onBack
             inputs: { base64_data: base64 }
           })
         });
-        if (data.url) {
-          setFormData({ ...formData, imagem_capa_url: data.url });
-        }
+          let data = {};
+          try {
+            data = await res.json();
+          } catch (err) {
+            console.error('Erro ao parsear resposta do upload:', err, res);
+          }
+          if (data && data.url) {
+            setFormData({ ...formData, imagem_capa_url: data.url });
+          }
       } catch (err) {
         console.error('Upload failed:', err);
       } finally {
@@ -120,14 +126,20 @@ export const BlogEditor: React.FC<BlogEditorProps> = ({ post, categories, onBack
           }
         })
       });
-      let suggestions = {};
-      try {
-        suggestions = JSON.parse(data.output || '{}');
-      } catch (e) {
-        console.error('Erro ao parsear sugestões IA:', e, data.output);
-        alert('Erro ao interpretar resposta da IA. Tente novamente.');
-      }
-      setFormData({ ...formData, ...suggestions });
+        let data = {};
+        try {
+          data = await res.json();
+        } catch (err) {
+          console.error('Erro ao parsear resposta IA:', err, res);
+        }
+        let suggestions = {};
+        try {
+          suggestions = JSON.parse(data.output || '{}');
+        } catch (e) {
+          console.error('Erro ao parsear sugestões IA:', e, data.output);
+          alert('Erro ao interpretar resposta da IA. Tente novamente.');
+        }
+        setFormData({ ...formData, ...suggestions });
     } catch (e) {
       console.error(e);
       alert('Erro ao buscar sugestões IA. Tente novamente.');
