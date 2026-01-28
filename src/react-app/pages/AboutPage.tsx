@@ -1,12 +1,3 @@
-export default AboutPage;
-
-/**
- * @description Página "Sobre" para Hermida Maia Advocacia.
- *             Apresenta a trajetória do Dr. Adriano Hermida Maia, a missão do escritório
- *             e os valores que guiam a defesa dos superendividados.
- *             Utiliza componentes visuais consistentes com o tema dark/brand-primary.
- */
-
 import React, { useEffect, useState } from 'react';
 import { Link } from 'react-router-dom';
 import { 
@@ -26,9 +17,8 @@ import {
   Youtube,
   ExternalLink
 } from 'lucide-react';
-
 import { SiteChatWidget } from '../components/SiteChatWidget';
-import { Header } from '../components/Header';
+import Header from '../components/Header';
 
 const AboutHero = () => (
   <section className="relative pt-32 pb-20 lg:pt-48 lg:pb-32 overflow-hidden bg-brand-dark">
@@ -393,3 +383,4 @@ const Footer = () => (
     </div>
   );
 };
+export default AboutPage;
