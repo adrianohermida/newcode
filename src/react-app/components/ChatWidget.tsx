@@ -32,7 +32,12 @@ export const ChatWidget = ({ mode = 'visitor' }: { mode?: 'admin' | 'client' | '
   const messagesEndRef = useRef<HTMLDivElement>(null);
 
   useEffect(() => {
-    const savedSessionId = sessionStorage.getItem('chat_session_id');
+    let savedSessionId = null;
+    try {
+      savedSessionId = sessionStorage.getItem('chat_session_id');
+    } catch (e) {
+      console.error('Erro ao acessar sessionStorage:', e);
+    }
     if (savedSessionId) setSessionId(savedSessionId);
   }, []);
 
@@ -57,7 +62,11 @@ export const ChatWidget = ({ mode = 'visitor' }: { mode?: 'admin' | 'client' | '
     if (!currentSessionId) {
       currentSessionId = crypto.randomUUID();
       setSessionId(currentSessionId);
-      sessionStorage.setItem('chat_session_id', currentSessionId);
+      try {
+        sessionStorage.setItem('chat_session_id', currentSessionId);
+      } catch (e) {
+        console.error('Erro ao salvar sessionId no sessionStorage:', e);
+      }
     }
 
     const userMessage: Message = {
