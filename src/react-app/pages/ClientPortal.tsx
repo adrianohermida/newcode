@@ -38,8 +38,12 @@ import {
 import { NotificationBanner } from '../components/NotificationBanner';
 import { Link } from 'react-router-dom';
 
+import { useNavigate } from 'react-router-dom';
+import { Loader2 } from 'lucide-react';
+
 export function ClientPortal() {
   const session = useSupabaseSession();
+  const navigate = useNavigate();
   const user = session?.user;
   const [activeTab, setActiveTab] = useState<'overview' | 'processos' | 'tickets' | 'financeiro' | 'documentos' | 'plano' | 'agenda'>('overview');
   const [appointments, setAppointments] = useState<any[]>([]);
@@ -52,6 +56,23 @@ export function ClientPortal() {
   const [summary, setSummary] = useState<{ processos: number; faturas: number; tickets: number; appointments: number }>({ processos: 0, faturas: 0, tickets: 0, appointments: 0 });
   const [loading, setLoading] = useState(false);
   const [exporting, setExporting] = useState(false);
+
+  // Redireciona se não logado, mostra spinner se carregando
+  useEffect(() => {
+    if (session === undefined) return;
+    if (!session) {
+      navigate('/login', { replace: true });
+    }
+  }, [session, navigate]);
+
+  if (session === undefined) {
+    return (
+      <div className="flex items-center justify-center min-h-screen">
+        <Loader2 className="animate-spin text-brand-primary" size={40} />
+      </div>
+    );
+  }
+  if (!session) return null;
 
   const handleExportData = async () => {
     setExporting(true);

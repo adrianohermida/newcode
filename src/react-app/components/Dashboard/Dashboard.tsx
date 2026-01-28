@@ -53,38 +53,31 @@ type DashboardTab =
   | 'chatbot'
   | 'config';
 
+import { Loader2 } from 'lucide-react';
+
 export const Dashboard = () => {
   const session = useSupabaseSession();
-  const isAdmin = useIsAdmin();
   const navigate = useNavigate();
-
   const [activeTab, setActiveTab] = useState<DashboardTab>('overview');
   const [selectedTicket, setSelectedTicket] = useState<any | null>(null);
+  const [tabData, setTabData] = useState<any[]>([]);
+  const [loading, setLoading] = useState(false);
 
   useEffect(() => {
-    // Proteção robusta: só age quando a sessão já foi carregada
     if (session === undefined) return;
-    export const Dashboard = () => {
-      const session = useSupabaseSession();
-      const isAdmin = useIsAdmin();
-      const navigate = useNavigate();
+    if (!session) {
+      navigate('/login', { replace: true });
+    }
+  }, [session, navigate]);
 
-      const [activeTab, setActiveTab] = useState<DashboardTab>('overview');
-      const [selectedTicket, setSelectedTicket] = useState<any | null>(null);
-      const [tabData, setTabData] = useState<any[]>([]);
-      const [loading, setLoading] = useState(false);
-
-      useEffect(() => {
-        // Proteção robusta: só age quando a sessão já foi carregada
-        if (session === undefined) return;
-        if (!session) {
-          navigate('/login', { replace: true });
-          return;
-        }
-        if (!isAdmin) {
-          navigate('/portal', { replace: true });
-        }
-      }, [session, isAdmin, navigate]);
+  if (session === undefined) {
+    return (
+      <div className="flex items-center justify-center min-h-screen">
+        <Loader2 className="animate-spin text-brand-primary" size={40} />
+      </div>
+    );
+  }
+  if (!session) return null;
 
       // Fetch data for each tab
       useEffect(() => {
