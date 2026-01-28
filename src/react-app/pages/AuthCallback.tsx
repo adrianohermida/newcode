@@ -43,15 +43,19 @@ export default function AuthCallback() {
 
   // Fragment parsing fallback
   useEffect(() => {
+    console.log('[AuthCallback] session:', session);
     // Se já temos sessão, segue fluxo normal
     if (session !== undefined) {
       if (!session) {
+        console.log('[AuthCallback] Sem sessão, redirecionando para /login');
         navigate('/login', { replace: true });
         return;
       }
       if (isAdmin) {
+        console.log('[AuthCallback] Sessão admin, redirecionando para /dashboard');
         navigate('/dashboard', { replace: true });
       } else {
+        console.log('[AuthCallback] Sessão cliente, redirecionando para /portal');
         navigate('/portal', { replace: true });
       }
       return;
@@ -59,12 +63,17 @@ export default function AuthCallback() {
 
     // Se não há sessão, tenta parsing do fragmento
     const fragment = window.location.hash;
+    console.log('[AuthCallback] Fragmento da URL:', fragment);
     if (fragment && fragment.includes('access_token')) {
       const params = new URLSearchParams(fragment.replace('#', ''));
       const access_token = params.get('access_token');
       const refresh_token = params.get('refresh_token');
       const expires_in = params.get('expires_in');
       const token_type = params.get('token_type');
+      console.log('[AuthCallback] access_token:', access_token);
+      console.log('[AuthCallback] refresh_token:', refresh_token);
+      console.log('[AuthCallback] expires_in:', expires_in);
+      console.log('[AuthCallback] token_type:', token_type);
       if (access_token && refresh_token && expires_in && token_type) {
         // Tenta salvar manualmente no Supabase
         import('../utils/supabaseClient').then(({ supabase }) => {
@@ -72,11 +81,18 @@ export default function AuthCallback() {
             access_token,
             refresh_token,
           }).then(() => {
+            console.log('[AuthCallback] Sessão criada manualmente, limpando fragmento e recarregando.');
             window.location.hash = '';
             window.location.reload();
+          }).catch((err) => {
+            console.error('[AuthCallback] Erro ao criar sessão manual:', err);
           });
         });
+      } else {
+        console.warn('[AuthCallback] Fragmento não contém todos os tokens necessários.');
       }
+    } else {
+      console.warn('[AuthCallback] Nenhum access_token encontrado no fragmento.');
     }
   }, [session, isAdmin, navigate]);
 
