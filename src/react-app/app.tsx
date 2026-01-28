@@ -74,8 +74,8 @@ export const App = () => {
       setRouteState((hash.startsWith('#/auth-test') || hash.startsWith('#/private-test')) ? 'test' : 'normal');
     };
     window.addEventListener('hashchange', check);
-    if (import.meta.hot) {
-      import.meta.hot.on('vite:afterUpdate', () => {
+    if ((import.meta as any).hot) {
+      (import.meta as any).hot.on('vite:afterUpdate', () => {
         check();
       });
     }
