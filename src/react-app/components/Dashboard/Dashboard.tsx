@@ -36,6 +36,7 @@ import { BlogManagementModule } from '../../modules/blog/BlogManagementModule';
 import { AIMonitoringModule } from '../../modules/ia/AIMonitoringModule';
 import { PublicacoesModule } from '../../components/Publicacoes/PublicacoesModule';
 import { ChatbotConfigModule } from '../ChatbotConfigModule';
+import { apiFetch } from '../../controllers/ApiController';
 
 type DashboardTab =
   | 'overview'
@@ -63,81 +64,129 @@ export const Dashboard = () => {
   useEffect(() => {
     // Proteção robusta: só age quando a sessão já foi carregada
     if (session === undefined) return;
-    if (!session) {
-      navigate('/login', { replace: true });
-      return;
-    }
-    if (!isAdmin) {
-      navigate('/portal', { replace: true });
-    }
-  }, [session, isAdmin, navigate]);
+    export const Dashboard = () => {
+      const session = useSupabaseSession();
+      const isAdmin = useIsAdmin();
+      const navigate = useNavigate();
 
-  return (
-    <div className="min-h-screen bg-brand-dark text-white">
-      <Header />
+      const [activeTab, setActiveTab] = useState<DashboardTab>('overview');
+      const [selectedTicket, setSelectedTicket] = useState<any | null>(null);
+      const [tabData, setTabData] = useState<any[]>([]);
+      const [loading, setLoading] = useState(false);
 
-      <main className="pt-32 pb-20 px-4 max-w-7xl mx-auto">
-        <div className="flex gap-8">
-          <aside className="w-64 hidden lg:block">
-            <nav className="space-y-1">
-              {[
-                ['overview', 'Visão Geral', LayoutDashboard],
-                ['crm', 'CRM', Users],
-                ['processos', 'Processos', Scale],
-                ['documentos', 'Documentos', Folder],
-                ['planos_pagamento', 'Planos', CreditCard],
-                ['faturas', 'Financeiro', CreditCard],
-                ['tickets', 'Helpdesk', MessageSquare],
-                ['publicacoes', 'Publicações', FileText],
-                ['gestaoblog', 'Blog', FileText],
-                ['agenda', 'Agenda', Calendar],
-                ['ia', 'IA', Bot],
-                ['chatbot', 'Chatbot', Bot],
-                ['config', 'Configurações', Settings],
-              ].map(([id, label, Icon]: any) => (
-                <button
-                  key={id}
-                  onClick={() => setActiveTab(id)}
-                  className={`w-full flex items-center gap-3 px-4 py-3 rounded-xl font-bold ${
-                    activeTab === id
-                      ? 'bg-brand-primary'
-                      : 'text-white/40 hover:bg-white/5'
-                  }`}
-                >
-                  <Icon size={18} />
-                  {label}
-                </button>
-              ))}
-            </nav>
-          </aside>
+      useEffect(() => {
+        // Proteção robusta: só age quando a sessão já foi carregada
+        if (session === undefined) return;
+        if (!session) {
+          navigate('/login', { replace: true });
+          return;
+        }
+        if (!isAdmin) {
+          navigate('/portal', { replace: true });
+        }
+      }, [session, isAdmin, navigate]);
 
-          <section className="flex-1 space-y-6">
-            {activeTab === 'overview' && <OverviewModule />}
-            {activeTab === 'crm' && <CRMModule />}
-            {activeTab === 'processos' && <ProcessosModule />}
-            {activeTab === 'documentos' && <DocumentsModule />}
-            {activeTab === 'planos_pagamento' && <PlanoPagamentoModule />}
-            {activeTab === 'faturas' && <FaturasModule />}
-            {activeTab === 'tickets' && !selectedTicket && (
-              <TicketsModule onSelect={setSelectedTicket} />
-            )}
-            {activeTab === 'tickets' && selectedTicket && (
-              <TicketDetailInline
-                ticket={selectedTicket}
-                onBack={() => setSelectedTicket(null)}
-              />
-            )}
-            {activeTab === 'publicacoes' && <PublicacoesModule />}
-            {activeTab === 'gestaoblog' && <BlogManagementModule />}
-            {activeTab === 'agenda' && <AdminAgendaModule />}
-            {activeTab === 'ia' && <AIMonitoringModule />}
-            {activeTab === 'chatbot' && <ChatbotConfigModule />}
-            {activeTab === 'config' && <ConfigModule />}
-          </section>
+      // Fetch data for each tab
+      useEffect(() => {
+        if (!session) return;
+        setLoading(true);
+        let endpoint = '';
+        switch (activeTab) {
+          case 'overview':
+            endpoint = '/api/dashboard/overview';
+            break;
+          case 'tickets':
+            endpoint = '/api/tickets';
+            break;
+          case 'processos':
+            endpoint = '/api/processos';
+            break;
+          case 'faturas':
+            endpoint = '/api/financeiro/faturas';
+            break;
+          case 'planos_pagamento':
+            endpoint = '/api/financeiro/planos';
+            break;
+          case 'documentos':
+            endpoint = '/api/documentos';
+            break;
+          default:
+            setTabData([]);
+            setLoading(false);
+            return;
+        }
+        apiFetch(endpoint)
+          .then(data => {
+            setTabData(Array.isArray(data) ? data : (data?.items || []));
+            setLoading(false);
+          })
+          .catch(() => {
+            setTabData([]);
+            setLoading(false);
+          });
+      }, [activeTab, session]);
+
+      return (
+        <div className="min-h-screen bg-brand-dark text-white">
+          <Header />
+
+          <main className="pt-32 pb-20 px-4 max-w-7xl mx-auto">
+            <div className="flex gap-8">
+              <aside className="w-64 hidden lg:block">
+                <nav className="space-y-1">
+                  {[...
+                  ].map(([id, label, Icon]: any) => (
+                    <button
+                      key={id}
+                      onClick={() => setActiveTab(id)}
+                      className={`w-full flex items-center gap-3 px-4 py-3 rounded-xl font-bold ${
+                        activeTab === id
+                          ? 'bg-brand-primary'
+                          : 'text-white/40 hover:bg-white/5'
+                      }`}
+                    >
+                      <Icon size={18} />
+                      {label}
+                    </button>
+                  ))}
+                </nav>
+              </aside>
+
+              <section className="flex-1 space-y-6">
+                {loading ? (
+                  <div className="text-center py-20 text-white/40">Carregando dados...</div>
+                ) : (
+                  <>
+                    {activeTab === 'overview' && <OverviewModule data={tabData} />}
+                    {activeTab === 'crm' && <CRMModule />}
+                    {activeTab === 'processos' && <ProcessosModule data={tabData} onSelect={() => {}} />}
+                    {activeTab === 'documentos' && <DocumentsModule data={tabData} />}
+                    {activeTab === 'planos_pagamento' && <PlanoPagamentoModule data={tabData} />}
+                    {activeTab === 'faturas' && <FaturasModule data={tabData} />}
+                    {activeTab === 'tickets' && !selectedTicket && (
+                      <TicketsModule data={tabData} onSelect={setSelectedTicket} />
+                    )}
+                    {activeTab === 'tickets' && selectedTicket && (
+                      <TicketDetailInline
+                        ticket={selectedTicket}
+                        onBack={() => setSelectedTicket(null)}
+                      />
+                    )}
+                    {activeTab === 'publicacoes' && <PublicacoesModule />}
+                    {activeTab === 'gestaoblog' && <BlogManagementModule />}
+                    {activeTab === 'agenda' && <AdminAgendaModule />}
+                    {activeTab === 'ia' && <AIMonitoringModule />}
+                    {activeTab === 'chatbot' && <ChatbotConfigModule />}
+                    {activeTab === 'config' && <ConfigModule />}
+                  </>
+                )}
+              </section>
+            </div>
+          </main>
+
+          <ChatWidget />
         </div>
-      </main>
-
-      <ChatWidget />
-    </div>
+      );
+    };
   );
 };
