@@ -25,6 +25,7 @@ import allConfigs from '../../../shared/form-configs.json';
 import { useMemo } from 'react';
 
 export const ChannelConfig: React.FC = () => {
+  import { apiFetch } from '../../controllers/ApiController';
   const [channels, setChannels] = useState<any[]>([]);
   const [queues, setQueues] = useState<any[]>([]);
   const [loading, setLoading] = useState(true);
@@ -38,7 +39,7 @@ export const ChannelConfig: React.FC = () => {
 
   const fetchQueues = async () => {
     try {
-      const res = await fetch('/api/admin/queues');
+      const res = await apiFetch('/api/admin/queues');
       if (res.ok) setQueues(await res.json());
     } catch (e) {
       console.error(e);
@@ -48,7 +49,7 @@ export const ChannelConfig: React.FC = () => {
   const fetchChannels = async () => {
     setLoading(true);
     try {
-      const res = await fetch('/api/admin/channels');
+      const res = await apiFetch('/api/admin/channels');
       if (res.ok) setChannels(await res.json());
     } catch (e) {
       console.error(e);
@@ -59,7 +60,7 @@ export const ChannelConfig: React.FC = () => {
 
   const handleToggleActive = async (id: number, currentStatus: boolean) => {
     try {
-      const res = await fetch(`/api/admin/channels/${id}/toggle`, {
+      const res = await apiFetch(`/api/admin/channels/${id}/toggle`, {
         method: 'PATCH',
         headers: { 'Content-Type': 'application/json' },
         body: JSON.stringify({ active: !currentStatus })
@@ -91,7 +92,7 @@ export const ChannelConfig: React.FC = () => {
     const endpoint = `/api/admin/channels${editingChannel?.id ? `/${editingChannel.id}` : ''}`;
 
     try {
-      const res = await fetch(endpoint, {
+      const res = await apiFetch(endpoint, {
         method,
         headers: { 'Content-Type': 'application/json' },
         body: JSON.stringify({
@@ -115,7 +116,7 @@ export const ChannelConfig: React.FC = () => {
   const handleDelete = async (id: number) => {
     if (!confirm('Excluir este canal?')) return;
     try {
-      const res = await fetch(`/api/admin/channels/${id}`, { method: 'DELETE' });
+      const res = await apiFetch(`/api/admin/channels/${id}`, { method: 'DELETE' });
       if (res.ok) fetchChannels();
     } catch (e) {
       alert("Erro ao excluir.");

@@ -24,6 +24,7 @@ import {
 import { clsx } from 'clsx';
 
 export const UnifiedInbox: React.FC = () => {
+  import { apiFetch } from '../../controllers/ApiController';
   const [conversations, setConversations] = useState<any[]>([]);
   const [selectedConv, setSelectedConv] = useState<any>(null);
   const [messages, setMessages] = useState<any[]>([]);
@@ -56,7 +57,7 @@ export const UnifiedInbox: React.FC = () => {
 
   const fetchConversations = async () => {
     try {
-      const res = await fetch('/api/admin/conversations');
+      const res = await apiFetch('/api/admin/conversations');
       if (res.ok) {
         const data = await res.json();
         setConversations(data);
@@ -70,7 +71,7 @@ export const UnifiedInbox: React.FC = () => {
 
   const fetchMessages = async (id: number) => {
     try {
-      const res = await fetch(`/api/admin/conversations/${id}/messages`);
+      const res = await apiFetch(`/api/admin/conversations/${id}/messages`);
       if (res.ok) {
         const data = await res.json();
         setMessages(data);
@@ -84,7 +85,7 @@ export const UnifiedInbox: React.FC = () => {
     if (!reply.trim() || sending || !selectedConv) return;
     setSending(true);
     try {
-      const res = await fetch(`/api/admin/conversations/${selectedConv.id}/reply`, {
+      const res = await apiFetch(`/api/admin/conversations/${selectedConv.id}/reply`, {
         method: 'POST',
         headers: { 'Content-Type': 'application/json' },
         body: JSON.stringify({ content: reply })

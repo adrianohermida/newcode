@@ -25,6 +25,7 @@ import { contactFormTheme } from '../CustomForm/themes';
 import allConfigs from '../../../shared/form-configs.json';
 
 export const QueueConfig: React.FC = () => {
+  import { apiFetch } from '../../controllers/ApiController';
   const [queues, setQueues] = useState<any[]>([]);
   const [loading, setLoading] = useState(true);
   const [isEditorOpen, setIsEditorOpen] = useState(false);
@@ -45,7 +46,7 @@ export const QueueConfig: React.FC = () => {
   const fetchQueues = async () => {
     setLoading(true);
     try {
-      const res = await fetch('/api/admin/queues');
+      const res = await apiFetch('/api/admin/queues');
       if (res.ok) {
         const data = await res.json();
         setQueues(data);
@@ -62,7 +63,7 @@ export const QueueConfig: React.FC = () => {
     const endpoint = `/api/admin/queues${editingQueue?.id ? `/${editingQueue.id}` : ''}`;
 
     try {
-      const res = await fetch(endpoint, {
+      const res = await apiFetch(endpoint, {
         method,
         headers: { 'Content-Type': 'application/json' },
         body: JSON.stringify({
@@ -89,7 +90,7 @@ export const QueueConfig: React.FC = () => {
   const handleDelete = async (id: number) => {
     if (!confirm('Excluir esta fila? Esta ação não pode ser desfeita se a fila estiver em uso.')) return;
     try {
-      const res = await fetch(`/api/admin/queues/${id}`, { method: 'DELETE' });
+      const res = await apiFetch(`/api/admin/queues/${id}`, { method: 'DELETE' });
       if (res.ok) {
         const result = await res.json();
         if (result.success) {

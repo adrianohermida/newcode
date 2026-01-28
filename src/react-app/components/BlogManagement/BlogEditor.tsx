@@ -18,6 +18,7 @@ interface BlogEditorProps {
 }
 
 export const BlogEditor: React.FC<BlogEditorProps> = ({ post, categories, onBack }) => {
+  import { apiFetch } from '../../controllers/ApiController';
   const [formData, setFormData] = useState<any>(post || { status: 'rascunho' });
   const [isSaving, setIsSaving] = useState(false);
   const [uploading, setUploading] = useState(false);
@@ -56,7 +57,7 @@ export const BlogEditor: React.FC<BlogEditorProps> = ({ post, categories, onBack
     reader.onloadend = async () => {
       const base64 = (reader.result as string).split(',')[1];
       try {
-        const res = await fetch('https://api.heybossai.com/v1/run', {
+        const res = await apiFetch('https://api.heybossai.com/v1/run', {
           method: 'POST',
           headers: {
             "Content-Type": "application/json",
@@ -86,7 +87,7 @@ export const BlogEditor: React.FC<BlogEditorProps> = ({ post, categories, onBack
       const url = post ? `/api/admin/blog/posts/${post.id}` : '/api/admin/blog/posts';
       const method = post ? 'PUT' : 'POST';
       
-      const res = await fetch(url, {
+      const res = await apiFetch(url, {
         method,
         headers: { 'Content-Type': 'application/json' },
         body: JSON.stringify(data)
@@ -109,7 +110,7 @@ export const BlogEditor: React.FC<BlogEditorProps> = ({ post, categories, onBack
     if (!formData.titulo) return alert('Digite um título primeiro!');
     
     try {
-      const res = await fetch('https://api.heybossai.com/v1/run', {
+      const res = await apiFetch('https://api.heybossai.com/v1/run', {
         method: 'POST',
         headers: {
           "Content-Type": "application/json",

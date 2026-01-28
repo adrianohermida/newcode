@@ -31,6 +31,7 @@ import allConfigs from '../../../shared/form-configs.json';
 import { cn } from '../../utils';
 
 export const PublicacoesModule: React.FC = () => {
+  import { apiFetch } from '../../controllers/ApiController';
   const [publicacoes, setPublicacoes] = useState<any[]>([]);
   const [loading, setLoading] = useState(true);
   const [searchTerm, setSearchTerm] = useState('');
@@ -44,7 +45,7 @@ export const PublicacoesModule: React.FC = () => {
   const fetchPublicacoes = async () => {
     setLoading(true);
     try {
-      const res = await fetch(`/api/admin/publicacoes?search=${searchTerm}&status=${statusFilter}`);
+      const res = await apiFetch(`/api/admin/publicacoes?search=${searchTerm}&status=${statusFilter}`);
       const data = await res.json();
       if (Array.isArray(data)) setPublicacoes(data);
     } catch (e) {
@@ -61,7 +62,7 @@ export const PublicacoesModule: React.FC = () => {
 
   const handleMarkAsRead = async (id: number, currentStatus: boolean) => {
     try {
-      const res = await fetch(`/api/admin/publicacoes/${id}`, {
+      const res = await apiFetch(`/api/admin/publicacoes/${id}`, {
         method: 'PUT',
         headers: { 'Content-Type': 'application/json' },
         body: JSON.stringify({ status_leitura: !currentStatus })
@@ -76,7 +77,7 @@ export const PublicacoesModule: React.FC = () => {
     setAnalysis(pub.id);
     setAiResult(null);
     try {
-      const res = await fetch(`/api/admin/publicacoes/${pub.id}/analyze`, { method: 'POST' });
+      const res = await apiFetch(`/api/admin/publicacoes/${pub.id}/analyze`, { method: 'POST' });
       const data = await res.json();
       setAiResult(data);
     } catch (e) {
@@ -93,7 +94,7 @@ export const PublicacoesModule: React.FC = () => {
       const dueDate = new Date();
       dueDate.setDate(dueDate.getDate() + (analysis.days || 15));
       
-      const res = await fetch('/api/admin/deadlines', {
+      const res = await apiFetch('/api/admin/deadlines', {
         method: 'POST',
         headers: { 'Content-Type': 'application/json' },
         body: JSON.stringify({
@@ -118,7 +119,7 @@ export const PublicacoesModule: React.FC = () => {
   };
 
   const handleExport = () => {
-    window.open('/api/admin/publicacoes/export', '_blank');
+    window.open('/api/admin/publicacoes/export', '_blank'); // Mantém window.open pois não é fetch
   };
 
   return (
@@ -364,7 +365,7 @@ export const PublicacoesModule: React.FC = () => {
                 id="publicacao_form"
                 schema={allConfigs.publicacao_form.jsonSchema}
                 onSubmit={async (data) => {
-                  const res = await fetch('/api/admin/publicacoes', {
+                  const res = await apiFetch('/api/admin/publicacoes', {
                     method: 'POST',
                     headers: { 'Content-Type': 'application/json' },
                     body: JSON.stringify(data)
