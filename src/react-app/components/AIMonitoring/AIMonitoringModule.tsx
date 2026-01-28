@@ -10,6 +10,7 @@
  */
 
 import React, { useState, useEffect, useMemo } from 'react';
+import { apiFetch } from '../../controllers/ApiController';
 import { Search, Filter, MessageSquare, AlertCircle, CheckCircle2, Clock, Eye, MoreVertical, Loader2 } from 'lucide-react';
 import AISessionViewer from './AISessionViewer';
 
@@ -47,11 +48,8 @@ export const AIMonitoringModule: React.FC = () => {
     try {
       setLoading(true);
       const statusParam = filterStatus === 'all' ? '' : `status=${filterStatus}`;
-      const response = await fetch(`/api/admin/ai-interactions?${statusParam}`);
-      if (response.ok) {
-        const data = await response.json();
-        setSessions(Array.isArray(data) ? data : []);
-      }
+      const data = await apiFetch(`/api/admin/ai-interactions?${statusParam}`);
+      setSessions(Array.isArray(data) ? data : []);
     } catch (error) {
       console.error('Erro ao buscar sessões IA:', error);
     } finally {
@@ -61,16 +59,12 @@ export const AIMonitoringModule: React.FC = () => {
 
   const handleIntervene = async (sessionId: string, message: string) => {
     try {
-      const response = await fetch(`/api/admin/ai-interactions/${sessionId}/intervene`, {
+      await apiFetch(`/api/admin/ai-interactions/${sessionId}/intervene`, {
         method: 'POST',
         headers: { 'Content-Type': 'application/json' },
         body: JSON.stringify({ status: 'flagged', admin_notes: message })
       });
-
-      if (response.ok) {
-        // Feedback silencioso e atualização da lista
-        fetchSessions();
-      }
+      fetchSessions();
     } catch (error) {
       console.error('Erro ao intervir:', error);
       throw error;

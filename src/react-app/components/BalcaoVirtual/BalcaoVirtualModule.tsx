@@ -7,6 +7,7 @@
  */
 
 import React, { useState, useEffect } from 'react';
+import { apiFetch } from '../../controllers/ApiController';
 import { 
   MessageSquare, 
   Settings, 
@@ -46,11 +47,8 @@ export const BalcaoVirtualModule: React.FC = () => {
 
   const fetchStats = async () => {
     try {
-      const res = await fetch('/api/admin/balcao/stats');
-      if (res.ok) {
-        const data = await res.json();
-        setStats(data);
-      }
+      const data = await apiFetch('/api/admin/balcao/stats');
+      setStats(data);
     } catch (e) {
       console.error("Failed to fetch Balcão Virtual stats:", e);
     } finally {

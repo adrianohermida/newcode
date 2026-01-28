@@ -8,6 +8,7 @@
  */
 
 import React, { useState, useEffect, useRef } from 'react';
+import { apiFetch } from '../controllers/ApiController';
 import { MessageCircle, X, Send, Loader2, User, Bot, ChevronRight, FileText, Calendar, Search, History, MessageSquare, Receipt, Shield } from 'lucide-react';
 import { cn } from '../utils';
 // import { useAuth } from '@hey-boss/users-service/react';
@@ -60,43 +61,40 @@ export const ChatWidget = () => {
     }
 
     const userMessage: Message = {
-      role: 'user',
-      content: messageText,
-      timestamp: new Date()
-    };
-
-    setMessages(prev => [...prev, userMessage]);
-    if (!overrideInput) setInput('');
-    setIsLoading(true);
-
-    try {
-      const response = await fetch('/api/ai/chat', {
-        method: 'POST',
-        headers: { 'Content-Type': 'application/json' },
-        body: JSON.stringify({ 
-          message: messageText,
-          history: messages.map(m => ({ role: m.role, content: m.content })),
-          session_id: currentSessionId
-        })
-      });
-
-      if (!response.ok) {
-        throw new Error('Falha na resposta do servidor');
+      try {
+        const data = await apiFetch('/api/ai/chat', {
+          method: 'POST',
+          headers: { 'Content-Type': 'application/json' },
+          body: JSON.stringify({ 
+            message: messageText,
+            history: messages.map(m => ({ role: m.role, content: m.content })),
+            session_id: currentSessionId
+          })
+        });
+        if (data && data.reply) {
+          setMessages(prev => [...prev, {
+            role: 'assistant',
+            content: data.reply,
+            timestamp: new Date(),
+            type: data.type,
+            data: data.data
+          }]);
+        } else {
+          setMessages(prev => [...prev, {
+            role: 'assistant',
+            content: data?.error || 'Erro ao processar resposta.',
+            timestamp: new Date()
+          }]);
+        }
+      } catch (e) {
+        setMessages(prev => [...prev, {
+          role: 'assistant',
+          content: 'Erro de conexão. Tente novamente.',
+          timestamp: new Date()
+        }]);
+      } finally {
+        setIsLoading(false);
       }
-
-      const data = await response.json();
-      
-      if (data.session_id) {
-        setSessionId(data.session_id);
-        sessionStorage.setItem('chat_session_id', data.session_id);
-      }
-      
-      const assistantMessage: Message = {
-        role: 'assistant',
-        content: data.reply || 'Desculpe, tive um problema ao processar sua solicitação.',
-        timestamp: new Date(),
-        type: data.type,
-        data: data.data
       };
 
       setMessages(prev => [...prev, assistantMessage]);
