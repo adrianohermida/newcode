@@ -7,7 +7,7 @@
  */
 
 import React, { useEffect, useState } from 'react';
-import { FreshchatWidget } from '../components/FreshchatWidget';
+import { ChatWidget } from '../components/ChatWidget';
 import { Link } from 'react-router-dom';
 import { 
   MessageCircle, 
@@ -866,7 +866,7 @@ const Footer = () => {
 
   return (
     <div className="min-h-screen bg-brand-dark selection:bg-brand-primary selection:text-white">
-      <FreshchatWidget />
+      <ChatWidget />
       <Header />
       <main>
         <Hero />

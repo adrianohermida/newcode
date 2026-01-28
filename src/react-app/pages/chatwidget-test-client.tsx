@@ -1,4 +1,4 @@
-import { FreshchatWidget } from '../components/FreshchatWidget';
+import { ChatWidget } from '../components/ChatWidget';
 import { Header } from '../components/Header';
 import { Footer } from '../components/Footer';
 import { useAuth } from '@hey-boss/users-service/react';
@@ -7,7 +7,7 @@ export default function ChatWidgetTestClient() {
   const { user } = useAuth();
   return (
     <div className="min-h-screen bg-brand-dark text-white">
-      <FreshchatWidget widgetId="2bb07572-34a4-4ea6-9708-4ec2ed23589d" />
+      <ChatWidget />
       <Header />
       <main className="max-w-2xl mx-auto py-16">
         <h1 className="text-2xl font-bold mb-4">Teste ChatWidget Cliente (logado)</h1>

@@ -11,7 +11,7 @@ import React, { useState, useEffect } from "react";
 import { supabase } from "../utils/supabaseClient";
 import { useNavigate } from "react-router-dom";
 import { Mail, Lock, ArrowRight, Loader2, Chrome } from "lucide-react";
-import { FreshchatWidget } from "../components/FreshchatWidget";
+import { ChatWidget } from "../components/ChatWidget";
 import { useAuthContext } from "../hooks/AuthContext";
 
 export default function LoginPage() {
@@ -23,6 +23,7 @@ export default function LoginPage() {
   const [loading, setLoading] = useState(false);
   const [user, setUser] = useState<any>(null);
   const [fallbackError, setFallbackError] = useState<string | null>(null);
+  const { refreshUser } = useAuthContext();
 
   // Checa sessão do Supabase apenas uma vez e escuta mudanças de autenticação
   useEffect(() => {
@@ -33,7 +34,8 @@ export default function LoginPage() {
       if (!ignore && data.session && data.session.user) {
         setUser(data.session.user);
         // Confirma usuário no backend
-        getUserMe().then(() => {
+        getUserMe().then(async () => {
+          await refreshUser();
           navigate("/account", { replace: true });
         }).catch(() => {
           setFallbackError('Sua sessão foi autenticada, mas não foi possível validar o usuário no backend.');
@@ -47,7 +49,8 @@ export default function LoginPage() {
     const { data: listener } = supabase.auth.onAuthStateChange((_event, session) => {
       if (!ignore && session?.user) {
         setUser(session.user);
-        getUserMe().then(() => {
+        getUserMe().then(async () => {
+          await refreshUser();
           navigate("/account", { replace: true });
         }).catch(() => {
           setFallbackError('Sua sessão foi autenticada, mas não foi possível validar o usuário no backend.');
@@ -59,7 +62,7 @@ export default function LoginPage() {
       ignore = true;
       unsub?.unsubscribe();
     };
-  }, [navigate]);
+  }, [navigate, refreshUser]);
   if (fallbackError) {
     return <FallbackPage message={fallbackError} />;
   }
@@ -90,6 +93,7 @@ export default function LoginPage() {
       const { error, data } = await supabase.auth.verifyOtp({ email, token: otp, type: 'email' });
       if (!error) {
         setUser(data.user);
+        await refreshUser();
         navigate("/account", { replace: true });
       } else {
         setError(error.message || "Código inválido.");
@@ -103,8 +107,8 @@ export default function LoginPage() {
 
   return (
     <div className="min-h-screen bg-brand-dark flex items-center justify-center px-4 py-12">
-      {/* Widget Freshchat para login */}
-      <FreshchatWidget />
+      {/* Widget Chat nativo para login */}
+      <ChatWidget />
       <div className="max-w-md w-full space-y-8 bg-brand-elevated p-8 sm:p-12 rounded-[2.5rem] border border-white/10 shadow-2xl relative overflow-hidden">
         <div className="absolute top-0 left-0 w-full h-1 bg-brand-primary" />
         

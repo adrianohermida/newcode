@@ -1,6 +1,6 @@
 
 import React, { useState, useEffect } from 'react';
-import { FreshchatWidget } from '../components/FreshchatWidget';
+import { ChatWidget } from '../components/ChatWidget';
 import { Header } from '../components/Header';
 import { useAuth } from '@hey-boss/users-service/react';
 import { CustomForm } from '../components/CustomForm';
@@ -83,7 +83,7 @@ import { Link } from 'react-router-dom';
       }
     return (
       <div className="min-h-screen bg-brand-dark text-white selection:bg-brand-primary selection:text-white">
-        <FreshchatWidget widgetId="2bb07572-34a4-4ea6-9708-4ec2ed23589d" />
+        <ChatWidget />
         <Header />
         <main className="pt-32 pb-20 px-4 sm:px-6 lg:px-8 max-w-7xl mx-auto">
           <div className="flex flex-col lg:flex-row gap-8">
