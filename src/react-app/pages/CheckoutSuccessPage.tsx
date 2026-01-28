@@ -1,5 +1,6 @@
 
 import React, { useEffect, useState } from "react";
+import { apiFetch } from '../controllers/ApiController';
 import { useSearchParams } from "react-router-dom";
 import { CheckCircle, AlertCircle, Loader2 } from "lucide-react";
 import { trackPurchase } from "../utils/analytics";
@@ -28,34 +29,22 @@ export const CheckoutSuccessPage: React.FC = () => {
   const fetchPurchaseDetail = async (sessionId: string) => {
     try {
       setLoading(true);
-      const response = await fetch(
-        `/api/products/purchase-detail?sessionId=${sessionId}`,
-        {
-          method: "GET",
-        }
-      );
-
-      const result = await response.json();
-
-      if (response.ok) {
-        setPurchaseData(result);
-        setError(null);
-        trackPurchase({
-          orderId: result.checkoutSessionId,
-          value: result.totalAmount,
-          currency: result.currency,
-          items: result.products.map((product: any) => ({
-            id: product.id,
-            name: product.name,
-            price: product.price,
-            quantity: product.quantity,
-          })),
-        });
-      } else {
-        setError(result);
-      }
-    } catch (err) {
-      setError({ message: "Network error, please try again later" });
+      const result = await apiFetch(`/api/products/purchase-detail?sessionId=${sessionId}`);
+      setPurchaseData(result);
+      setError(null);
+      trackPurchase({
+        orderId: result.checkoutSessionId,
+        value: result.totalAmount,
+        currency: result.currency,
+        items: result.products.map((product: any) => ({
+          id: product.id,
+          name: product.name,
+          price: product.price,
+          quantity: product.quantity,
+        })),
+      });
+    } catch (err: any) {
+      setError({ message: err?.message || "Network error, please try again later" });
       console.error("Error fetching purchase detail:", err);
     } finally {
       setLoading(false);

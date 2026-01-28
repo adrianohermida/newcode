@@ -7,6 +7,7 @@
  */
 
 import React, { useState, useEffect } from 'react';
+import { apiFetch } from '../controllers/ApiController';
 import { Bot, Zap, MessageSquare, Settings, Shield, Plus, Search, Edit2, Trash2, Loader2, CheckCircle2 } from 'lucide-react';
 
 export const ChatbotConfigModule: React.FC = () => {
@@ -21,11 +22,8 @@ export const ChatbotConfigModule: React.FC = () => {
   const fetchIntents = async () => {
     try {
       setLoading(true);
-      const res = await fetch('/api/admin/chatbot/intents');
-      if (res.ok) {
-        const data = await res.json();
-        setIntents(data);
-      }
+      const data = await apiFetch('/api/admin/chatbot/intents');
+      setIntents(data);
     } catch (e) {
       console.error(e);
     } finally {

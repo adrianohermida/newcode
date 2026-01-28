@@ -6,7 +6,8 @@
  */
 
 import React, { useState, useEffect, useMemo } from 'react';
-import { Header } from '../components/Header';
+import Header from '../components/Header';
+import { apiFetch } from '../controllers/ApiController';
 import { CustomForm } from '../components/CustomForm';
 import { contactFormTheme } from '../components/CustomForm/theme';
 import allConfigs from '../../shared/form-configs.json';
@@ -46,15 +47,10 @@ import { useAuth } from '@hey-boss/users-service/react';
   const handleTestConnection = async () => {
     setTestStatus('Testando...');
     try {
-      // Testa profissionais
-      const profRes = await fetch('/api/appointments/profissionais');
-      if (!profRes.ok) throw new Error('Profissionais: ' + profRes.status);
-      // Testa slots (usa data e prof fictício se necessário)
-      const profList = await profRes.json();
+      const profList = await apiFetch('/api/appointments/profissionais');
       const profId = profList[0]?.id || 1;
       const today = new Date().toISOString().split('T')[0];
-      const slotRes = await fetch(`/api/appointments/slots?date=${today}&profId=${profId}&type=avaliacao`);
-      if (!slotRes.ok) throw new Error('Slots: ' + slotRes.status);
+      await apiFetch(`/api/appointments/slots?date=${today}&profId=${profId}&type=avaliacao`);
       setTestStatus('Conexão bem-sucedida!');
     } catch (e: any) {
       setTestStatus('Erro ao testar conexão: ' + (e.message || 'Erro desconhecido'));
@@ -63,8 +59,7 @@ import { useAuth } from '@hey-boss/users-service/react';
   };
   // Carregar profissionais ao iniciar
   useEffect(() => {
-    fetch('/api/appointments/profissionais')
-      .then(res => res.json())
+    apiFetch('/api/appointments/profissionais')
       .then(data => {
         setProfissionais(data);
         if (data.length > 0) setSelectedProf(data[0]);
@@ -74,8 +69,7 @@ import { useAuth } from '@hey-boss/users-service/react';
   useEffect(() => {
     if (selectedDate && selectedProf) {
       setLoading(true);
-      fetch(`/api/appointments/slots?date=${selectedDate}&profId=${selectedProf.id}&type=${appointmentType}`)
-        .then(res => res.json())
+      apiFetch(`/api/appointments/slots?date=${selectedDate}&profId=${selectedProf.id}&type=${appointmentType}`)
         .then(data => {
           setAvailableSlots(data);
           setLoading(false);
