@@ -76,14 +76,14 @@ const Hero = () => (
 
           <div className="flex items-center gap-6 justify-center lg:justify-start pt-4">
             <div className="flex -space-x-3">
-              {[1, 2, 3, 4].map((num) => (
-                <img
-                  key={num}
-                  src={`https://ui-avatars.com/api/?name=User+${num}&background=0d9c6e&color=fff`}
-                  className="w-10 h-10 rounded-full border-2 border-brand-dark"
-                  alt="User"
-                />
-              ))}
+                {[1, 2, 3, 4].map(n => (
+                  <img
+                    key={n}
+                    src={require(`../assets/img/avatar${n}.png`)}
+                    className="w-10 h-10 rounded-full border-2 border-brand-dark"
+                    alt={`Avatar ${n}`}
+                  />
+                ))}
             </div>
             <div className="text-sm">
               <div className="flex text-brand-accent">
