@@ -1,3 +1,4 @@
+export default AuthProtect;
 /**
  * AuthProtect.tsx - Authentication Protection Wrapper Component
  *
