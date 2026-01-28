@@ -35,7 +35,8 @@ import {
   MessageCircle,
   TrendingDown
 } from 'lucide-react';
-import { Header } from '../components/Header';
+import Header from '../components/Header';
+import { apiFetch } from '../controllers/ApiController';
 import { cn } from '../utils';
 import { useAuth } from '@hey-boss/users-service/react';
 import { CustomForm } from '../components/CustomForm';
@@ -60,14 +61,11 @@ export const ProcessDetailPage = () => {
   const fetchDetails = async () => {
     setLoading(true);
     try {
-      const res = await fetch(`/api/processos/${id}/details`);
-      if (res.ok) {
-        setData(await res.json());
-      } else {
-        navigate('/dashboard');
-      }
+      const result = await apiFetch(`/api/processos/${id}/details`);
+      setData(result);
     } catch (err) {
       console.error(err);
+      navigate('/dashboard');
     } finally {
       setLoading(false);
     }
@@ -80,11 +78,8 @@ export const ProcessDetailPage = () => {
   const handleGenerateAISummary = async () => {
     setLoadingAI(true);
     try {
-      const res = await fetch(`/api/admin/processos/${id}/ai-summary`, { method: 'POST' });
-      const result = await res.json();
-      if (res.ok) {
-        setAiSummary(result.summary);
-      }
+      const result = await apiFetch(`/api/admin/processos/${id}/ai-summary`, { method: 'POST' });
+      setAiSummary(result.summary);
     } catch (err) {
       console.error(err);
     } finally {
@@ -436,14 +431,16 @@ export const ProcessDetailPage = () => {
             id="movement_form"
             schema={allConfigs.movement_form.jsonSchema}
             onSubmit={async (formData) => {
-              const res = await fetch(`/api/admin/processos/${id}/movements`, {
-                method: 'POST',
-                headers: { 'Content-Type': 'application/json' },
-                body: JSON.stringify(formData)
-              });
-              if (res.ok) {
+              try {
+                await apiFetch(`/api/admin/processos/${id}/movements`, {
+                  method: 'POST',
+                  headers: { 'Content-Type': 'application/json' },
+                  body: JSON.stringify(formData)
+                });
                 setShowAddMovement(false);
                 fetchDetails();
+              } catch (err) {
+                alert('Erro ao lançar andamento.');
               }
             }}
             theme={contactFormTheme}
@@ -457,15 +454,17 @@ export const ProcessDetailPage = () => {
             id="process_ticket_form"
             schema={allConfigs.process_ticket_form.jsonSchema}
             onSubmit={async (formData) => {
-              const res = await fetch(`/api/processos/${id}/tickets`, {
-                method: 'POST',
-                headers: { 'Content-Type': 'application/json' },
-                body: JSON.stringify(formData)
-              });
-              if (res.ok) {
+              try {
+                await apiFetch(`/api/processos/${id}/tickets`, {
+                  method: 'POST',
+                  headers: { 'Content-Type': 'application/json' },
+                  body: JSON.stringify(formData)
+                });
                 setShowAddTicket(false);
                 fetchDetails();
                 alert('Chamado aberto com sucesso!');
+              } catch (err) {
+                alert('Erro ao abrir chamado.');
               }
             }}
             theme={contactFormTheme}
