@@ -897,7 +897,7 @@ export function HomePage() {
   // ...existing code...
   return (
     <div className="min-h-screen bg-brand-dark selection:bg-brand-primary selection:text-white">
-      <FreshchatWidget />
+      {/* FreshchatWidget removido para desativação global */}
       <Header />
       <main>
         <Hero />

@@ -63,10 +63,6 @@ import React from "react";
 import { AuthProvider } from "./hooks/AuthContext";
 
 // Widget Freshchat para páginas públicas
-import { FreshchatWidget } from "./components/FreshchatWidget";
-
-const FreshchatWidgetPublic = () => <FreshchatWidget key="public" />;
-const FreshchatWidgetPortal = () => <FreshchatWidget key="client" widgetId="2bb07572-34a4-4ea6-9708-4ec2ed23589d" />;
 export const App = () => {
   return (
     <AuthProvider>
@@ -74,20 +70,20 @@ export const App = () => {
         <HashRouter>
           <Routes>
             {/* Public Routes */}
-            <Route path="/" element={<><HomePage /><FreshchatWidgetPublic /></>} />
-            <Route path="/sobre" element={<><AboutPage /><FreshchatWidgetPublic /></>} />
-            <Route path="/contato" element={<><ContactPage /><FreshchatWidgetPublic /></>} />
-            <Route path="/agendar" element={<><AppointmentsPage /><FreshchatWidgetPublic /></>} />
-            <Route path="/blog" element={<><BlogPage /><FreshchatWidgetPublic /></>} />
-            <Route path="/blog/:slug" element={<><BlogPostPage /><FreshchatWidgetPublic /></>} />
-            <Route path="/unsubscribe" element={<><UnsubscribePage /><FreshchatWidgetPublic /></>} />
-            <Route path="/login" element={<><LoginPage /><FreshchatWidgetPublic /></>} />
-            <Route path="/auth/callback" element={<><AuthCallback /><FreshchatWidgetPublic /></>} />
-            <Route path="/checkout/success" element={<><CheckoutSuccessPage /><FreshchatWidgetPublic /></>} />
-            <Route path="/checkout/error" element={<><CheckoutErrorPage /><FreshchatWidgetPublic /></>} />
-            <Route path="/checkout/cancel" element={<><CheckoutCancelPage /><FreshchatWidgetPublic /></>} />
-            <Route path="/account" element={<AuthProtect><ClientPortal /><FreshchatWidgetPortal /></AuthProtect>} />
-            <Route path="/processos/:id" element={<AuthProtect><ProcessDetailPage /><FreshchatWidgetPortal /></AuthProtect>} />
+            <Route path="/" element={<HomePage />} />
+            <Route path="/sobre" element={<AboutPage />} />
+            <Route path="/contato" element={<ContactPage />} />
+            <Route path="/agendar" element={<AppointmentsPage />} />
+            <Route path="/blog" element={<BlogPage />} />
+            <Route path="/blog/:slug" element={<BlogPostPage />} />
+            <Route path="/unsubscribe" element={<UnsubscribePage />} />
+            <Route path="/login" element={<LoginPage />} />
+            <Route path="/auth/callback" element={<AuthCallback />} />
+            <Route path="/checkout/success" element={<CheckoutSuccessPage />} />
+            <Route path="/checkout/error" element={<CheckoutErrorPage />} />
+            <Route path="/checkout/cancel" element={<CheckoutCancelPage />} />
+            <Route path="/account" element={<AuthProtect><ClientPortal /></AuthProtect>} />
+            <Route path="/processos/:id" element={<AuthProtect><ProcessDetailPage /></AuthProtect>} />
 
             {/* Protected Routes */}
             <Route 
@@ -95,7 +91,6 @@ export const App = () => {
               element={
                 <AuthProtect>
                   <Dashboard />
-                  <FreshchatWidgetPortal />
                 </AuthProtect>
               } 
             />
