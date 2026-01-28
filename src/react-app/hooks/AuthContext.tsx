@@ -45,6 +45,15 @@ export const AuthProvider: React.FC<{ children: React.ReactNode }> = ({ children
       if (res.ok) {
         const data = await res.json();
         setUser(data && data.email ? data : null);
+        if (typeof window !== 'undefined') {
+          window.__AUTH_ERROR__ = null;
+        }
+      } else if (res.status === 401 || res.status === 404) {
+        // Usuário não autenticado, não exibe erro de sessão
+        setUser(null);
+        if (typeof window !== 'undefined') {
+          window.__AUTH_ERROR__ = null;
+        }
       } else {
         let msg = 'Usuário não autenticado';
         try {
