@@ -18,10 +18,12 @@ import {
   Filter
 } from 'lucide-react';
 import { Header } from '../components/Header';
+import { useSupabaseSession } from '../hooks/useSupabaseSession';
 import { SiteChatWidget } from '../components/SiteChatWidget';
 import { getBlogPosts, getBlogCategories } from '../controllers/ApiPublic';
 import FallbackPage from './FallbackPage';
 
+  const session = useSupabaseSession();
   const [posts, setPosts] = useState<any[]>([]);
   const [categories, setCategories] = useState<any[]>([]);
   const [loading, setLoading] = useState(true);

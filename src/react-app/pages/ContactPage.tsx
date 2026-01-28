@@ -1,5 +1,6 @@
 export default ContactPage;
 import { SiteChatWidget } from '../components/SiteChatWidget';
+import { useSupabaseSession } from '../hooks/useSupabaseSession';
 
 /**
  * @description Página de Contato para Hermida Maia Advocacia.
@@ -24,6 +25,7 @@ import { CustomForm } from '../components/CustomForm';
 import { contactFormTheme } from '../components/CustomForm/theme';
 import allConfigs from '../../shared/form-configs.json';
 
+  const session = useSupabaseSession();
   const [status, setStatus] = useState<{ type: 'success' | 'error' | null; message: string }>({
     type: null,
     message: ''

@@ -1,6 +1,7 @@
 import React from 'react';
 import { Link } from 'react-router-dom';
 import Header from '../components/Header';
+import { useSupabaseSession } from '../hooks/useSupabaseSession';
 import { useApi } from '../hooks/useApi';
 // import { createClient } from '@supabase/supabase-js';
 import { ChatWidget } from '../components/ChatWidget';
@@ -16,7 +17,8 @@ import {
 
 
 
-// --- Components ---
+// Garante que a sessão é reconhecida
+const session = useSupabaseSession();
 
 const Hero = () => (
   <section className="relative pt-32 pb-20 lg:pt-48 lg:pb-32 overflow-hidden">

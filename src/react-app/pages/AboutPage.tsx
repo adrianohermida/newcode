@@ -19,7 +19,9 @@ import {
 } from 'lucide-react';
 import { SiteChatWidget } from '../components/SiteChatWidget';
 import Header from '../components/Header';
+import { useSupabaseSession } from '../hooks/useSupabaseSession';
 
+const session = useSupabaseSession();
 const AboutHero = () => (
   <section className="relative pt-32 pb-20 lg:pt-48 lg:pb-32 overflow-hidden bg-brand-dark">
     <div className="absolute top-0 left-0 w-full h-full bg-[radial-gradient(circle_at_50%_50%,#0d9c6e10_0%,transparent_70%)]" />
