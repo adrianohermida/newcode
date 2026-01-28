@@ -41,21 +41,24 @@ export const BlogPostPage = () => {
     setLoading(true);
     getBlogPost(slug as string)
       .then(data => {
-        if (data.error) {
-          navigate('/blog');
-        } else {
-          setPost(data);
-          document.title = `${data.meta_titulo || data.titulo} | Blog Hermida Maia`;
-          // Atualizar meta tags dinamicamente (simulado para SPA)
-          const metaDesc = document.querySelector('meta[name="description"]');
-          if (metaDesc) metaDesc.setAttribute('content', data.meta_descricao || data.resumo || '');
+        if (!data || data.error) {
+          setFallbackError(data?.error || 'Post não encontrado.');
+          setLoading(false);
+          setPost(null);
+          return;
         }
+        setPost(data);
+        document.title = `${data.meta_titulo || data.titulo} | Blog Hermida Maia`;
+        // Atualizar meta tags dinamicamente (simulado para SPA)
+        const metaDesc = document.querySelector('meta[name="description"]');
+        if (metaDesc) metaDesc.setAttribute('content', data.meta_descricao || data.resumo || '');
         setFallbackError(null);
         setLoading(false);
       })
       .catch(err => {
         setFallbackError(err?.message || 'Erro ao carregar post.');
         setLoading(false);
+        setPost(null);
       });
   }, [slug, navigate]);
 

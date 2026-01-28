@@ -632,8 +632,8 @@ const Blog = () => {
     try {
       await fetchBlog();
       setTestStatus('Conexão bem-sucedida!');
-    } catch (e) {
-      setTestStatus('Erro ao testar conexão.');
+    } catch (e: any) {
+      setTestStatus('Erro ao testar conexão: ' + (e?.message || 'Erro desconhecido'));
     }
     setTimeout(() => setTestStatus(null), 3000);
   };

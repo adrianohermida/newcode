@@ -9,9 +9,12 @@ app.get("/api/blog", async (c) => {
   }
   try {
     const { results } = await c.env.DB.prepare(query).bind(...params).all();
-    return c.json(results);
+    // Always return an array, even if empty
+    return c.json(Array.isArray(results) ? results : []);
   } catch (e: any) {
-    return c.json({ error: e.message }, 500);
+    // Always return a valid JSON array on error, and set error header for debugging
+    c.header('X-Blog-Error', e.message || 'Unknown error');
+    return c.json([]);
   }
 });
 

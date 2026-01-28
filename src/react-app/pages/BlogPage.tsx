@@ -37,7 +37,7 @@ import FallbackPage from './FallbackPage';
       await getBlogCategories();
       setTestStatus('Conexão bem-sucedida!');
     } catch (e: any) {
-      setTestStatus('Erro ao testar conexão: ' + (e.message || 'Erro desconhecido'));
+      setTestStatus('Erro ao testar conexão: ' + (e?.message || 'Erro desconhecido'));
     }
     setTimeout(() => setTestStatus(null), 3000);
   };
@@ -51,8 +51,10 @@ import FallbackPage from './FallbackPage';
           getBlogPosts(activeCategory ?? undefined),
           getBlogCategories()
         ]);
-        if (Array.isArray(postsData)) setPosts(postsData);
-        if (Array.isArray(catsData)) setCategories(catsData);
+        if (!Array.isArray(postsData)) throw new Error('Resposta inesperada da API do blog.');
+        if (!Array.isArray(catsData)) throw new Error('Resposta inesperada das categorias do blog.');
+        setPosts(postsData);
+        setCategories(catsData);
         setFallbackError(null);
       } catch (err: any) {
         setPosts([]);

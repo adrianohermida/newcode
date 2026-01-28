@@ -17,9 +17,35 @@ export function useApi() {
     setBlogError(null);
     try {
       const res = await fetch('/api/blog');
-      if (!res.ok) throw new Error(`Erro HTTP: ${res.status}`);
-      const data = await res.json();
-      setBlog(data);
+      const contentType = res.headers.get('content-type') || '';
+      if (!res.ok) {
+        let message = `Erro ao acessar /api/blog: ${res.status}`;
+        if (contentType.includes('application/json')) {
+          try {
+            const data = await res.json();
+            if (data?.error) message += ` - ${data.error}`;
+            if (data?.message) message += ` - ${data.message}`;
+          } catch {}
+        } else {
+          message += ' (Resposta não-JSON recebida)';
+        }
+        throw new Error(message);
+      }
+      if (contentType.includes('application/json')) {
+        const data = await res.json();
+        if (!Array.isArray(data)) {
+          throw new Error('Resposta inesperada da API do blog.');
+        }
+        setBlog(data);
+      } else {
+        const text = await res.text();
+        if (text.startsWith('<!DOCTYPE')) {
+          throw new Error('Resposta HTML recebida em vez de JSON. Verifique se o backend está rodando corretamente.');
+        }
+        setBlog([]);
+        setBlogError('Resposta inesperada da API do blog.');
+        return;
+      }
     } catch (err: any) {
       setBlogError(err.message || 'Erro ao carregar blog');
       setBlog([]);
