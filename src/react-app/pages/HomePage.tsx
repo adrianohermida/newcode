@@ -1,3 +1,4 @@
+export { HomePage };
 
 /**
  * @description This file defines the HomePage component for Hermida Maia Advocacia.
