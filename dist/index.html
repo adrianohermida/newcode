@@ -12,6 +12,17 @@
     <link rel="apple-touch-icon" href="/assets/apple-touch-icon-120x120-DUmw094T.png" sizes="120x120">
     <link rel="apple-touch-icon" href="/assets/apple-touch-icon-180x180-cuySBqC0.png" sizes="180x180">
     <link rel="manifest" href="/assets/site-C_EV3vh7.webmanifest">
+    <script>
+      // Redireciona /private-test e /auth-test para hash routes
+      (function() {
+        var path = window.location.pathname;
+        if (path === '/private-test') {
+          window.location.replace('/#/private-test' + window.location.search + window.location.hash);
+        } else if (path === '/auth-test') {
+          window.location.replace('/#/auth-test' + window.location.search + window.location.hash);
+        }
+      })();
+    </script>
     <script type="module" crossorigin src="/assets/index-DIHdGZjr.js"></script>
     <link rel="stylesheet" crossorigin href="/assets/index-BuV2NSrS.css">
   </head>
