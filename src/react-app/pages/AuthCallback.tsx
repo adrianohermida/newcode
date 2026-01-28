@@ -48,6 +48,15 @@ import { supabase } from "../utils/supabaseClient";
         return;
       }
     }
+    // Se não houver code nem error na URL, redireciona para login ou mostra fallback
+    const urlParams = new URLSearchParams(window.location.search);
+    const code = urlParams.get('code');
+    const error = urlParams.get('error');
+    if (!code && !error) {
+      // Não lança erro, apenas redireciona para login
+      navigate('/login', { replace: true });
+      return;
+    }
     // Supabase já processa o callback automaticamente
     supabase.auth.getUser().then(({ data }) => {
       if (data.user) {

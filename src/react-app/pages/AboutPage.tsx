@@ -325,6 +325,13 @@ const Footer = () => (
     try {
       const res = await apiFetch('/api/blog');
       if (!res.ok) throw new Error('About: ' + res.status);
+      // Garante que a resposta é JSON válida
+      let data = null;
+      try {
+        data = await res.json();
+      } catch (err) {
+        throw new Error('Resposta inválida da API do blog');
+      }
       setTestStatus('Conexão bem-sucedida!');
     } catch (e: any) {
       setTestStatus('Erro ao testar conexão: ' + (e.message || 'Erro desconhecido'));
