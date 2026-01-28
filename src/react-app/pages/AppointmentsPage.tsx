@@ -28,9 +28,9 @@ import {
 } from 'lucide-react';
 import { Link, useNavigate } from 'react-router-dom';
 import { cn } from '../utils';
-import { useAuth } from '@hey-boss/users-service/react';
+import { useAuthContext } from '../hooks/AuthContext';
 
-  const { user, loading: authLoading } = useAuth();
+  const { user, loading: authLoading } = useAuthContext();
   const navigate = useNavigate();
   const [step, setStep] = useState(0); // Step 0: Tipo, Step 1: Horário, Step 2: Dados
   const [submitted, setSubmitted] = useState(false);
@@ -363,9 +363,10 @@ import { useAuth } from '@hey-boss/users-service/react';
                 {selectedDate && (
                   <div className="space-y-4 animate-fade-in">
                     <label className="text-sm font-semibold text-white/70">Horários Disponíveis</label>
-                    {loading ? (
+                    {(loading || authLoading) ? (
                       <div className="flex justify-center py-8">
                         <Loader2 className="animate-spin text-brand-primary" />
+                        {authLoading && <span className="ml-4 text-brand-primary font-bold">Atualizando contexto...</span>}
                       </div>
                     ) : availableSlots.length > 0 ? (
                       <div className="grid grid-cols-3 sm:grid-cols-4 gap-3">

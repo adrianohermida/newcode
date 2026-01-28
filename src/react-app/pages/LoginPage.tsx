@@ -24,7 +24,8 @@ export default function LoginPage() {
   const [loading, setLoading] = useState(false);
   const [user, setUser] = useState<any>(null);
   const [fallbackError, setFallbackError] = useState<string | null>(null);
-  const { refreshUser } = useAuthContext();
+  const { refreshUser, loading, user } = useAuthContext();
+  // Adiciona feedback visual de atualização de contexto global
 
   // Checa sessão do Supabase apenas uma vez e escuta mudanças de autenticação
   useEffect(() => {
@@ -108,6 +109,13 @@ export default function LoginPage() {
 
   return (
     <div className="min-h-screen bg-brand-dark flex items-center justify-center px-4 py-12">
+      {/* Feedback visual de atualização de contexto global */}
+      {loading && (
+        <div className="fixed top-0 left-0 w-full z-50 flex justify-center items-center bg-brand-dark/80 h-screen">
+          <Loader2 className="animate-spin text-brand-primary" size={48} />
+          <span className="ml-4 text-white text-lg font-bold">Atualizando contexto...</span>
+        </div>
+      )}
       {/* Widget Chat nativo para login */}
       <ChatWidget />
       <div className="max-w-md w-full space-y-8 bg-brand-elevated p-8 sm:p-12 rounded-[2.5rem] border border-white/10 shadow-2xl relative overflow-hidden">
