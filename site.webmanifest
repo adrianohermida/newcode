@@ -1,0 +1,21 @@
+{
+  "name": "Hermida Maia Advocacia",
+  "short_name": "Hermida Maia",
+  "description": "Advocacia especializada em superendividamento e defesa do consumidor.",
+  "start_url": "/",
+  "display": "standalone",
+  "background_color": "#0d9c6e",
+  "theme_color": "#0d9c6e",
+  "icons": [
+    {
+      "src": "/apple-touch-icon-180x180.png",
+      "sizes": "180x180",
+      "type": "image/png"
+    },
+    {
+      "src": "/favicon.ico",
+      "sizes": "48x48 32x32 16x16",
+      "type": "image/x-icon"
+    }
+  ]
+}
