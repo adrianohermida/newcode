@@ -1,11 +1,11 @@
 import { useEffect, useState } from 'react';
 import { supabase } from '../utils/supabaseClient';
+import type { Session } from '@supabase/supabase-js';
 
-export function useSupabaseSession() {
-  const [session, setSession] = useState(null);
+export function useSupabaseSession(): Session | null {
+  const [session, setSession] = useState<Session | null>(null);
   useEffect(() => {
     let isMounted = true;
-    // try/catch para localStorage/sessionStorage
     try {
       supabase.auth.getSession().then(({ data: { session } }) => {
         if (isMounted) setSession(session);

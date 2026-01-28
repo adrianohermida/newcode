@@ -7,7 +7,7 @@ import { CheckoutSuccessPage } from "./pages/CheckoutSuccessPage";
 import { CheckoutErrorPage } from "./pages/CheckoutErrorPage";
 import { CheckoutCancelPage } from "./pages/CheckoutCancelPage";
 import LoginPage from "./pages/LoginPage";
-import { Dashboard } from "./pages/Dashboard";
+import { Dashboard } from "./components/Dashboard/Dashboard";
 import ClientPortal from "./pages/ClientPortal";
 import { ProfilePage } from "./pages/ProfilePage";
 import { ProcessDetailPage } from "./pages/ProcessDetailPage";
@@ -121,19 +121,11 @@ export const App = () => {
             {/* Protected Routes */}
             <Route 
               path="/dashboard" 
-              element={
-                <AuthProtect>
-                  <Dashboard />
-                </AuthProtect>
-              } 
+              element={<Dashboard />} 
             />
             <Route 
               path="/admin" 
-              element={
-                <AuthProtect>
-                  <Dashboard />
-                </AuthProtect>
-              } 
+              element={<Dashboard />} 
             />
             <Route 
               path="/perfil" 

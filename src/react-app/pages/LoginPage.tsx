@@ -1,6 +1,7 @@
 import React, { useState, useEffect } from 'react';
 import { supabase } from '../utils/supabaseClient';
 import { useSupabaseSession } from '../hooks/useSupabaseSession';
+import type { Session } from '@supabase/supabase-js';
 import { useNavigate } from 'react-router-dom';
 
 export default function LoginPage() {
@@ -8,7 +9,7 @@ export default function LoginPage() {
   const [password, setPassword] = useState('');
   const [error, setError] = useState('');
   const [loading, setLoading] = useState(false);
-  const session = useSupabaseSession();
+  const session: Session | null = useSupabaseSession();
   const navigate = useNavigate();
 
   useEffect(() => {
