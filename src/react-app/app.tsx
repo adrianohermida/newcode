@@ -89,9 +89,7 @@ export const App = () => {
       <HashRouter>
         <Routes>
           <Route path="auth-test" element={<AuthTest />} />
-          <Route path="/auth-test" element={<AuthTest />} />
           <Route path="private-test" element={<PrivateTest />} />
-          <Route path="/private-test" element={<PrivateTest />} />
           {/* Catch-all para rotas de teste com painel técnico */}
           <Route path="*" element={<DevFallbackPanel />} />
         </Routes>
