@@ -142,43 +142,6 @@ app.post("/api/sessions", async (c) => {
   return c.json({ success: true }, 200);
 });
 
-app.get("/api/users/me", authMiddleware, async (c) => {
-  // Recupera o usuário autenticado do contexto
-  //@ts-ignore
-  const user = c.get("user");
-  if (!user || !user.email) return c.json({ error: "Usuário não autenticado" }, 401);
-
-  const userEmail = user.email.toLowerCase();
-  const adminEmails = (c.env.ADMIN_EMAILS || "").split(",").map((e: string) => e.trim().toLowerCase());
-  const ownerEmail = (c.env.USER_EMAIL || "").toLowerCase();
-
-  // Critérios para admin explícito
-  const isExplicitAdmin = adminEmails.includes(userEmail) ||
-    (ownerEmail !== "" && ownerEmail !== "user_email" && userEmail === ownerEmail) ||
-    userEmail === "adrianohermida@gmail.com" ||
-    userEmail === "contato@hermidamaia.adv.br";
-
-  let isAdmin = isExplicitAdmin;
-  if (!isAdmin) {
-    try {
-      const profile = await c.env.DB.prepare("SELECT id FROM user_profiles WHERE LOWER(user_email) = ?").bind(userEmail).first();
-      if (profile) isAdmin = true;
-    } catch (e) {}
-  }
-
-  // Log de auditoria
-  await logAudit(c.env.DB, "user_profile", "view_me", userEmail);
-
-  // Retorna dados mínimos esperados pelo frontend
-  return c.json({
-    email: user.email,
-    name: user.name || null,
-    isAdmin,
-    id: user.id || null,
-    avatar_url: user.avatar_url || null,
-    // Adicione outros campos necessários para o frontend aqui
-  });
-});
 
 app.get("/api/logout", async (c) => {
   const sessionToken = getCookie(c, SESSION_TOKEN_COOKIE_NAME);

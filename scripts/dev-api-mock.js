@@ -10,8 +10,5 @@ app.get('/api/blog', (req, res) => {
   ]);
 });
 
-app.get('/api/users/me', (req, res) => {
-  res.json({ id: 1, name: 'Usuário Teste', email: 'teste@exemplo.com' });
-});
 
 app.listen(3333, () => console.log('Mock API running on http://localhost:3333'));
