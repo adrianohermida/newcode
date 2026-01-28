@@ -37,12 +37,45 @@ import { useIsAdmin } from '../hooks/useIsAdmin';
 import { Loader2 } from 'lucide-react';
 
 export default function AuthCallback() {
-  const session = useSupabaseSession();
-  const isAdmin = useIsAdmin();
-  const navigate = useNavigate();
+  // Parsing do fragmento ANTES dos hooks
+  const [delayDone, setDelayDone] = React.useState(false);
+  React.useEffect(() => {
+    // Executa parsing do fragmento ANTES de qualquer hook
+    const fragment = window.location.hash;
+    if (fragment && fragment.includes('access_token')) {
+      const params = new URLSearchParams(fragment.replace('#', ''));
+      const access_token = params.get('access_token');
+      const refresh_token = params.get('refresh_token');
+      const expires_in = params.get('expires_in');
+      const token_type = params.get('token_type');
+      console.log('[AuthCallback] (early) access_token:', access_token);
+      if (access_token && refresh_token && expires_in && token_type) {
+        import('../utils/supabaseClient').then(({ supabase }) => {
+          supabase.auth.setSession({
+            access_token,
+            refresh_token,
+          }).then(() => {
+            console.log('[AuthCallback] Sessão criada manualmente (early), limpando fragmento e recarregando.');
+            window.location.hash = '';
+            window.location.reload();
+          }).catch((err) => {
+            console.error('[AuthCallback] Erro ao criar sessão manual (early):', err);
+          });
+        });
+      }
+    }
+    // Delay de 100ms antes de inicializar hooks
+    const timer = setTimeout(() => setDelayDone(true), 100);
+    return () => clearTimeout(timer);
+  }, []);
 
-  // Fragment parsing fallback
-  useEffect(() => {
+  // Só inicializa hooks após delay
+  const session = delayDone ? useSupabaseSession() : undefined;
+  const isAdmin = delayDone ? useIsAdmin() : undefined;
+  const navigate = delayDone ? useNavigate() : undefined;
+
+  React.useEffect(() => {
+    if (!delayDone) return;
     console.log('[AuthCallback] session:', session);
     // Se já temos sessão, segue fluxo normal
     if (session !== undefined) {
@@ -60,41 +93,7 @@ export default function AuthCallback() {
       }
       return;
     }
-
-    // Se não há sessão, tenta parsing do fragmento
-    const fragment = window.location.hash;
-    console.log('[AuthCallback] Fragmento da URL:', fragment);
-    if (fragment && fragment.includes('access_token')) {
-      const params = new URLSearchParams(fragment.replace('#', ''));
-      const access_token = params.get('access_token');
-      const refresh_token = params.get('refresh_token');
-      const expires_in = params.get('expires_in');
-      const token_type = params.get('token_type');
-      console.log('[AuthCallback] access_token:', access_token);
-      console.log('[AuthCallback] refresh_token:', refresh_token);
-      console.log('[AuthCallback] expires_in:', expires_in);
-      console.log('[AuthCallback] token_type:', token_type);
-      if (access_token && refresh_token && expires_in && token_type) {
-        // Tenta salvar manualmente no Supabase
-        import('../utils/supabaseClient').then(({ supabase }) => {
-          supabase.auth.setSession({
-            access_token,
-            refresh_token,
-          }).then(() => {
-            console.log('[AuthCallback] Sessão criada manualmente, limpando fragmento e recarregando.');
-            window.location.hash = '';
-            window.location.reload();
-          }).catch((err) => {
-            console.error('[AuthCallback] Erro ao criar sessão manual:', err);
-          });
-        });
-      } else {
-        console.warn('[AuthCallback] Fragmento não contém todos os tokens necessários.');
-      }
-    } else {
-      console.warn('[AuthCallback] Nenhum access_token encontrado no fragmento.');
-    }
-  }, [session, isAdmin, navigate]);
+  }, [session, isAdmin, navigate, delayDone]);
 
   return (
     <div className="flex items-center justify-center min-h-screen">
