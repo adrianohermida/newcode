@@ -30,10 +30,22 @@ import {
 import { Link, useNavigate } from 'react-router-dom';
 import { cn } from '../utils';
 import { useSupabaseSession } from '../hooks/useSupabaseSession';
+import { useEffect } from 'react';
 
   const session = useSupabaseSession();
   const user = session?.user;
   const navigate = useNavigate();
+
+  useEffect(() => {
+    if (session === null) {
+      navigate('/login');
+    }
+  }, [session, navigate]);
+
+  if (session === undefined) {
+    return <div className="min-h-screen flex items-center justify-center bg-brand-dark text-white">Verificando autenticação...</div>;
+  }
+  if (!user) return null;
   const [step, setStep] = useState(0); // Step 0: Tipo, Step 1: Horário, Step 2: Dados
   const [submitted, setSubmitted] = useState(false);
   const [loading, setLoading] = useState(false);
