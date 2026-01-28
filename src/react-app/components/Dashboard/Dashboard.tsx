@@ -10,8 +10,8 @@ import { useAuth } from '@hey-boss/users-service/react';
 /* ===============================
  * COMPONENTES GLOBAIS
  * =============================== */
-import { Header } from '@/components/Header';
-import { ChatWidget } from '@/components/ChatWidget';
+import Header from '../Header';
+import { ChatWidget } from '../ChatWidget';
 
 /* ===============================
  * ICONS
@@ -34,25 +34,24 @@ import {
 /* ===============================
  * MODULES (EXTRAÍDOS)
  * =============================== */
-import { OverviewModule } from '@/modules/overview/OverviewModule';
-import { CRMModule } from '@/modules/crm/CRMModule';
-import { DocumentsModule } from '@/modules/documents/DocumentsModule';
-import { PlanoPagamentoModule } from '@/modules/financeiro/PlanoPagamentoModule';
-import { FaturasModule } from '@/modules/financeiro/FaturasModule';
-import { TicketsModule } from '@/modules/tickets/TicketsModule';
-import { TicketDetailInline } from '@/modules/tickets/TicketDetailInline';
-import { ProcessosModule } from '@/modules/processos/ProcessosModule';
-import { ProcessoDetailInline } from '@/modules/processos/ProcessoDetailInline';
-import { AdminAgendaModule } from '@/modules/agenda/AdminAgendaModule';
-import { ConfigModule } from '@/modules/config/ConfigModule';
+import { OverviewModule } from '../../modules/overview/OverviewModule';
+import { CRMModule } from '../../modules/crm/CRMModule';
+import { DocumentsModule } from '../../modules/documentos/DocumentsModule';
+import { PlanoPagamentoModule } from '../../modules/financeiro/PlanoPagamentoModule';
+import { FaturasModule } from '../../modules/financeiro/FaturasModule';
+import { TicketsModule } from '../../modules/tickets/TicketsModule';
+import { TicketDetailInline } from '../../modules/processos/ProcessosModule';
+import { ProcessosModule } from '../../modules/processos/ProcessosModule';
+import { AdminAgendaModule } from '../../modules/agenda/AdminAgendaModule';
+import { ConfigModule } from '../../modules/config/ConfigModule';
 
 /* ===============================
  * MODULES EXTERNOS
  * =============================== */
-import { PublicacoesModule } from '@/components/Publicacoes/PublicacoesModule';
-import { BlogManagementModule } from '@/modules/blog/BlogManagementModule';
-import { AIMonitoringModule } from '@/components/AIMonitoring/AIMonitoringModule';
-import { ChatbotConfigModule } from '@/components/ChatbotConfigModule';
+import { PublicacoesModule } from '../../components/Publicacoes/PublicacoesModule';
+import { BlogManagementModule } from '../../modules/blog/BlogManagementModule';
+import { AIMonitoringModule } from '../../modules/ia/AIMonitoringModule';
+import { ChatbotConfigModule } from '../ChatbotConfigModule';
 
 /* ===============================
  * UTILS
