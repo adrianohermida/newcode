@@ -67,13 +67,27 @@ import PrivateTest from "./pages/PrivateTest";
 // Widget Freshchat para páginas públicas
 export const App = () => {
   // Detecta se está em rota de teste
-  const hash = typeof window !== 'undefined' ? window.location.hash : '';
-  if (typeof window !== 'undefined') {
-    // Log de depuração para produção
-    // eslint-disable-next-line no-console
-    console.log('[App] window.location.hash:', window.location.hash);
-  }
-  const isTestRoute = hash.startsWith('#/auth-test') || hash.startsWith('#/private-test');
+  const [isTestRoute, setIsTestRoute] = React.useState(() => {
+    if (typeof window === 'undefined') return false;
+    const hash = window.location.hash;
+    return hash.startsWith('#/auth-test') || hash.startsWith('#/private-test');
+  });
+  React.useEffect(() => {
+    if (typeof window === 'undefined') return;
+    const check = () => {
+      const hash = window.location.hash;
+      const test = hash.startsWith('#/auth-test') || hash.startsWith('#/private-test');
+      setIsTestRoute(test);
+    };
+    window.addEventListener('hashchange', check);
+    // Hot reload: força reload se mudar para rota de teste
+    if (import.meta.hot) {
+      import.meta.hot.on('vite:afterUpdate', () => {
+        check();
+      });
+    }
+    return () => window.removeEventListener('hashchange', check);
+  }, []);
   if (isTestRoute) {
     return (
       <HashRouter>
