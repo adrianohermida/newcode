@@ -107,9 +107,6 @@ export const AuthProvider: React.FC<{ children: React.ReactNode }> = ({ children
   }, [fetchUser]);
 
   const logout = useCallback(async () => {
-    try {
-      await fetch('/api/logout'); // Limpa cookie de sessão backend
-    } catch {}
     await supabase.auth.signOut();
     setUser(null);
     setLoading(false);
