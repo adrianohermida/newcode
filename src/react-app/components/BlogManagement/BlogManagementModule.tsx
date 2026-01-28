@@ -7,6 +7,7 @@
  */
 
 import React, { useState, useEffect } from 'react';
+import { apiFetch } from '../../controllers/ApiController';
 import { 
   Plus, 
   Search, 
@@ -42,8 +43,7 @@ export const BlogManagementModule: React.FC = () => {
   const fetchPosts = async () => {
     setLoading(true);
     try {
-      const res = await fetch('/api/admin/blog/posts');
-      const data = await res.json();
+      const data = await apiFetch('/api/admin/blog/posts');
       if (Array.isArray(data)) setPosts(data);
     } catch (e) {
       console.error(e);
@@ -54,8 +54,7 @@ export const BlogManagementModule: React.FC = () => {
 
   const fetchCategories = async () => {
     try {
-      const res = await fetch('/api/admin/blog/categories');
-      const data = await res.json();
+      const data = await apiFetch('/api/admin/blog/categories');
       if (Array.isArray(data)) setCategories(data);
     } catch (e) {
       console.error(e);
@@ -70,8 +69,8 @@ export const BlogManagementModule: React.FC = () => {
   const handleDelete = async (id: number) => {
     if (!confirm('Tem certeza que deseja excluir este artigo?')) return;
     try {
-      const res = await fetch(`/api/admin/blog/posts/${id}`, { method: 'DELETE' });
-      if (res.ok) fetchPosts();
+      await apiFetch(`/api/admin/blog/posts/${id}`, { method: 'DELETE' });
+      fetchPosts();
     } catch (e) {
       console.error(e);
     }
@@ -284,12 +283,16 @@ export const BlogManagementModule: React.FC = () => {
                 id="blog_category_form"
                 schema={allConfigs.blog_category_form.jsonSchema}
                 onSubmit={async (data) => {
-                  await fetch('/api/admin/blog/categories', {
-                    method: 'POST',
-                    headers: { 'Content-Type': 'application/json' },
-                    body: JSON.stringify(data)
-                  });
-                  fetchCategories();
+                  try {
+                    await apiFetch('/api/admin/blog/categories', {
+                      method: 'POST',
+                      headers: { 'Content-Type': 'application/json' },
+                      body: JSON.stringify(data)
+                    });
+                    fetchCategories();
+                  } catch (e) {
+                    alert('Erro ao adicionar categoria.');
+                  }
                 }}
                 theme={contactFormTheme}
                 labels={{ submit: 'Adicionar Categoria' }}

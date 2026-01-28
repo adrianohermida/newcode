@@ -7,6 +7,7 @@
  */
 
 import React, { useState } from 'react';
+import { apiFetch } from '../controllers/ApiController';
 import { 
   Phone, 
   Mail, 
@@ -30,12 +31,11 @@ import allConfigs from '../../shared/form-configs.json';
   const handleTestConnection = async () => {
     setTestStatus('Testando...');
     try {
-      const response = await fetch('/api/forms/submit', {
+      await apiFetch('/api/forms/submit', {
         method: 'POST',
         headers: { 'Content-Type': 'application/json' },
         body: JSON.stringify({ formId: 'contact_form', nome: 'Teste', email: 'teste@teste.com', mensagem: 'Teste de conexão' }),
       });
-      if (!response.ok) throw new Error('Contato: ' + response.status);
       setTestStatus('Conexão bem-sucedida!');
     } catch (e: any) {
       setTestStatus('Erro ao testar conexão: ' + (e.message || 'Erro desconhecido'));
@@ -45,13 +45,11 @@ import allConfigs from '../../shared/form-configs.json';
 
   const handleSubmit = async (formData: any) => {
     try {
-      const response = await fetch('/api/forms/submit', {
+      const result = await apiFetch('/api/forms/submit', {
         method: 'POST',
         headers: { 'Content-Type': 'application/json' },
         body: JSON.stringify({ formId: 'contact_form', ...formData }),
       });
-
-      const result = await response.json();
       if (result.success) {
         setStatus({
           type: 'success',
@@ -63,11 +61,10 @@ import allConfigs from '../../shared/form-configs.json';
           message: result.message || 'Ocorreu um erro ao enviar sua mensagem. Tente novamente.'
         });
       }
-    } catch (error) {
-      console.error('Erro na submissão:', error);
+    } catch (error: any) {
       setStatus({
         type: 'error',
-        message: 'Erro de conexão. Verifique sua internet e tente novamente.'
+        message: error.message || 'Erro de conexão. Verifique sua internet e tente novamente.'
       });
     }
   };
