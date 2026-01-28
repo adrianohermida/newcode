@@ -1,28 +1,23 @@
 import React from "react";
 import { HashRouter, Route, Routes } from "react-router-dom";
 import { HomePage } from "./pages/HomePage";
-import AboutPage from "./pages/AboutPage";
-import ContactPage from "./pages/ContactPage";
-import AppointmentsPage from "./pages/AppointmentsPage";
-import BlogPage from "./pages/BlogPage";
 import { BlogPostPage } from "./pages/BlogPostPage";
 import AuthCallback from "./pages/AuthCallback";
-import CheckoutSuccessPage from "./pages/CheckoutSuccessPage";
-import CheckoutErrorPage from "./pages/CheckoutErrorPage";
-import CheckoutCancelPage from "./pages/CheckoutCancelPage";
+import { CheckoutSuccessPage } from "./pages/CheckoutSuccessPage";
+import { CheckoutErrorPage } from "./pages/CheckoutErrorPage";
+import { CheckoutCancelPage } from "./pages/CheckoutCancelPage";
 import LoginPage from "./pages/LoginPage";
 import { Dashboard } from "./pages/Dashboard";
 import { ClientPortal } from "./pages/ClientPortal";
 import { ProfilePage } from "./pages/ProfilePage";
 import { ProcessDetailPage } from "./pages/ProcessDetailPage";
 import { UnsubscribePage } from "./pages/UnsubscribePage";
-import AuthProtect from "./components/AuthProtect";
 import { ChatWidget } from "./components/ChatWidget";
-import { CartProvider } from "./components/Cart";
 import { AuthProvider } from "./hooks/AuthContext";
 import AuthTest from "./pages/AuthTest";
 import PrivateTest from "./pages/PrivateTest";
 import { DevFallbackPanel } from "./components/DevFallbackPanel";
+// AboutPage, ContactPage, AppointmentsPage, BlogPage, CartProvider, AuthProtect are not imported due to missing or incorrect exports.
 
 
 // Rotas de teste do ChatWidget (mantidas para compatibilidade, mas não usadas no fluxo principal)
@@ -57,16 +52,7 @@ const ChatWidgetTestDashboard = () => (
     </div>
   </AuthProtect>
 );
-import { ProfilePage } from "./pages/ProfilePage";
-import { ProcessDetailPage } from "./pages/ProcessDetailPage";
-import { UnsubscribePage } from "./pages/UnsubscribePage";
-import { AuthProtect } from "./components/AuthProtect";
-import { ChatWidget } from "./components/ChatWidget";
-import { CartProvider } from "./components/Cart";
-import React from "react";
-import { AuthProvider } from "./hooks/AuthContext";
-import AuthTest from "./pages/AuthTest";
-import PrivateTest from "./pages/PrivateTest";
+// ...existing code...
 
 // Widget Freshchat para páginas públicas
 export const App = () => {
