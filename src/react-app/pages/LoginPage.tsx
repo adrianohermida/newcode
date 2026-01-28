@@ -44,6 +44,10 @@ import { supabase } from '../utils/supabaseClient';
         navigate('/user-not-found', { replace: true });
         return;
       }
+      if (error.message && error.message.toLowerCase().includes('rate limit')) {
+        setError('Muitas tentativas de login. Aguarde alguns minutos antes de tentar novamente.');
+        return;
+      }
       setError(error.message);
       return;
     }

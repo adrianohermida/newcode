@@ -1,7 +1,11 @@
 import { apiFetch } from '../controllers/ApiController';
+import { supabase } from '../utils/supabaseClient';
 
-export async function getUserMe() {
-  return apiFetch('/api/users/me');
+  // Chama Edge Function via Supabase SDK
+  const { data, error } = await supabase.functions.invoke('users-me');
+  if (error) throw new Error(error.message || 'Erro ao buscar usuário.');
+  return data;
+}
 }
 export async function getBlogPosts(category?: number) {
   try {
