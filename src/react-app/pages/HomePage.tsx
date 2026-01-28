@@ -203,49 +203,43 @@ const Calculator = () => {
     if (income > 0) {
       const percentage = (installment / income) * 100;
       const calculationResult = {
-        percentage,
-        isSuperendividado: percentage > 30
-      };
-      
-      setResult(calculationResult);
 
-      // Salvar no banco de dados
-      setIsSaving(true);
-      try {
-        await apiFetch('/api/simulations', {
-          method: 'POST',
-          headers: { 'Content-Type': 'application/json' },
-          body: JSON.stringify({
-            simulationData: {
-              ...formData,
-              ...calculationResult,
-              timestamp: new Date().toISOString()
-            }
-          })
-        });
-      } catch (error) {
-        console.error('Erro ao salvar simulação:', error);
-      } finally {
-        setIsSaving(false);
-      }
-    }
-  };
-      // Exemplo: buscar dados públicos de uma tabela "posts"
-function SupabaseDemo() {
-  const [posts, setPosts] = useState<{ id: number; title: string }[]>([]);
-  const [loading, setLoading] = useState(true);
-  useEffect(() => {
-    supabase
-      .from('posts')
-      .select('id, title')
-      .then((response) => {
-        setPosts(response.data || []);
-        setLoading(false);
-      });
-  }, []);
-  if (loading) return <div>Carregando posts do Supabase...</div>;
-  return (
-    <div>
+        import React, { useEffect, useState } from 'react';
+        import { ChatWidget } from '../components/ChatWidget';
+        import { SiteChatWidget } from '../components/SiteChatWidget';
+        import { Link } from 'react-router-dom';
+        import Header from '../components/Header';
+        import { useAuthContext } from '../hooks/AuthContext';
+        import { CustomForm } from '../components/CustomForm';
+        import { newsletterTheme } from '../components/CustomForm/theme';
+        import allConfigs from '../../shared/form-configs.json';
+        import { useApi } from '../hooks/useApi';
+        import { createClient } from '@supabase/supabase-js';
+        const supabase = createClient(import.meta.env.VITE_SUPABASE_URL, import.meta.env.VITE_SUPABASE_ANON_KEY);
+        isSuperendividado: percentage > 30
+
+        import {
+          MessageCircle,
+          ArrowRight,
+          ShieldCheck,
+          TrendingDown,
+          Zap,
+          Smile,
+          Calendar,
+          Scale,
+          Handshake,
+          CheckCircle2,
+          Star,
+          Play,
+          ChevronRight,
+          Mail,
+          Phone,
+          Instagram,
+          Facebook,
+          Linkedin,
+          Youtube,
+          AlertCircle
+        } from 'lucide-react';
       <h2>Posts do Supabase</h2>
       <ul>
         {posts.map((post) => (
@@ -622,11 +616,10 @@ type BlogPost = {
 };
 
 
+
 const Blog = () => {
   const { blog, blogLoading, blogError, fetchBlog } = useApi();
-  // Teste de conexão manual
   const [testStatus, setTestStatus] = React.useState<string | null>(null);
-
   const handleTestConnection = async () => {
     setTestStatus('Testando...');
     try {
@@ -637,7 +630,6 @@ const Blog = () => {
     }
     setTimeout(() => setTestStatus(null), 3000);
   };
-
   return (
     <section id="blog" className="py-24 bg-brand-dark">
       <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
@@ -645,7 +637,6 @@ const Blog = () => {
           <h2 className="text-3xl sm:text-4xl font-extrabold text-white mb-4">Blog de Defesa do Consumidor: Dicas para Renegociar Dívidas</h2>
           <p className="text-white/60">Mantenha-se informado sobre a Lei 14.181/2021 e como eliminar dívidas legalmente com nossa consultoria jurídica.</p>
         </div>
-
         <div className="flex justify-center py-4">
           <button
             onClick={handleTestConnection}
@@ -692,13 +683,12 @@ const Blog = () => {
             ))}
           </div>
         )}
-        
         <div className="text-center">
           <Link 
             to="/blog"
             className="inline-block bg-white/5 hover:bg-white/10 text-white border border-white/10 px-8 py-4 rounded-xl font-bold transition-all"
           >
-            Ver Todos os Artigos
+            Ver todos os artigos
           </Link>
         </div>
       </div>
@@ -706,6 +696,24 @@ const Blog = () => {
   );
 };
 
+// Exporta o componente principal HomePage
+const HomePage = () => {
+  // ...adicione aqui a composição dos componentes Hero, Stats, Calculator, Blog, etc...
+  return (
+    <div>
+      <Header />
+      <main>
+        <Hero />
+        <Stats />
+        <Calculator />
+        <Blog />
+      </main>
+      <SiteChatWidget />
+    </div>
+  );
+};
+
+export default HomePage;
 const FinalCTA = () => (
   <section className="py-24 bg-brand-primary relative overflow-hidden">
     <div className="absolute top-0 left-0 w-full h-full bg-[radial-gradient(circle_at_70%_70%,#ffffff20_0%,transparent_50%)]" />
