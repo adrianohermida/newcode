@@ -177,8 +177,14 @@ useEffect(() => {
 
   fetchData();
 
+  // Throttle polling: only poll every 15s
+  const pollingInterval = setInterval(() => {
+    fetchData();
+  }, 15000);
+
   return () => {
     aborted = true;
+    clearInterval(pollingInterval);
   };
 }, [activeTab]);
 
