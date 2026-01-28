@@ -6,7 +6,7 @@
 import React, { useEffect, useMemo, useState } from 'react';
 import { useAuth } from '@hey-boss/users-service/react';
 import { useNavigate } from 'react-router-dom';
-import { Header } from '../components/Header';
+import Header from '../components/Header';
 import { apiFetch } from '../controllers/ApiController';
 import FallbackPage from './FallbackPage';
 
@@ -881,19 +881,14 @@ const FaturasModule = ({ data = [] }: { data: Fatura[] }) => {
    * --------------------------- */
   const handleCreateLink = async (id: number) => {
     try {
-      const res = await fetch(`/api/admin/faturas/${id}/create-payment-link`, {
-        method: 'POST',
-      });
-
-      const result = await res.json();
-
-      if (res.ok && result?.checkoutUrl) {
+      const result = await apiFetch(`/api/admin/faturas/${id}/create-payment-link`, { method: 'POST' });
+      if (result?.checkoutUrl) {
         window.open(result.checkoutUrl, '_blank');
       } else {
         alert(result?.error || 'Erro ao gerar link de pagamento.');
       }
-    } catch {
-      alert('Erro de rede ao gerar link.');
+    } catch (e: any) {
+      alert(e?.message || 'Erro de rede ao gerar link.');
     }
   };
 
@@ -1119,9 +1114,7 @@ export const TicketDetailInline = ({
     const loadMessages = async () => {
       setLoading(true);
       try {
-        const res = await fetch(`/api/tickets/${ticket.id}/messages`);
-        const json = await res.json();
-
+        const json = await apiFetch(`/api/tickets/${ticket.id}/messages`);
         if (!aborted) {
           setMessages(
             Array.isArray(json)
@@ -1153,7 +1146,7 @@ export const TicketDetailInline = ({
     if (!message.trim()) return;
 
     try {
-      await fetch(`/api/tickets/${ticket.id}/reply`, {
+      await apiFetch(`/api/tickets/${ticket.id}/reply`, {
         method: 'POST',
         headers: { 'Content-Type': 'application/json' },
         body: JSON.stringify({ message }),
@@ -1162,9 +1155,7 @@ export const TicketDetailInline = ({
       setMessage('');
 
       // reload messages after reply
-      const res = await fetch(`/api/tickets/${ticket.id}/messages`);
-      const json = await res.json();
-
+      const json = await apiFetch(`/api/tickets/${ticket.id}/messages`);
       setMessages(
         Array.isArray(json)
           ? json
@@ -1347,14 +1338,11 @@ export const AdminAgendaModule = ({
     if (notes === null) return;
 
     try {
-      const res = await fetch(`/api/admin/appointments/${id}/status`, {
+      await apiFetch(`/api/admin/appointments/${id}/status`, {
         method: 'POST',
         headers: { 'Content-Type': 'application/json' },
         body: JSON.stringify({ status, notes }),
       });
-
-      if (!res.ok) throw new Error();
-
       onRefresh();
     } catch {
       alert('Erro ao atualizar o status do agendamento.');
@@ -1497,9 +1485,8 @@ const ConfigModule = () => {
   const fetchStatus = React.useCallback(async () => {
     setLoadingStatus(true);
     try {
-      const res = await fetch('/api/admin/config/status');
-      if (!res.ok) throw new Error('Erro ao carregar status');
-      setStatus(await res.json());
+      const statusData = await apiFetch('/api/admin/config/status');
+      setStatus(statusData);
     } catch (err) {
       console.error(err);
       setStatus(null);
@@ -1526,9 +1513,8 @@ const ConfigModule = () => {
     setIsTesting(true);
     setTestResult(null);
     try {
-      const res = await fetch('/api/admin/stripe/test');
-      const data = await res.json();
-      setTestResult(res.ok ? { message: data.message || 'Conexão OK' } : { error: data.error });
+      const data = await apiFetch('/api/admin/stripe/test');
+      setTestResult({ message: data.message || 'Conexão OK' });
     } catch {
       setTestResult({ error: 'Erro ao testar conexão Stripe.' });
     } finally {
@@ -1557,7 +1543,7 @@ const ConfigModule = () => {
 
     setIsSaving(true);
     try {
-      const res = await fetch('/api/admin/config/update', {
+      const data = await apiFetch('/api/admin/config/update', {
         method: 'POST',
         headers: { 'Content-Type': 'application/json' },
         body: JSON.stringify({
@@ -1565,11 +1551,6 @@ const ConfigModule = () => {
           value: { stripeKey, connectId }
         })
       });
-
-      const data = await res.json();
-
-      if (!res.ok) throw new Error(data.error);
-
       setTestResult({ message: '✅ Configuração salva com sucesso. Reinicie o worker.' });
       setStripeKey('');
       setConnectId('');

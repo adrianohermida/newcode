@@ -239,4 +239,6 @@ import { useAuthContext } from '../hooks/AuthContext';
   );
 }
 
+export default Header;
+
 
