@@ -1,3 +1,5 @@
+export { HomePage };
+
 /**
  * @description This file defines the HomePage component for Hermida Maia Advocacia.
  *             It serves as the main landing page, orchestrating multiple sections
@@ -643,17 +645,17 @@ const Blog = () => {
           <div className="text-red-400 text-center py-8">Erro ao carregar blog: {blogError}</div>
         ) : (
           <div className="grid md:grid-cols-3 gap-8 mb-12">
-            {blog.map((post: any) => (
-              <article
-                key={post.id}
+            {blog.map((post: BlogPost) => (
+              <article 
+                key={post.id} 
                 className="bg-brand-elevated rounded-3xl overflow-hidden border border-white/5 group hover:border-brand-primary/30 transition-all cursor-pointer"
               >
                 <Link to={post.url || `/blog/${post.slug || ''}`} className="block">
                   <div className="aspect-video overflow-hidden">
-                    <img
-                      src={post.image}
-                      className="w-full h-full object-cover group-hover:scale-110 transition-transform duration-500"
-                      alt={`Artigo: ${post.title} - Advocacia especializada em dívidas`}
+                    <img 
+                      src={post.image} 
+                      className="w-full h-full object-cover group-hover:scale-110 transition-transform duration-500" 
+                      alt={`Artigo: ${post.title} - Advocacia especializada em dívidas`} 
                     />
                   </div>
                   <div className="p-8">
@@ -671,7 +673,7 @@ const Blog = () => {
           </div>
         )}
         <div className="text-center">
-          <Link
+          <Link 
             to="/blog"
             className="inline-block bg-white/5 hover:bg-white/10 text-white border border-white/10 px-8 py-4 rounded-xl font-bold transition-all"
           >
@@ -685,6 +687,7 @@ const Blog = () => {
 
 // Exporta o componente principal HomePage
 const HomePage = () => {
+  // ...adicione aqui a composição dos componentes Hero, Stats, Calculator, Blog, etc...
   return (
     <div>
       <Header />
