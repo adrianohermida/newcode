@@ -52,7 +52,6 @@ type DashboardTab =
   | 'chatbot'
   | 'config';
 
-export const Dashboard = () => {
   const session = useSupabaseSession();
   const isAdmin = useIsAdmin();
   const navigate = useNavigate();
@@ -61,6 +60,8 @@ export const Dashboard = () => {
   const [selectedTicket, setSelectedTicket] = useState<any | null>(null);
 
   useEffect(() => {
+    // Proteção robusta: só age quando a sessão já foi carregada
+    if (session === undefined) return;
     if (!session) {
       navigate('/login', { replace: true });
       return;
