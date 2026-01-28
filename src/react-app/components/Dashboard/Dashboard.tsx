@@ -52,6 +52,7 @@ type DashboardTab =
   | 'chatbot'
   | 'config';
 
+export const Dashboard = () => {
   const session = useSupabaseSession();
   const isAdmin = useIsAdmin();
   const navigate = useNavigate();

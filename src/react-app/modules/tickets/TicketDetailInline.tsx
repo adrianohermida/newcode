@@ -1,44 +1,21 @@
-type TicketsModuleProps = {
-  data: any[];
-  onSelect: (ticket: any) => void;
+import React from 'react';
+
+type TicketDetailInlineProps = {
+  ticket: any;
+  onBack: () => void;
 };
 
-export const TicketsModule = ({ data, onSelect }: TicketsModuleProps) => {
-  if (!Array.isArray(data) || data.length === 0) {
-    return (
-      <div className="bg-brand-elevated p-10 rounded-3xl border border-white/5 text-center text-white/40">
-        Nenhum ticket encontrado.
-      </div>
-    );
-  }
-
+export const TicketDetailInline = ({ ticket, onBack }: TicketDetailInlineProps) => {
+  if (!ticket) return null;
   return (
-    <div className="grid gap-4 animate-fade-in">
-      {data.map(ticket => (
-        <div
-          key={ticket.id}
-          onClick={() => onSelect(ticket)}
-          className="bg-brand-elevated p-6 rounded-2xl border border-white/5 cursor-pointer hover:border-brand-primary/30 transition-all"
-        >
-          <div className="flex justify-between items-center">
-            <div>
-              <p className="text-xs text-white/40">
-                Ticket #{ticket.id} • {ticket.client_email}
-              </p>
-
-              <h3 className="font-bold">{ticket.subject}</h3>
-
-              <p className="text-xs text-white/50">
-                Status: {ticket.status} • Prioridade: {ticket.priority}
-              </p>
-            </div>
-
-            <span className="text-[10px] uppercase px-3 py-1 rounded-full bg-brand-primary/10 text-brand-primary">
-              {ticket.status}
-            </span>
-          </div>
-        </div>
-      ))}
+    <div className="bg-brand-elevated p-8 rounded-3xl border border-white/5 animate-fade-in">
+      <button onClick={onBack} className="mb-4 text-brand-primary underline">Voltar</button>
+      <h2 className="text-2xl font-bold mb-2">Ticket #{ticket.id}</h2>
+      <p className="mb-1 text-white/70">Assunto: {ticket.subject}</p>
+      <p className="mb-1 text-white/70">Cliente: {ticket.client_email}</p>
+      <p className="mb-1 text-white/70">Status: {ticket.status}</p>
+      <p className="mb-1 text-white/70">Prioridade: {ticket.priority}</p>
+      {/* Adicione mais detalhes conforme necessário */}
     </div>
   );
 };
