@@ -110,6 +110,7 @@ export const App = () => {
             <Route path="/blog/:slug" element={<BlogPostPage />} />
             <Route path="/unsubscribe" element={<UnsubscribePage />} />
             <Route path="/login" element={<LoginPage />} />
+            <Route path="/user-not-found" element={<import('./pages/UserNotFoundPage').then(m => m.default) />} />
             <Route path="/auth/callback" element={<AuthCallback />} />
             <Route path="/checkout/success" element={<CheckoutSuccessPage />} />
             <Route path="/checkout/error" element={<CheckoutErrorPage />} />
