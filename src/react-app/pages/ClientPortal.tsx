@@ -4,7 +4,7 @@ import React, { useState, useEffect } from 'react';
 import { ChatWidget } from '../components/ChatWidget';
 import { SiteChatWidget } from '../components/SiteChatWidget';
 import { Header } from '../components/Header';
-import { useAuth } from '@hey-boss/users-service/react';
+import { useSupabaseSession } from '../hooks/useSupabaseSession';
 import { CustomForm } from '../components/CustomForm';
 import allConfigs from '../../shared/form-configs.json';
 import { contactFormTheme } from '../components/CustomForm/theme';
@@ -38,11 +38,12 @@ import {
 import { NotificationBanner } from '../components/NotificationBanner';
 import { Link } from 'react-router-dom';
 
-  // ...existing code...
+export function ClientPortal() {
+  const session = useSupabaseSession();
+  const user = session?.user;
   const [activeTab, setActiveTab] = useState<'overview' | 'processos' | 'tickets' | 'financeiro' | 'documentos' | 'plano' | 'agenda'>('overview');
   const [appointments, setAppointments] = useState<any[]>([]);
   const [loadingAppointments, setLoadingAppointments] = useState(false);
-  
   // Estados de Dados
   const [processos, setProcessos] = useState<any[]>([]);
   const [faturas, setFaturas] = useState<any[]>([]);
@@ -64,13 +65,6 @@ import { Link } from 'react-router-dom';
         a.href = url;
         a.download = `meus_dados_hermida_maia.json`;
         a.click();
-
-
-      export function ClientPortal() {
-        // ...existing code...
-        return (
-          // ...existing JSX...
-        );
       }
     } finally {
       setExporting(false);
@@ -135,10 +129,10 @@ import { Link } from 'react-router-dom';
             <div className="bg-brand-elevated p-6 rounded-3xl border border-white/5 mb-6">
               <div className="flex items-center gap-4 mb-4">
                 <div className="w-12 h-12 rounded-2xl bg-brand-primary flex items-center justify-center text-white font-bold text-xl border-2 border-white/10">
-                  {user?.name?.[0] || user?.email?.[0].toUpperCase()}
+                  {user?.user_metadata?.name?.[0] || user?.email?.[0]?.toUpperCase()}
                 </div>
                 <div className="overflow-hidden">
-                  <p className="font-bold truncate">{user?.name || 'Cliente'}</p>
+                  <p className="font-bold truncate">{user?.user_metadata?.name || user?.email || 'Cliente'}</p>
                   <p className="text-[10px] text-white/40 uppercase font-bold tracking-widest">Portal do Cliente</p>
                 </div>
               </div>
@@ -195,7 +189,7 @@ import { Link } from 'react-router-dom';
                       <ShieldCheck size={16} className="text-brand-primary" />
                       <span className="text-brand-primary text-[10px] font-bold uppercase tracking-widest">Ambiente Seguro LGPD</span>
                     </div>
-                    <h2 className="text-3xl sm:text-4xl font-extrabold mb-4">Olá, {user?.name || user?.email?.split('@')[0]}!</h2>
+                    <h2 className="text-3xl sm:text-4xl font-extrabold mb-4">Olá, {user?.user_metadata?.name || user?.email?.split('@')[0]}!</h2>
                     <p className="text-white/50 text-lg max-w-2xl leading-relaxed">
                       Bem-vindo ao seu portal jurídico exclusivo. Aqui você tem controle total sobre o andamento do seu caso e comunicação direta com nossos especialistas.
                     </p>
@@ -633,7 +627,7 @@ import { Link } from 'react-router-dom';
               </div>
             )}
 
-            {activeTab === 'tickets' && <TicketsModule />}
+            {activeTab === 'tickets' && <TicketsModule user={user} />}
           </div>
         </div>
       </main>
@@ -641,7 +635,7 @@ import { Link } from 'react-router-dom';
   );
 };
 
-const TicketsModule = () => {
+const TicketsModule = ({ user }: { user: any }) => {
   const [tickets, setTickets] = useState<any[]>([]);
   const [loading, setLoading] = useState(true);
   const [isCreating, setIsCreating] = useState(false);
@@ -900,10 +894,11 @@ const TicketsModule = () => {
                 id="ticket_form"
                 schema={allConfigs['ticket_form'].jsonSchema}
                 onSubmit={async (data) => {
+                  const payload = { ...data, email: user?.email };
                   const res = await fetch('/api/tickets', {
                     method: 'POST',
                     headers: { 'Content-Type': 'application/json' },
-                    body: JSON.stringify(data)
+                    body: JSON.stringify(payload)
                   });
                   if (res.ok) {
                     setIsCreating(false);
