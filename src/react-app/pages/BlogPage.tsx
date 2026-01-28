@@ -55,7 +55,11 @@ import FallbackPage from './FallbackPage';
       } catch (err: any) {
         setPosts([]);
         setCategories([]);
-        setFallbackError(err?.message || 'Erro ao conectar ao blog.');
+        let blogError = err?.message || 'Erro ao conectar ao blog.';
+        if (typeof window !== 'undefined' && window.__BLOG_ERROR__) {
+          blogError = window.__BLOG_ERROR__;
+        }
+        setFallbackError(blogError);
       } finally {
         setLoading(false);
       }

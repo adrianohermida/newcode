@@ -38,10 +38,26 @@ export const AuthProvider: React.FC<{ children: React.ReactNode }> = ({ children
         const data = await res.json();
         setUser(data && data.email ? data : null);
       } else {
+        // Tenta identificar erro de sessão/OAuth
+        let msg = 'Usuário não autenticado';
+        try {
+          const text = await res.text();
+          if (text && text.startsWith('<!DOCTYPE')) {
+            msg = 'Erro de backend: resposta HTML recebida em vez de JSON. Verifique se o backend está rodando corretamente.';
+          } else if (text) {
+            msg = text;
+          }
+        } catch {}
         setUser(null);
+        if (typeof window !== 'undefined') {
+          window.__AUTH_ERROR__ = msg;
+        }
       }
-    } catch {
+    } catch (err: any) {
       setUser(null);
+      if (typeof window !== 'undefined') {
+        window.__AUTH_ERROR__ = err?.message || 'Erro de conexão ao buscar sessão.';
+      }
     } finally {
       setLoading(false);
     }
@@ -64,19 +80,42 @@ export const AuthProvider: React.FC<{ children: React.ReactNode }> = ({ children
       }
     });
     unsub = listener?.subscription;
+    // Força refresh de sessão após login/callback
+    if (window.location.pathname.includes('auth/callback') || window.location.search.includes('code=')) {
+      setTimeout(() => fetchUser(), 1000);
+    }
     return () => {
       unsub?.unsubscribe();
     };
   }, [fetchUser]);
 
   const logout = useCallback(async () => {
+    try {
+      await fetch('/api/logout'); // Limpa cookie de sessão backend
+    } catch {}
     await supabase.auth.signOut();
     setUser(null);
     setLoading(false);
+    if (typeof window !== 'undefined') {
+      window.__AUTH_ERROR__ = null;
+    }
   }, []);
+
+  // Exibe erro de sessão/OAuth se houver
+  const [authError, setAuthError] = useState<string | null>(null);
+  useEffect(() => {
+    if (typeof window !== 'undefined' && window.__AUTH_ERROR__) {
+      setAuthError(window.__AUTH_ERROR__);
+    }
+  }, [user, loading]);
 
   return (
     <AuthContext.Provider value={{ user, loading, refreshUser: fetchUser, logout }}>
+      {authError && (
+        <div style={{background:'#f87171',color:'#fff',padding:8,textAlign:'center',zIndex:9999}}>
+          <b>Erro de sessão/OAuth:</b> {authError}
+        </div>
+      )}
       {children}
     </AuthContext.Provider>
   );

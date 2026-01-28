@@ -4,7 +4,14 @@ export async function getUserMe() {
   return apiFetch('/api/users/me');
 }
 export async function getBlogPosts(category?: number) {
-  return apiFetch(`/api/blog${category ? `?categoria=${category}` : ''}`);
+  try {
+    return await apiFetch(`/api/blog${category ? `?categoria=${category}` : ''}`);
+  } catch (err: any) {
+    if (typeof window !== 'undefined') {
+      window.__BLOG_ERROR__ = err?.message || 'Erro ao carregar blog.';
+    }
+    throw err;
+  }
 }
 export async function getBlogCategories() {
   return apiFetch('/api/admin/blog-categories');
