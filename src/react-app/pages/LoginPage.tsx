@@ -98,6 +98,15 @@ import { supabase } from '../utils/supabaseClient';
       {error && (
         <p className="text-red-400 text-sm text-center">{error}</p>
       )}
+      <div className="text-center mt-4">
+        <button
+          type="button"
+          className="text-brand-primary underline text-sm"
+          onClick={() => navigate('/password-reset')}
+        >
+          Esqueci minha senha
+        </button>
+      </div>
     </form>
   );
 }
