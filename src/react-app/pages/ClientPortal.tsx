@@ -675,9 +675,22 @@ const TicketsModule = () => {
 
   useEffect(() => {
     if (selectedTicket) {
-      fetchMessages(selectedTicket.id);
-      const interval = setInterval(() => fetchMessages(selectedTicket.id), 10000);
-      return () => clearInterval(interval);
+      let isMounted = true;
+      const safeFetchMessages = async () => {
+        try {
+          await fetchMessages(selectedTicket.id);
+        } catch (e) {
+          console.error('Erro ao buscar mensagens do ticket:', e);
+        }
+      };
+      safeFetchMessages();
+      const interval = setInterval(() => {
+        if (isMounted) safeFetchMessages();
+      }, 15000); // Poll a cada 15s para evitar excesso
+      return () => {
+        isMounted = false;
+        clearInterval(interval);
+      };
     }
   }, [selectedTicket]);
 

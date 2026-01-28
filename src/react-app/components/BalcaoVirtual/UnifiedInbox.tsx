@@ -41,6 +41,22 @@ export const UnifiedInbox: React.FC = () => {
     fetchConversations();
     const interval = setInterval(fetchConversations, 10000); // Poll conversations every 10s
     return () => clearInterval(interval);
+    let isMounted = true;
+    const safeFetchConversations = async () => {
+      try {
+        await fetchConversations();
+      } catch (e) {
+        console.error('Erro ao buscar conversas:', e);
+      }
+    };
+    safeFetchConversations();
+    const interval = setInterval(() => {
+      if (isMounted) safeFetchConversations();
+    }, 15000); // Poll a cada 15s para evitar excesso
+    return () => {
+      isMounted = false;
+      clearInterval(interval);
+    };
   }, []);
 
   useEffect(() => {
@@ -48,6 +64,22 @@ export const UnifiedInbox: React.FC = () => {
       fetchMessages(selectedConv.id);
       const interval = setInterval(() => fetchMessages(selectedConv.id), 5000); // Poll messages every 5s
       return () => clearInterval(interval);
+    let isMounted = true;
+    const safeFetchMessages = async () => {
+      try {
+        await fetchMessages(selectedConv.id);
+      } catch (e) {
+        console.error('Erro ao buscar mensagens:', e);
+      }
+    };
+    safeFetchMessages();
+    const interval = setInterval(() => {
+      if (isMounted) safeFetchMessages();
+    }, 10000); // Poll a cada 10s para evitar excesso
+    return () => {
+      isMounted = false;
+      clearInterval(interval);
+    };
     }
   }, [selectedConv]);
 
@@ -67,6 +99,14 @@ export const UnifiedInbox: React.FC = () => {
     } finally {
       setLoading(false);
     }
+    try {
+      const res = await apiFetch('/api/admin/conversations');
+      setConversations(res);
+    } catch (e) {
+      console.error('Erro ao buscar conversas:', e);
+    } finally {
+      setLoading(false);
+    }
   };
 
   const fetchMessages = async (id: number) => {
@@ -78,6 +118,14 @@ export const UnifiedInbox: React.FC = () => {
       }
     } catch (e) {
       console.error("Failed to fetch messages:", e);
+    }
+    try {
+      const res = await apiFetch(`/api/admin/conversations/${convId}/messages`);
+      setMessages(res);
+    } catch (e) {
+      console.error('Erro ao buscar mensagens:', e);
+    } finally {
+      setLoading(false);
     }
   };
 

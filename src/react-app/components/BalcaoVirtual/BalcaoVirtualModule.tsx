@@ -43,6 +43,22 @@ export const BalcaoVirtualModule: React.FC = () => {
     // Real-time update: poll every 30 seconds
     const interval = setInterval(fetchStats, 30000);
     return () => clearInterval(interval);
+    let isMounted = true;
+    const safeFetchStats = async () => {
+      try {
+        await fetchStats();
+      } catch (e) {
+        console.error('Erro ao buscar stats do Balcão Virtual:', e);
+      }
+    };
+    safeFetchStats();
+    const interval = setInterval(() => {
+      if (isMounted) safeFetchStats();
+    }, 60000); // Poll a cada 60s para evitar excesso
+    return () => {
+      isMounted = false;
+      clearInterval(interval);
+    };
   }, []);
 
   const fetchStats = async () => {
