@@ -68,6 +68,11 @@ import PrivateTest from "./pages/PrivateTest";
 export const App = () => {
   // Detecta se está em rota de teste
   const hash = typeof window !== 'undefined' ? window.location.hash : '';
+  if (typeof window !== 'undefined') {
+    // Log de depuração para produção
+    // eslint-disable-next-line no-console
+    console.log('[App] window.location.hash:', window.location.hash);
+  }
   const isTestRoute = hash.startsWith('#/auth-test') || hash.startsWith('#/private-test');
   if (isTestRoute) {
     return (
