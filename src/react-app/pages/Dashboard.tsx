@@ -65,6 +65,11 @@ type DashboardTab =
  * DASHBOARD
  * ========================================================= */
 export const Dashboard = () => {
+    // ChatWidget logic: show admin, client, or visitor mode
+    let chatMode: 'admin' | 'client' | 'visitor' = 'visitor';
+    if (!isPending && user) {
+      chatMode = (user as any).isAdmin ? 'admin' : 'client';
+    }
   const { user, isPending } = useAuth();
   const navigate = useNavigate();
 
@@ -118,12 +123,13 @@ useEffect(() => {
 
   if (tabsWithoutFetch.includes(activeTab)) {
     setData([]);
-    return;
-  }
-
-  // ===============================
-  // ENDPOINTS
-  // ===============================
+    return (
+      <div className="min-h-screen bg-brand-dark selection:bg-brand-primary selection:text-white">
+        <Header />
+        {/* ...existing dashboard code... */}
+        <ChatWidget mode={chatMode} />
+      </div>
+    );
   const endpoints: Partial<Record<DashboardTab, string>> = {
     crm: '/api/admin/leads',
     processos: '/api/admin/processos',

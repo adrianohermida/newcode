@@ -22,7 +22,7 @@ interface Message {
 }
 
 
-export const ChatWidget = () => {
+export const ChatWidget = ({ mode = 'visitor' }: { mode?: 'admin' | 'client' | 'visitor' }) => {
   const [isOpen, setIsOpen] = useState(false);
   const [input, setInput] = useState("");
   const [messages, setMessages] = useState<Message[]>([]);
@@ -122,7 +122,9 @@ export const ChatWidget = () => {
                 <Bot className="text-white" size={24} />
               </div>
               <div>
-                <h3 className="text-white font-bold text-sm">Assistente Virtual</h3>
+                <h3 className="text-white font-bold text-sm">
+                  {mode === 'admin' ? 'Chat Admin' : mode === 'client' ? 'Chat Cliente' : 'Chat Visitante'}
+                </h3>
                 <p className="text-white/70 text-[10px] uppercase tracking-widest font-bold">Online agora</p>
               </div>
             </div>
