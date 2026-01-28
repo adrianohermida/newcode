@@ -48,29 +48,37 @@ import { supabase } from "../utils/supabaseClient";
         return;
       }
     }
-    // Se não houver code nem error na URL, redireciona para login ou mostra fallback
+    // Se não houver code nem error na URL, redireciona para login
     const urlParams = new URLSearchParams(window.location.search);
     const code = urlParams.get('code');
     const error = urlParams.get('error');
     if (!code && !error) {
-      // Não lança erro, apenas redireciona para login
       navigate('/login', { replace: true });
       return;
     }
-    // Supabase já processa o callback automaticamente
-    supabase.auth.getUser().then(({ data }) => {
-      if (data.user) {
-        navigate("/account", { replace: true });
-      }
-    });
-    const { data: listener } = supabase.auth.onAuthStateChange((_event, session) => {
-      if (session?.user) {
-        navigate("/account", { replace: true });
-      }
-    });
-    return () => {
-      listener?.subscription.unsubscribe();
-    };
+    // Se houver error na URL, exibe mensagem de erro aprimorada
+    if (error) {
+      // Opcional: você pode customizar a navegação ou exibir um fallback
+      alert('Erro ao autenticar: ' + decodeURIComponent(error));
+      navigate('/login', { replace: true });
+      return;
+    }
+    // Só processa Supabase se houver code
+    if (code) {
+      supabase.auth.getUser().then(({ data }) => {
+        if (data.user) {
+          navigate("/account", { replace: true });
+        }
+      });
+      const { data: listener } = supabase.auth.onAuthStateChange((_event, session) => {
+        if (session?.user) {
+          navigate("/account", { replace: true });
+        }
+      });
+      return () => {
+        listener?.subscription.unsubscribe();
+      };
+    }
   }, [navigate]);
 
   return (
