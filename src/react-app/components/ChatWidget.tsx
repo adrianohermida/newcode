@@ -70,48 +70,41 @@ export const ChatWidget = ({ mode = 'visitor' }: { mode?: 'admin' | 'client' | '
     }
 
     const userMessage: Message = {
-      try {
-        const data = await apiFetch('/api/ai/chat', {
-          method: 'POST',
-          headers: { 'Content-Type': 'application/json' },
-          body: JSON.stringify({ 
-            message: messageText,
-            history: messages.map(m => ({ role: m.role, content: m.content })),
-            session_id: currentSessionId
-          })
-        });
-        if (data && data.reply) {
-          setMessages(prev => [...prev, {
-            role: 'assistant',
-            content: data.reply,
-            timestamp: new Date(),
-            type: data.type,
-            data: data.data
-          }]);
-        } else {
-          setMessages(prev => [...prev, {
-            role: 'assistant',
-            content: data?.error || 'Erro ao processar resposta.',
-            timestamp: new Date()
-          }]);
-        }
-      } catch (e) {
+      role: 'user',
+      content: messageText,
+      timestamp: new Date()
+    };
+    setMessages(prev => [...prev, userMessage]);
+    setIsLoading(true);
+    try {
+      const data = await apiFetch('/api/ai/chat', {
+        method: 'POST',
+        headers: { 'Content-Type': 'application/json' },
+        body: JSON.stringify({ 
+          message: messageText,
+          history: messages.map(m => ({ role: m.role, content: m.content })),
+          session_id: currentSessionId
+        })
+      });
+      if (data && data.reply) {
         setMessages(prev => [...prev, {
           role: 'assistant',
-          content: 'Erro de conexão. Tente novamente.',
+          content: data.reply,
+          timestamp: new Date(),
+          type: data.type,
+          data: data.data
+        }]);
+      } else {
+        setMessages(prev => [...prev, {
+          role: 'assistant',
+          content: data?.error || 'Erro ao processar resposta.',
           timestamp: new Date()
         }]);
-      } finally {
-        setIsLoading(false);
       }
-      };
-
-      setMessages(prev => [...prev, assistantMessage]);
-    } catch (error) {
-      console.error("Chat Error:", error);
+    } catch (e) {
       setMessages(prev => [...prev, {
         role: 'assistant',
-        content: 'Erro de conexão. Por favor, tente novamente mais tarde.',
+        content: 'Erro de conexão. Tente novamente.',
         timestamp: new Date()
       }]);
     } finally {
