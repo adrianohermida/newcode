@@ -136,4 +136,6 @@ export const App = () => {
           {/* CartProvider removido */}
         </AuthProvider>);
 
+export default App;
+
 
