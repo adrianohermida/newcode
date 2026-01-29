@@ -21,6 +21,10 @@ import AboutPage from "./pages/AboutPage";
 import ContactPage from "./pages/ContactPage";
 import AppointmentsPage from "./pages/AppointmentsPage";
 import BlogPage from "./pages/BlogPage";
+import React, { Suspense } from "react";
+const PasswordResetPage = React.lazy(() => import("./pages/PasswordResetPage"));
+const PasswordChangePage = React.lazy(() => import("./pages/PasswordChangePage"));
+const UserNotFoundPage = React.lazy(() => import("./pages/UserNotFoundPage"));
 // AboutPage, ContactPage, AppointmentsPage, BlogPage, CartProvider, AuthProtect are not imported due to missing or incorrect exports.
 
 
@@ -110,9 +114,9 @@ export const App = () => {
             <Route path="/blog/:slug" element={<BlogPostPage />} />
             <Route path="/unsubscribe" element={<UnsubscribePage />} />
             <Route path="/login" element={<LoginPage />} />
-            <Route path="/password-reset" element={<import('./pages/PasswordResetPage').then(m => m.default) />} />
-            <Route path="/password-change" element={<import('./pages/PasswordChangePage').then(m => m.default) />} />
-            <Route path="/user-not-found" element={<import('./pages/UserNotFoundPage').then(m => m.default) />} />
+            <Route path="/password-reset" element={<Suspense fallback={<div>Carregando…</div>}><PasswordResetPage /></Suspense>} />
+            <Route path="/password-change" element={<Suspense fallback={<div>Carregando…</div>}><PasswordChangePage /></Suspense>} />
+            <Route path="/user-not-found" element={<Suspense fallback={<div>Carregando…</div>}><UserNotFoundPage /></Suspense>} />
             <Route path="/auth/callback" element={<AuthCallback />} />
             <Route path="/checkout/success" element={<CheckoutSuccessPage />} />
             <Route path="/checkout/error" element={<CheckoutErrorPage />} />
