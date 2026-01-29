@@ -41,6 +41,7 @@ const Hero = () => (
             >
               Falar no WhatsApp
             </a>
+            <button
               onClick={() => document.getElementById('calculadora')?.scrollIntoView({ behavior: 'smooth' })}
               className="w-full sm:w-auto bg-brand-primary hover:bg-brand-primary/90 text-white px-8 py-4 rounded-xl font-bold text-lg flex items-center justify-center gap-3 transition-all hover:scale-105 shadow-xl shadow-brand-primary/20 group"
             >
@@ -50,9 +51,7 @@ const Hero = () => (
             <Link to="/agendar" className="hidden sm:flex w-full sm:w-auto bg-white/5 hover:bg-white/10 text-white border border-white/10 px-8 py-4 rounded-xl font-bold text-lg transition-all items-center justify-center">
               Agendar Consulta
             </Link>
-          </div>
-);
-export default HomePage;
+          </h1>
           <div className="flex items-center gap-6 justify-center lg:justify-start pt-4">
             <div className="flex -space-x-3">
                 {[1, 2, 3, 4].map(n => (
@@ -681,7 +680,7 @@ const HomePage = () => {
   );
 };
 
-export default HomePage;
+// export default HomePage; (removed duplicate, only one export default at the end)
 const FinalCTA = () => (
   <section className="py-24 bg-brand-primary relative overflow-hidden">
     <div className="absolute top-0 left-0 w-full h-full bg-[radial-gradient(circle_at_70%_70%,#ffffff20_0%,transparent_50%)]" />
@@ -863,12 +862,23 @@ const Footer = () => {
             <a href="/chatwidget-test-public" className="text-brand-primary hover:underline">Teste Público</a>
             <a href="/chatwidget-test-client" className="text-brand-primary hover:underline">Teste Cliente (logado)</a>
             <a href="/chatwidget-test-dashboard" className="text-brand-primary hover:underline">Teste Dashboard/Admin</a>
-          </div>
         </div>
       </main>
       <Footer />
     </div>
   );
+
+
+
+
+        </div>
+      </main>
+      <Footer />
+    </div>
+  );
+}
+
+export default HomePage;
 
 
 
