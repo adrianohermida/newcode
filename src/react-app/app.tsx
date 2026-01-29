@@ -25,7 +25,6 @@ import { AuthProvider } from "../hooks/AuthContext";
 const PasswordResetPage = React.lazy(() => import("./pages/PasswordResetPage"));
 const PasswordChangePage = React.lazy(() => import("./pages/PasswordChangePage"));
 const UserNotFoundPage = React.lazy(() => import("./pages/UserNotFoundPage"));
-// AboutPage, ContactPage, AppointmentsPage, BlogPage, CartProvider, AuthProtect are not imported due to missing or incorrect exports.
 
 const App = () => {
   const [routeState, setRouteState] = React.useState<'unknown'|'test'|'normal'>(() => {
@@ -91,27 +90,6 @@ const App = () => {
 }
 
 export default App;
-            <Route path="/user-not-found" element={<Suspense fallback={<div>Carregando…</div>}><UserNotFoundPage /></Suspense>} />
-            <Route path="/auth/callback" element={<AuthCallback />} />
-            <Route path="/checkout/success" element={<CheckoutSuccessPage />} />
-            <Route path="/checkout/error" element={<CheckoutErrorPage />} />
-            <Route path="/checkout/cancel" element={<CheckoutCancelPage />} />
-            <Route path="/portal" element={<ClientPortal />} />
-            <Route path="/dashboard" element={<Dashboard />} />
-            <Route path="/processos/:id" element={<AuthProtect><ProcessDetailPage /></AuthProtect>} />
-            <Route path="/perfil" element={<AuthProtect><ProfilePage /></AuthProtect>} />
-                        {/* Fallback 404 */}
-                        <Route path="*" element={<DevFallbackPanel />} />
-            {/* Páginas de teste do ChatWidget */}
-            <Route path="/chatwidget-test-public" element={<ChatWidget />} />
-            <Route path="/chatwidget-test-client" element={<AuthProtect><ChatWidget /></AuthProtect>} />
-            <Route path="/chatwidget-test-dashboard" element={<AuthProtect><ChatWidget /></AuthProtect>} />
-          </Routes>
-        </HashRouter>
-          {/* CartProvider removido */}
-        </AuthProvider>
-
-      export default App;
 
 
 
