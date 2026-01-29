@@ -216,5 +216,4 @@ import FallbackPage from './FallbackPage';
       </footer>
     </div>
   );
-};
-
+  
