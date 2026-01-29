@@ -134,5 +134,6 @@ export const App = () => {
           </Routes>
         </HashRouter>
          {/* CartProvider removido */}
-    {/* ...existing code... */}
+      {/* ...existing code... */}
+    </AuthProvider>
 
