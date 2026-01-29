@@ -1,6 +1,6 @@
 import React, { Suspense } from "react";
 import { HashRouter, Route, Routes } from "react-router-dom";
-import { HomePage } from "./pages/HomePage";
+import HomePage from "./pages/HomePage";
 import { BlogPostPage } from "./pages/BlogPostPage";
 import AuthCallback from "./pages/AuthCallback";
 import { CheckoutSuccessPage } from "./pages/CheckoutSuccessPage";
@@ -9,7 +9,7 @@ import { CheckoutCancelPage } from "./pages/CheckoutCancelPage";
 import LoginPage from "./pages/LoginPage";
 import { Dashboard } from "./components/Dashboard/Dashboard";
 import ClientPortal from "./pages/ClientPortal";
-import { ProfilePage } from "./pages/ProfilePage";
+import ProfilePage from "./pages/ProfilePage";
 import { ProcessDetailPage } from "./pages/ProcessDetailPage";
 import { UnsubscribePage } from "./pages/UnsubscribePage";
 import { ChatWidget } from "./components/ChatWidget";

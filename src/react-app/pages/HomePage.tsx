@@ -17,10 +17,10 @@ import {
 
 
 
-// Garante que a sessão é reconhecida
-const session = useSupabaseSession();
+function HomePage() {
+  const session = useSupabaseSession();
 
-const Hero = () => (
+  const Hero = () => (
   <section className="relative pt-32 pb-20 lg:pt-48 lg:pb-32 overflow-hidden">
     <div className="absolute top-0 left-0 w-full h-full bg-[radial-gradient(circle_at_30%_30%,#0d9c6e15_0%,transparent_50%)]" />
     <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 relative z-10">
@@ -33,31 +33,36 @@ const Hero = () => (
           
           <h1 className="text-4xl sm:text-5xl lg:text-6xl font-extrabold leading-[1.1] sm:!text-[53px] text-[#ffffffff]">
             Advogado Especialista em Superendividamento: Parcele suas <span className="text-[#0d9c6eff]">dívidas</span> em até 5 anos
-            <a
-              href="https://wa.me/5551996032004"
-              target="_blank"
-              rel="noopener noreferrer"
-              className="bg-brand-dark text-white px-10 py-5 rounded-2xl font-extrabold text-xl shadow-2xl transition-all hover:scale-105 active:scale-95 text-center"
-            >
-              Falar no WhatsApp
-            </a>
-            <button
-              onClick={() => document.getElementById('calculadora')?.scrollIntoView({ behavior: 'smooth' })}
-              className="w-full sm:w-auto bg-brand-primary hover:bg-brand-primary/90 text-white px-8 py-4 rounded-xl font-bold text-lg flex items-center justify-center gap-3 transition-all hover:scale-105 shadow-xl shadow-brand-primary/20 group"
-            >
-              Calcular Gratuitamente
-              <ArrowRight size={20} className="group-hover:translate-x-1 transition-transform" />
-            </button>
-            <Link to="/agendar" className="hidden sm:flex w-full sm:w-auto bg-white/5 hover:bg-white/10 text-white border border-white/10 px-8 py-4 rounded-xl font-bold text-lg transition-all items-center justify-center">
-              Agendar Consulta
-            </Link>
           </h1>
+          <a
+            href="https://wa.me/5551996032004"
+            target="_blank"
+            rel="noopener noreferrer"
+            className="bg-brand-dark text-white px-10 py-5 rounded-2xl font-extrabold text-xl shadow-2xl transition-all hover:scale-105 active:scale-95 text-center"
+          >
+            Falar no WhatsApp
+          </a>
+          <button
+            onClick={() => document.getElementById('calculadora')?.scrollIntoView({ behavior: 'smooth' })}
+            className="w-full sm:w-auto bg-brand-primary hover:bg-brand-primary/90 text-white px-8 py-4 rounded-xl font-bold text-lg flex items-center justify-center gap-3 transition-all hover:scale-105 shadow-xl shadow-brand-primary/20 group"
+          >
+            Calcular Gratuitamente
+            <ArrowRight size={20} className="group-hover:translate-x-1 transition-transform" />
+          </button>
+          <Link to="/agendar" className="hidden sm:flex w-full sm:w-auto bg-white/5 hover:bg-white/10 text-white border border-white/10 px-8 py-4 rounded-xl font-bold text-lg transition-all items-center justify-center">
+            Agendar Consulta
+          </Link>
           <div className="flex items-center gap-6 justify-center lg:justify-start pt-4">
             <div className="flex -space-x-3">
                 {[1, 2, 3, 4].map(n => (
                   <img
                     key={n}
                     src={require(`../assets/img/avatar${n}.png`)}
+// ...existing code for Stats, Calculator, etc...
+
+}
+
+export default HomePage;
                     className="w-10 h-10 rounded-full border-2 border-brand-dark"
                     alt={`Avatar ${n}`}
                   />
