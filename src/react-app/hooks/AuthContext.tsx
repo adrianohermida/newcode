@@ -53,27 +53,22 @@ export const AuthProvider: React.FC<{ children: React.ReactNode }> = ({ children
           window.__AUTH_ERROR__ = null;
         }
       }
-          if (text && text.startsWith('<!DOCTYPE')) {
-            msg = 'Erro de backend: resposta HTML recebida em vez de JSON. Verifique se o backend está rodando corretamente.';
-          } else if (text) {
-            msg = text;
-          }
-        } catch {}
-        setUser(null);
-        if (typeof window !== 'undefined') {
-          window.__AUTH_ERROR__ = msg;
-        }
-      }
-    } catch (err: any) {
-      setUser(null);
-      if (typeof window !== 'undefined') {
-        window.__AUTH_ERROR__ = err?.message || 'Erro de conexão ao buscar sessão.';
-      }
-    } finally {
-      setLoading(false);
-      setRefreshing(false);
+    } catch {}
+    setUser(null);
+    if (typeof window !== 'undefined') {
+      window.__AUTH_ERROR__ = msg;
     }
-  }, []);
+  }
+} catch (err: any) {
+  setUser(null);
+  if (typeof window !== 'undefined') {
+    window.__AUTH_ERROR__ = err?.message || 'Erro de conexão ao buscar sessão.';
+  }
+} finally {
+  setLoading(false);
+  setRefreshing(false);
+}
+}, []);
 
   useEffect(() => {
     let unsub: any = null;
