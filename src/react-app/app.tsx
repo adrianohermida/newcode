@@ -133,7 +133,7 @@ export const App = () => {
             <Route path="/chatwidget-test-dashboard" element={<AuthProtect><ChatWidget /></AuthProtect>} />
           </Routes>
         </HashRouter>
-         {/* CartProvider removido */}
-    {/* ...existing code... */}
-  </AuthProvider>);
+          {/* CartProvider removido */}
+        </AuthProvider>);
+
 
