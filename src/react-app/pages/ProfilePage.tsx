@@ -27,9 +27,9 @@ import { User, Shield, Phone, Briefcase, Loader2, CheckCircle2 } from 'lucide-re
   useEffect(() => {
     if (session === null) {
       navigate('/login');
-    }
     if (session && user) {
       apiFetch('/api/user/profile')
+    }
         .then(res => res.json())
         .then(data => {
           setProfile(data);

@@ -33,14 +33,14 @@ const Hero = () => (
           
           <h1 className="text-4xl sm:text-5xl lg:text-6xl font-extrabold leading-[1.1] sm:!text-[53px] text-[#ffffffff]">
             Advogado Especialista em Superendividamento: Parcele suas <span className="text-[#0d9c6eff]">dívidas</span> em até 5 anos
-          </h1>
-          
-          <p className="text-lg text-white/70 max-w-xl mx-auto lg:mx-0 leading-relaxed">
-            Advocacia especializada em superendividamento e defesa do consumidor. Mais de R$ 35 milhões em redução de dívidas renegociados em todo o Brasil. Recupere sua paz financeira hoje.
-          </p>
-          
-          <div className="flex flex-col sm:flex-row items-center gap-4 justify-center lg:justify-start">
-            <button 
+            <a
+              href="https://wa.me/5551996032004"
+              target="_blank"
+              rel="noopener noreferrer"
+              className="bg-brand-dark text-white px-10 py-5 rounded-2xl font-extrabold text-xl shadow-2xl transition-all hover:scale-105 active:scale-95 text-center"
+            >
+              Falar no WhatsApp
+            </a>
               onClick={() => document.getElementById('calculadora')?.scrollIntoView({ behavior: 'smooth' })}
               className="w-full sm:w-auto bg-brand-primary hover:bg-brand-primary/90 text-white px-8 py-4 rounded-xl font-bold text-lg flex items-center justify-center gap-3 transition-all hover:scale-105 shadow-xl shadow-brand-primary/20 group"
             >
@@ -51,7 +51,8 @@ const Hero = () => (
               Agendar Consulta
             </Link>
           </div>
-
+);
+export default HomePage;
           <div className="flex items-center gap-6 justify-center lg:justify-start pt-4">
             <div className="flex -space-x-3">
                 {[1, 2, 3, 4].map(n => (

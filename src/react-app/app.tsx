@@ -21,7 +21,7 @@ import ContactPage from "./pages/ContactPage";
 import AppointmentsPage from "./pages/AppointmentsPage";
 import BlogPage from "./pages/BlogPage";
 import AuthProtect from "./components/AuthProtect";
-import { AuthProvider } from "../hooks/AuthContext";
+import { AuthProvider } from "./hooks/AuthContext";
 const PasswordResetPage = React.lazy(() => import("./pages/PasswordResetPage"));
 const PasswordChangePage = React.lazy(() => import("./pages/PasswordChangePage"));
 const UserNotFoundPage = React.lazy(() => import("./pages/UserNotFoundPage"));
