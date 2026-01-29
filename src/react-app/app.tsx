@@ -134,8 +134,13 @@ export const App = () => {
           </Routes>
         </HashRouter>
           {/* CartProvider removido */}
-        </AuthProvider>);
+        </AuthProvider>
 
-export default App;
+      export default App;
+
+
+
+
+
 
 
