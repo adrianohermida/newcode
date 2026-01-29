@@ -24,11 +24,13 @@ ASSETS=(
 )
 
 mkdir -p dist/assets
+
 for asset in "${ASSETS[@]}"; do
-  if [ -f "$asset" ]; then
-    cp "$asset" dist/assets/
-  elif [ -f "./assets/$asset" ]; then
-    cp "./assets/$asset" dist/assets/
+  # Sempre prioriza ./assets
+  if [ -f "./assets/$asset" ]; then
+    cp -u "./assets/$asset" dist/assets/
+  elif [ -f "$asset" ]; then
+    cp -u "$asset" dist/assets/
   fi
 done
 

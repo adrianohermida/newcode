@@ -13,10 +13,11 @@ cp -v $SRC_DIR/favicon.ico $DIST_ASSET_DIR/ 2>/dev/null || true
 cp -v $SRC_DIR/apple-touch-icon*.png $DIST_ASSET_DIR/ 2>/dev/null || true
 cp -v $SRC_DIR/genfavicon-*.png $DIST_ASSET_DIR/ 2>/dev/null || true
 
-# Copia do assets também
-cp -v $ASSET_DIR/apple-touch-icon*.png $DIST_ASSET_DIR/ 2>/dev/null || true
-cp -v $ASSET_DIR/genfavicon-*.png $DIST_ASSET_DIR/ 2>/dev/null || true
-cp -v $ASSET_DIR/favicon.ico $DIST_ASSET_DIR/ 2>/dev/null || true
+
+# Copia do assets SEMPRE, nunca deleta, apenas sobrescreve se houver novo
+cp -u -v $ASSET_DIR/apple-touch-icon*.png $DIST_ASSET_DIR/ 2>/dev/null || true
+cp -u -v $ASSET_DIR/genfavicon-*.png $DIST_ASSET_DIR/ 2>/dev/null || true
+cp -u -v $ASSET_DIR/favicon.ico $DIST_ASSET_DIR/ 2>/dev/null || true
 
 # Copia o manifest se existir
 if [ -f "$SRC_DIR/site.webmanifest" ]; then
