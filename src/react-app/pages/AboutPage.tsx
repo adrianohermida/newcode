@@ -24,32 +24,6 @@ import { useSupabaseSession } from '../hooks/useSupabaseSession';
 const session = useSupabaseSession();
 
 function AboutPage() {
-  const [testStatus, setTestStatus] = useState<string | null>(null);
-  useEffect(() => {
-    window.scrollTo(0, 0);
-    document.title = "Sobre o Escritório | Hermida Maia Advocacia";
-  }, []);
-
-  // Teste de conexão manual
-  const handleTestConnection = async () => {
-    setTestStatus('Testando...');
-    try {
-      const res = await apiFetch('/api/blog');
-      if (!res.ok) throw new Error('About: ' + res.status);
-      // Garante que a resposta é JSON válida
-      let data = null;
-      try {
-        data = await res.json();
-      } catch (err) {
-        throw new Error('Resposta inválida da API do blog');
-      }
-      setTestStatus('Conexão bem-sucedida!');
-    } catch (e: any) {
-      setTestStatus('Erro ao testar conexão: ' + (e.message || 'Erro desconhecido'));
-    }
-    setTimeout(() => setTestStatus(null), 3000);
-  };
-
   return (
   <section className="relative pt-32 pb-20 lg:pt-48 lg:pb-32 overflow-hidden bg-brand-dark">
     <div className="absolute top-0 left-0 w-full h-full bg-[radial-gradient(circle_at_50%_50%,#0d9c6e10_0%,transparent_70%)]" />
@@ -358,9 +332,10 @@ const Footer = () => (
       setTestStatus('Erro ao testar conexão: ' + (e.message || 'Erro desconhecido'));
     }
     setTimeout(() => setTestStatus(null), 3000);
-  };
+  );
+}
 
-  return (
+export default AboutPage;
     <div className="min-h-screen bg-brand-dark text-white selection:bg-brand-primary selection:text-white">
       <Header />
       <div className="flex justify-center py-2">

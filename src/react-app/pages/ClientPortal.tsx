@@ -98,30 +98,7 @@ export function ClientPortal() {
       if (res.ok) {
         setSummary(await res.json());
       }
-    return (
-      <div className="min-h-screen bg-brand-dark text-white selection:bg-brand-primary selection:text-white">
-        <ChatWidget />
-        <Header />
-        <main className="pt-32 pb-20 px-4 sm:px-6 lg:px-8 max-w-7xl mx-auto">
-          <div className="flex flex-col lg:flex-row gap-8">
-            {/* Sidebar do Portal */}
-            <aside className="w-full lg:w-72 space-y-2 shrink-0">
-              <div className="bg-brand-elevated p-6 rounded-3xl border border-white/5 mb-6">
-                <div className="flex items-center gap-4 mb-4">
-                  <div className="w-12 h-12 rounded-2xl bg-brand-primary flex items-center justify-center text-white font-bold text-xl border-2 border-white/10">
-                    {/* ...existing code... */}
-                  </div>
-                  <div className="overflow-hidden">
-                    {/* ...existing code... */}
-                  </div>
-                </div>
-                {/* ...existing code... */}
-              </div>
-              {/* ...existing code... */}
-          </div>
-        </main>
-      </div>
-    );
+    // ...existing code...
   useEffect(() => {
     if (activeTab !== 'overview' && activeTab !== 'tickets' && activeTab !== 'agenda') {
       fetchData(activeTab);
@@ -271,16 +248,7 @@ export function ClientPortal() {
             );
           }
 
-          export { ClientPortal };
-              <div className="space-y-6 animate-fade-in">
-                <div className="flex items-center justify-between">
-                  <h2 className="text-2xl font-extrabold">Meus Processos</h2>
-                  <div className="bg-brand-primary/10 px-4 py-2 rounded-xl border border-brand-primary/20">
-                    <p className="text-brand-primary text-[10px] font-bold uppercase">Sincronizado com CNJ</p>
-                  </div>
-                </div>
-
-                {loading ? (
+// ...existing code...
                   <div className="flex justify-center py-20"><Loader2 className="animate-spin text-brand-primary" size={40} /></div>
                 ) : processos.length > 0 ? (
                   <div className="grid gap-4">
