@@ -1,4 +1,4 @@
-export default ClientPortal;
+
 
 import React, { useState, useEffect } from 'react';
 import { ChatWidget } from '../components/ChatWidget';
@@ -98,7 +98,7 @@ export function ClientPortal() {
       if (res.ok) {
         setSummary(await res.json());
       }
-    // ...existing code...
+
   useEffect(() => {
     if (activeTab !== 'overview' && activeTab !== 'tickets' && activeTab !== 'agenda') {
       fetchData(activeTab);
@@ -247,8 +247,15 @@ export function ClientPortal() {
               </div>
             );
           }
+              <div className="space-y-6 animate-fade-in">
+                <div className="flex items-center justify-between">
+                  <h2 className="text-2xl font-extrabold">Meus Processos</h2>
+                  <div className="bg-brand-primary/10 px-4 py-2 rounded-xl border border-brand-primary/20">
+                    <p className="text-brand-primary text-[10px] font-bold uppercase">Sincronizado com CNJ</p>
+                  </div>
+                </div>
 
-// ...existing code...
+                {loading ? (
                   <div className="flex justify-center py-20"><Loader2 className="animate-spin text-brand-primary" size={40} /></div>
                 ) : processos.length > 0 ? (
                   <div className="grid gap-4">

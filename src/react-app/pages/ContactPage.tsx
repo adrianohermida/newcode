@@ -223,4 +223,4 @@ import allConfigs from '../../shared/form-configs.json';
       </footer>
     </div>
   );
-};
+  

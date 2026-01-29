@@ -15,6 +15,7 @@ import { contactFormTheme } from '../components/CustomForm/theme';
 import allConfigs from '../../shared/form-configs.json';
 import { User, Shield, Phone, Briefcase, Loader2, CheckCircle2 } from 'lucide-react';
 
+function ProfilePage() {
   const { apiFetch } = require('../controllers/ApiController');
   const session = useSupabaseSession();
   const user = session?.user;
@@ -123,6 +124,8 @@ import { User, Shield, Phone, Briefcase, Loader2, CheckCircle2 } from 'lucide-re
       </main>
     </div>
   );
-};
+}
+
+export default ProfilePage;
 
 
